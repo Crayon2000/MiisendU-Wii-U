@@ -1,4 +1,4 @@
-language: cpp
+language: c
 dist: trusty
 sudo: false
 
@@ -21,8 +21,8 @@ before_install:
 
 install:
   - perl devkitPPCupdate.pl
-  - 7z x -y libogc.7z
-  - 7z x -y portlibs.7z
+  - 7z x -y libogc.7z -o${DEVKITPRO}
+  - 7z x -y portlibs.7z -o${DEVKITPRO}
 
 script:
   - make

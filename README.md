@@ -1,5 +1,8 @@
 # UsendMii Client
-This a UsendMii client application for Wii U.
+
+[![Build Status](https://travis-ci.org/Crayon2000/UsendMii-Client.svg?branch=master)](https://travis-ci.org/Crayon2000/UsendMii-Client)
+
+This is a UsendMii client application for Wii U.
 
 ## Build
 Prerequisites:
