@@ -37,7 +37,7 @@ int _entryPoint()
     OSScreenClearBufferEx(1, 0);
 
     // Gamepad key state data
-    int error;
+    s32 error;
     VPADData vpad_data;
 
     char * IP_str = malloc(32);
@@ -46,14 +46,18 @@ int _entryPoint()
     // Insert the IP adress (some code was taken from the IP Adress selector of geckiine made by brienj)
     for (;;) {
         VPADRead(0, &vpad_data, 1, &error);
-        if (vpad_data.btns_d & VPAD_BUTTON_LEFT  && selected_digit > 0)
+        if (vpad_data.btns_d & VPAD_BUTTON_LEFT  && selected_digit > 0) {
             selected_digit--;
-        if (vpad_data.btns_d & VPAD_BUTTON_RIGHT && selected_digit < 3)
+        }
+        if (vpad_data.btns_d & VPAD_BUTTON_RIGHT && selected_digit < 3) {
             selected_digit++;
-        if (vpad_data.btns_d & VPAD_BUTTON_UP)
+        }
+        if (vpad_data.btns_d & VPAD_BUTTON_UP) {
             IP[selected_digit] = (IP[selected_digit] < 255) ? (IP[selected_digit] + 1) : 0;
-        if (vpad_data.btns_d & VPAD_BUTTON_DOWN)
+        }
+        if (vpad_data.btns_d & VPAD_BUTTON_DOWN) {
             IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
+        }
 
         // Clear the screen
         OSScreenClearBufferEx(0, 0);
