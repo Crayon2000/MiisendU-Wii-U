@@ -1,0 +1,14 @@
+# Folder
+/build
+
+# Executable file
+*.elf
+
+# Archive
+*.zip
+
+# Programmer's Notepad state file
+*.pnps
+
+# Windows thumbnail cache
+Thumbs.db
