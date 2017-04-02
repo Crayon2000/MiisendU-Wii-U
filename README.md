@@ -1,5 +1,5 @@
 # UsendMii Client
-UsendMii client for Wii U
+This a UsendMii client application for Wii U.
 
 ## Build
 Prerequisites:

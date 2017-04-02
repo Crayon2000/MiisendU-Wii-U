@@ -148,9 +148,6 @@ $(OUTPUT).elf:  $(OFILES)
 	$(Q)$(LD) -n -T $^ $(LDFLAGS) -o ../$(BUILD_DBG).elf  $(LIBPATHS) $(LIBS)
 	$(Q)$(OBJCOPY) -S -R .comment -R .gnu.attributes ../$(BUILD_DBG).elf $@
 
-../data/loader.bin:
-	$(MAKE) -C ../loader clean
-	$(MAKE) -C ../loader
 #---------------------------------------------------------------------------------
 %.a:
 #---------------------------------------------------------------------------------
