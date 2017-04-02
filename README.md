@@ -1,5 +1,5 @@
-# UsendMii Server
-UsendMii server for Wii U
+# UsendMii Client
+UsendMii client for Wii U
 
 ## Build
 Prerequisites:

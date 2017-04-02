@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <app version="1">
-  <name>UsendMii Server</name>
+  <name>UsendMii Client</name>
   <coder>Crayon</coder>
   <version>0.0.1</version>
   <release_date>20170301000000</release_date>
-  <short_description>A UsendMii server</short_description>
-  <long_description>UsendMii server for Wii U.
+  <short_description>A UsendMii client</short_description>
+  <long_description>UsendMii client for Wii U.
 
-	Based on RemotePad from rw-r-r-0644
+    Based on RemotePad from rw-r-r-0644
   </long_description>
 
 </app>

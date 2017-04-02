@@ -46,28 +46,34 @@ int _entryPoint()
     // Insert the IP adress (some code was taken from the IP Adress selector of geckiine made by brienj)
     for (;;) {
         VPADRead(0, &vpad_data, 1, &error);
-        if (vpad_data.btns_d & VPAD_BUTTON_LEFT  && selected_digit > 0) selected_digit--;
-        if (vpad_data.btns_d & VPAD_BUTTON_RIGHT && selected_digit < 3) selected_digit++;
-        if (vpad_data.btns_d & VPAD_BUTTON_UP)   IP[selected_digit] = (IP[selected_digit] < 255) ? (IP[selected_digit] + 1) : 0;
-        if (vpad_data.btns_d & VPAD_BUTTON_DOWN) IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
+        if (vpad_data.btns_d & VPAD_BUTTON_LEFT  && selected_digit > 0)
+            selected_digit--;
+        if (vpad_data.btns_d & VPAD_BUTTON_RIGHT && selected_digit < 3)
+            selected_digit++;
+        if (vpad_data.btns_d & VPAD_BUTTON_UP)
+            IP[selected_digit] = (IP[selected_digit] < 255) ? (IP[selected_digit] + 1) : 0;
+        if (vpad_data.btns_d & VPAD_BUTTON_DOWN)
+            IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
 
         // Clear the screen
         OSScreenClearBufferEx(0, 0);
         OSScreenClearBufferEx(1, 0);
         // print to DRC
-        OSScreenPutFontEx(1, 0, 0, "== RemotePad ==");
+        OSScreenPutFontEx(1, 0, 0, "== UsendMii Client ==");
         OSScreenPutFontEx(1, 0, 1, "Please insert your computer's IP adress below ");
         OSScreenPutFontEx(1, 0, 2, "(use DPAD to edit the IP adress)");
         OSScreenPutFontEx(1, 4 * selected_digit, 6, "vvv");
         snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
         OSScreenPutFontEx(1, 0, 7, IP_str);
         OSScreenPutFontEx(1, 0, 15, "Press 'A' to confirm");
-        OSScreenPutFontEx(1, 0, 16, "Press HOME-Button to exit");
+        OSScreenPutFontEx(1, 0, 16, "Press HOME button to exit");
         // Flip buffers
         OSScreenFlipBuffersEx(0);
         OSScreenFlipBuffersEx(1);
 
-        if (vpad_data.btns_d & VPAD_BUTTON_A) break;
+        if (vpad_data.btns_d & VPAD_BUTTON_A) {
+            break;
+        }
         if (vpad_data.btns_d & VPAD_BUTTON_HOME) {
             free(IP_str);
             MEM1_free(ScreenBuffer0);
@@ -95,20 +101,20 @@ int _entryPoint()
     OSScreenClearBufferEx(1, 0);
 
     // print to TV
-    OSScreenPutFontEx(0, 0, 0, "== RemotePad ==");
+    OSScreenPutFontEx(0, 0, 0, "== UsendMii Client ==");
     OSScreenPutFontEx(0, 0, 2, msg_connected);
-    OSScreenPutFontEx(0, 0, 4, "Remember the program will not work without the");
-    OSScreenPutFontEx(0, 0, 5, "client running on your computer. ");
-    OSScreenPutFontEx(0, 0, 6, "You can get the client from goo.gl/7cvSSf");
-    OSScreenPutFontEx(0, 0, 16, "Press HOME-Button to exit.");
+    OSScreenPutFontEx(0, 0, 4, "Remember the program will not work without ");
+    OSScreenPutFontEx(0, 0, 5, "UsendMii running on your computer. ");
+    OSScreenPutFontEx(0, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+    OSScreenPutFontEx(0, 0, 16, "Press HOME button to exit.");
 
     // print to DRC
-    OSScreenPutFontEx(1, 0, 0, "== RemotePad ==");
+    OSScreenPutFontEx(1, 0, 0, "== UsendMii Client ==");
     OSScreenPutFontEx(1, 0, 2, msg_connected);
-    OSScreenPutFontEx(1, 0, 4, "Remember the program will not work without the");
-    OSScreenPutFontEx(1, 0, 5, "client running on your computer. ");
-    OSScreenPutFontEx(1, 0, 6, "You can get the client from goo.gl/7cvSSf");
-    OSScreenPutFontEx(1, 0, 16, "Press HOME-Button to exit.");
+    OSScreenPutFontEx(1, 0, 4, "Remember the program will not work without ");
+    OSScreenPutFontEx(1, 0, 5, "UsendMii running on your computer. ");
+    OSScreenPutFontEx(1, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+    OSScreenPutFontEx(1, 0, 16, "Press HOME button to exit.");
 
     // Flip buffers
     OSScreenFlipBuffersEx(0);
@@ -131,8 +137,9 @@ int _entryPoint()
         DCFlushRange(&vpad_data, sizeof(VPADData));
 
         // Get the status of the gamepad and insert in the message either the HOLD character for the key or the NOT PRESSED character of the key
-        for(int i = 0; i < 22; i++)
+        for(int i = 0; i < 22; i++) {
             msg_data[i] = (vpad_data.btns_h & buttons_val[i]) ? buttons_n_h[i] : buttons_n_r[i];
+        }
 
         // Send the message
         udp_printf("%s", msg_data);
@@ -141,8 +148,9 @@ int _entryPoint()
         usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing
 
         // Check for exit signal
-        if (vpad_data.btns_h & VPAD_BUTTON_HOME)
+        if (vpad_data.btns_h & VPAD_BUTTON_HOME) {
             break;
+        }
     }
 
     free(IP_ADRESS);
