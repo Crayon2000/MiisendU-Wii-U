@@ -14,6 +14,11 @@ cache:
   directories:
     - ${DEVKITPRO}
 
+addons:
+  apt:
+    packages:
+    - p7zip-full
+
 before_install:
   - wget https://raw.githubusercontent.com/devkitPro/installer/master/perl/devkitPPCupdate.pl
   - wget https://github.com/dimok789/loadiine_gx2/releases/download/v0.2/libogc.7z
