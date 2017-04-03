@@ -9,6 +9,7 @@
 #include <malloc.h>
 
 char IP[4] = {192, 168, 1, 100};
+unsigned short Port = 4242;
 
 int _entryPoint()
 {
@@ -59,8 +60,8 @@ int _entryPoint()
         OSScreenClearBufferEx(1, 0);
         // print to DRC
         OSScreenPutFontEx(1, 0, 0, "== UsendMii Client ==");
-        OSScreenPutFontEx(1, 0, 1, "Please insert your computer's IP adress below ");
-        OSScreenPutFontEx(1, 0, 2, "(use DPAD to edit the IP adress)");
+        OSScreenPutFontEx(1, 0, 1, "Please insert your computer's IP adress below");
+        OSScreenPutFontEx(1, 0, 2, "(use the DPAD to edit the IP adress)");
         OSScreenPutFontEx(1, 4 * selected_digit, 6, "vvv");
         snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
         OSScreenPutFontEx(1, 0, 7, IP_str);
@@ -89,11 +90,11 @@ int _entryPoint()
     snprintf(IP_ADRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
 
     // Initialize the UDP connection
-    udp_init(IP_ADRESS);
+    udp_init(IP_ADRESS, Port);
 
     // Output the IP adress
     char * msg_connected = malloc(255);
-    snprintf(msg_connected, 255, "Connected to %s!", IP_ADRESS);
+    snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADRESS, Port);
 
     // Clear the screen
     OSScreenClearBufferEx(0, 0);
@@ -102,7 +103,7 @@ int _entryPoint()
     // print to TV
     OSScreenPutFontEx(0, 0, 0, "== UsendMii Client ==");
     OSScreenPutFontEx(0, 0, 2, msg_connected);
-    OSScreenPutFontEx(0, 0, 4, "Remember the program will not work without ");
+    OSScreenPutFontEx(0, 0, 4, "Remember the program will not work without");
     OSScreenPutFontEx(0, 0, 5, "UsendMii running on your computer. ");
     OSScreenPutFontEx(0, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(0, 0, 16, "Press the HOME button to exit.");
@@ -110,7 +111,7 @@ int _entryPoint()
     // print to DRC
     OSScreenPutFontEx(1, 0, 0, "== UsendMii Client ==");
     OSScreenPutFontEx(1, 0, 2, msg_connected);
-    OSScreenPutFontEx(1, 0, 4, "Remember the program will not work without ");
+    OSScreenPutFontEx(1, 0, 4, "Remember the program will not work without");
     OSScreenPutFontEx(1, 0, 5, "UsendMii running on your computer. ");
     OSScreenPutFontEx(1, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(1, 0, 16, "Press the HOME button to exit.");

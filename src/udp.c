@@ -14,7 +14,7 @@ static int udp_socket = -1;
 static volatile int udp_lock = 0;
 
 
-void udp_init(const char * ipString)
+void udp_init(const char * ipString, unsigned short ipport)
 {
     udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (udp_socket < 0)
@@ -23,7 +23,7 @@ void udp_init(const char * ipString)
     struct sockaddr_in connect_addr;
     memset(&connect_addr, 0, sizeof(connect_addr));
     connect_addr.sin_family = AF_INET;
-    connect_addr.sin_port = 4242; //Use a different port
+    connect_addr.sin_port = ipport;
     inet_aton(ipString, &connect_addr.sin_addr);
 
     if(connect(udp_socket, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) < 0)
