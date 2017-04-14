@@ -17,6 +17,7 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         "\"tpValidity\":%u," \
         "\"tpX\":%ld," \
         "\"tpY\":%ld," \
+        "\"volume\":%d," \
         "\"lStickX\":%0.6f," \
         "\"lStickY\":%0.6f," \
         "\"rStickX\":%0.6f," \
@@ -27,6 +28,7 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         vpad_data->tpdata.invalid,
         x,
         y,
+        vpad_data->volume,
         vpad_data->lstick.x,
         vpad_data->lstick.y,
         vpad_data->rstick.x,
