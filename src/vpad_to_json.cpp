@@ -1,5 +1,4 @@
-#include <string>
-#include <fmt/format.h>
+#include <stdio.h>
 #include "vpad_to_json.h"
 
 void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
@@ -11,13 +10,13 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
     if(y > 480) y = 480;
     if(y < 0) y = 0;
 
-    std::string sout = fmt::sprintf(
+    snprintf(out, out_size,
         "{" \
-        "\"hold\":%d," \
-        "\"tpTouch\":%d," \
-        "\"tpValidity\":%d," \
-        "\"tpX\":%d," \
-        "\"tpY\":%d," \
+        "\"hold\":%lu," \
+        "\"tpTouch\":%u," \
+        "\"tpValidity\":%u," \
+        "\"tpX\":%ld," \
+        "\"tpY\":%ld," \
         "\"lStickX\":%0.6f," \
         "\"lStickY\":%0.6f," \
         "\"rStickX\":%0.6f," \
@@ -32,6 +31,4 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         vpad_data->lstick.y,
         vpad_data->rstick.x,
         vpad_data->rstick.y);
-
-    strncpy(out, sout.c_str(), out_size);
 }
