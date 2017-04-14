@@ -106,7 +106,7 @@ int _entryPoint()
     OSScreenPutFontEx(0, 0, 4, "Remember the program will not work without");
     OSScreenPutFontEx(0, 0, 5, "UsendMii running on your computer. ");
     OSScreenPutFontEx(0, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-    OSScreenPutFontEx(0, 0, 16, "Press the HOME button to exit.");
+    OSScreenPutFontEx(0, 0, 16, "Hold the HOME button to exit.");
 
     // print to DRC
     OSScreenPutFontEx(1, 0, 0, "== UsendMii Client ==");
@@ -114,7 +114,7 @@ int _entryPoint()
     OSScreenPutFontEx(1, 0, 4, "Remember the program will not work without");
     OSScreenPutFontEx(1, 0, 5, "UsendMii running on your computer. ");
     OSScreenPutFontEx(1, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-    OSScreenPutFontEx(1, 0, 16, "Press the HOME button to exit.");
+    OSScreenPutFontEx(1, 0, 16, "Hold the HOME button to exit.");
 
     // Flip buffers
     OSScreenFlipBuffersEx(0);
@@ -125,6 +125,8 @@ int _entryPoint()
 
     // The buffer sent to the computer
     char msg_data[512];
+
+    u16 holdTime = 0;
 
     for(;;) {
         // Read the VPAD
@@ -143,8 +145,11 @@ int _entryPoint()
         usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing
 
         // Check for exit signal
-        if (vpad_data.btns_h & VPAD_BUTTON_HOME) {
+        if (vpad_data.btns_h & VPAD_BUTTON_HOME && ++holdTime > 500) {
             break;
+        }
+        if (vpad_data.btns_r & VPAD_BUTTON_HOME) {
+            holdTime = 0;
         }
     }
 
