@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include "vpad_to_json.h"
 
+/**
+ * Convert GamePad data to JSON string used by UsendMii.
+ * @param[in] vpad_data GamePad data.
+ * @param[out] out Buffer where to copy the formatted data.
+ * @param[in] out_size Size of the out buffer.
+ */
 void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
 {
     s32 x = (vpad_data->tpdata.x - 100) * 854 / (3970 - 100);
