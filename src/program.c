@@ -104,7 +104,7 @@ int _entryPoint()
     OSScreenPutFontEx(0, 0, 0, "== UsendMii Client ==");
     OSScreenPutFontEx(0, 0, 2, msg_connected);
     OSScreenPutFontEx(0, 0, 4, "Remember the program will not work without");
-    OSScreenPutFontEx(0, 0, 5, "UsendMii running on your computer. ");
+    OSScreenPutFontEx(0, 0, 5, "UsendMii running on your computer.");
     OSScreenPutFontEx(0, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(0, 0, 16, "Hold the HOME button to exit.");
 
@@ -112,7 +112,7 @@ int _entryPoint()
     OSScreenPutFontEx(1, 0, 0, "== UsendMii Client ==");
     OSScreenPutFontEx(1, 0, 2, msg_connected);
     OSScreenPutFontEx(1, 0, 4, "Remember the program will not work without");
-    OSScreenPutFontEx(1, 0, 5, "UsendMii running on your computer. ");
+    OSScreenPutFontEx(1, 0, 5, "UsendMii running on your computer.");
     OSScreenPutFontEx(1, 0, 6, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(1, 0, 16, "Hold the HOME button to exit.");
 
