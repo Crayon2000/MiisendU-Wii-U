@@ -24,16 +24,32 @@
 #include "os_functions.h"
 #include "vpad_functions.h"
 
+u32 vpad_handle __attribute__((section(".data"))) = 0;
+u32 vpadbase_handle __attribute__((section(".data"))) = 0;
+
 EXPORT_DECL(void, VPADInit, void);
-EXPORT_DECL(void, VPADRead, int chan, VPADData *buffer, u32 buffer_size, s32 *error);
+EXPORT_DECL(s32, VPADRead, s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+EXPORT_DECL(s32, VPADGetLcdMode, s32 padnum, s32 *lcdmode);
+EXPORT_DECL(s32, VPADSetLcdMode, s32 padnum, s32 lcdmode);
+EXPORT_DECL(s32, VPADBASEGetMotorOnRemainingCount, s32 padnum);
+EXPORT_DECL(s32, VPADBASESetMotorOnRemainingCount, s32 padnum, s32 counter);
+
+void InitAcquireVPad(void)
+{
+    OSDynLoad_Acquire("vpad.rpl", &vpad_handle);
+    OSDynLoad_Acquire("vpadbase.rpl", &vpadbase_handle);
+}
 
 void InitVPadFunctionPointers(void)
 {
-    unsigned int *funcPointer = 0;
-    unsigned int vpad_handle;
-    OSDynLoad_Acquire("vpad.rpl", &vpad_handle);
+    u32 *funcPointer = 0;
+
+    InitAcquireVPad();
 
     OS_FIND_EXPORT(vpad_handle, VPADInit);
     OS_FIND_EXPORT(vpad_handle, VPADRead);
+    OS_FIND_EXPORT(vpad_handle, VPADGetLcdMode);
+    OS_FIND_EXPORT(vpad_handle, VPADSetLcdMode);
+    OS_FIND_EXPORT(vpadbase_handle, VPADBASEGetMotorOnRemainingCount);
+    OS_FIND_EXPORT(vpadbase_handle, VPADBASESetMotorOnRemainingCount);
 }
-

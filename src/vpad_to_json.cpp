@@ -28,6 +28,12 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         "\"lStickY\":%0.6f," \
         "\"rStickX\":%0.6f," \
         "\"rStickY\":%0.6f" \
+        "\"gyroX\":%0.6f" \
+        "\"gyroY\":%0.6f" \
+        "\"gyroZ\":%0.6f" \
+        "\"angleX\":%0.6f" \
+        "\"angleY\":%0.6f" \
+        "\"angleZ\":%0.6f" \
         "}",
         vpad_data->btns_h,
         vpad_data->tpdata.touched,
@@ -38,5 +44,11 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         vpad_data->lstick.x,
         vpad_data->lstick.y,
         vpad_data->rstick.x,
-        vpad_data->rstick.y);
+        vpad_data->rstick.y,
+        vpad_data->gyro.x,
+        vpad_data->gyro.y,
+        vpad_data->gyro.z,
+        vpad_data->angle.x,
+        vpad_data->angle.y,
+        vpad_data->angle.z);
 }

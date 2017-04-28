@@ -30,6 +30,9 @@ extern "C" {
 
 #include <gctypes.h>
 
+extern u32 vpad_handle;
+extern u32 vpadbase_handle;
+
 #define VPAD_BUTTON_A        0x8000
 #define VPAD_BUTTON_B        0x4000
 #define VPAD_BUTTON_X        0x2000
@@ -50,21 +53,30 @@ extern "C" {
 #define VPAD_BUTTON_STICK_L  0x00040000
 #define VPAD_BUTTON_TV       0x00010000
 
-#define VPAD_STICK_R_EMULATION_LEFT    0x04000000
-#define VPAD_STICK_R_EMULATION_RIGHT   0x02000000
-#define VPAD_STICK_R_EMULATION_UP      0x01000000
-#define VPAD_STICK_R_EMULATION_DOWN    0x00800000
+#define VPAD_STICK_R_EMULATION_LEFT     0x04000000
+#define VPAD_STICK_R_EMULATION_RIGHT    0x02000000
+#define VPAD_STICK_R_EMULATION_UP       0x01000000
+#define VPAD_STICK_R_EMULATION_DOWN     0x00800000
 
-#define VPAD_STICK_L_EMULATION_LEFT    0x40000000
-#define VPAD_STICK_L_EMULATION_RIGHT   0x20000000
-#define VPAD_STICK_L_EMULATION_UP      0x10000000
-#define VPAD_STICK_L_EMULATION_DOWN    0x08000000
+#define VPAD_STICK_L_EMULATION_LEFT     0x40000000
+#define VPAD_STICK_L_EMULATION_RIGHT    0x20000000
+#define VPAD_STICK_L_EMULATION_UP       0x10000000
+#define VPAD_STICK_L_EMULATION_DOWN     0x08000000
 
+//! Own definitions
+#define VPAD_BUTTON_TOUCH               0x00080000
+#define VPAD_MASK_EMULATED_STICKS       0x7F800000
+#define VPAD_MASK_BUTTONS               ~VPAD_MASK_EMULATED_STICKS
 
 typedef struct
 {
     f32 x,y;
 } Vec2D;
+
+typedef struct
+{
+    f32 x,y,z;
+} Vec3D;
 
 typedef struct
 {
@@ -79,7 +91,10 @@ typedef struct
     u32 btns_d;                  /* Buttons that are pressed at that instant */
     u32 btns_r;                  /* Released buttons */
     Vec2D lstick, rstick;        /* Each contains 4-byte X and Y components */
-    char unknown1c[0x52 - 0x1c]; /* Contains accelerometer and gyroscope data somewhere */
+    char unknown1c[0x38 - 0x1c]; /* Contains accelerometer data somewhere */
+    Vec3D gyro;                  /* Gyro data */
+    Vec3D angle;                 /* Angle data */
+    char unknown50[0x52 - 0x50]; /* Two bytes of unknown data */
     VPADTPData tpdata;           /* Normal touchscreen data */
     VPADTPData tpdata1;          /* Modified touchscreen data 1 */
     VPADTPData tpdata2;          /* Modified touchscreen data 2 */
@@ -91,9 +106,14 @@ typedef struct
 } VPADData;
 
 void InitVPadFunctionPointers(void);
+void InitAcquireVPad(void);
 
+extern s32 (* VPADRead)(s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+extern s32 (* VPADGetLcdMode)(s32 padnum, s32 *lcdmode);
+extern s32 (* VPADSetLcdMode)(s32 padnum, s32 lcdmode);
 extern void (* VPADInit)(void);
-extern void (* VPADRead)(int chan, VPADData *buffer, u32 buffer_size, s32 *error);
+extern s32 (* VPADBASEGetMotorOnRemainingCount)(s32 lcdmode);
+extern s32 (* VPADBASESetMotorOnRemainingCount)(s32 lcdmode,s32 counter);
 
 #ifdef __cplusplus
 }
