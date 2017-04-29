@@ -22,28 +22,33 @@
  * distribution.
  ***************************************************************************/
 #include "os_functions.h"
+#include "curl_functions.h"
 
-u32 sysapp_handle __attribute__((section(".data"))) = 0;
+u32 libcurl_handle __attribute__((section(".data"))) = 0;
 
-EXPORT_DECL(s32, _SYSLaunchTitleByPathFromLauncher, const char* path, s32 len, s32 zero);
-EXPORT_DECL(s32, SYSRelaunchTitle, s32 argc, char** argv);
-EXPORT_DECL(s32, SYSLaunchMenu, void);
-EXPORT_DECL(s32, SYSCheckTitleExists, u64 titleId);
-EXPORT_DECL(s32, SYSLaunchTitle, u64 titleId);
+EXPORT_DECL(CURLcode, n_curl_global_init, long flags);
+EXPORT_DECL(CURL *, n_curl_easy_init, void);
+EXPORT_DECL(CURLcode, n_curl_easy_setopt, CURL *curl, CURLoption option, ...);
+EXPORT_DECL(CURLcode, n_curl_easy_perform, CURL *curl);
+EXPORT_DECL(void, n_curl_easy_cleanup, CURL *curl);
+EXPORT_DECL(CURLcode, n_curl_easy_getinfo, CURL *curl, CURLINFO info, ...);
 
-void InitAcquireSys(void)
+void InitAcquireCurl(void)
 {
-    OSDynLoad_Acquire("sysapp.rpl", &sysapp_handle);
+    OSDynLoad_Acquire("nlibcurl", &libcurl_handle);
 }
 
-void InitSysFunctionPointers(void)
+void InitCurlFunctionPointers(void)
 {
+    InitAcquireCurl();
     u32 *funcPointer = 0;
-    InitAcquireSys();
 
-    OS_FIND_EXPORT(sysapp_handle, _SYSLaunchTitleByPathFromLauncher);
-    OS_FIND_EXPORT(sysapp_handle, SYSRelaunchTitle);
-    OS_FIND_EXPORT(sysapp_handle, SYSLaunchMenu);
-    OS_FIND_EXPORT(sysapp_handle, SYSCheckTitleExists);
-    OS_FIND_EXPORT(sysapp_handle, SYSLaunchTitle);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_global_init, n_curl_global_init);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_init, n_curl_easy_init);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_setopt, n_curl_easy_setopt);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_perform, n_curl_easy_perform);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_cleanup, n_curl_easy_cleanup);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_getinfo, n_curl_easy_getinfo);
+
+    n_curl_global_init(CURL_GLOBAL_ALL);
 }

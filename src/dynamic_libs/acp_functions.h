@@ -21,27 +21,22 @@
  * 3. This notice may not be removed or altered from any source
  * distribution.
  ***************************************************************************/
-#ifndef __SYS_FUNCTIONS_H_
-#define __SYS_FUNCTIONS_H_
+#ifndef __ACP_FUNCTIONS_H_
+#define __ACP_FUNCTIONS_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern u32 sysapp_handle;
+#include <gctypes.h>
 
-void InitSysFunctionPointers(void);
-void InitAcquireSys(void);
+extern u32 acp_handle;
 
-extern int(*_SYSLaunchTitleByPathFromLauncher)(const char* path, s32 len, s32 zero);
-extern int (* SYSRelaunchTitle)(s32 argc, char** argv);
-extern int (* SYSLaunchMenu)(void);
-extern int (* SYSCheckTitleExists)(u64 titleId);
-extern int (* SYSLaunchTitle)(u64 titleId);
-
+void InitACPFunctionPointers(void);
+void InitAcquireACP(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // __SYS_FUNCTIONS_H_
+#endif // __VPAD_FUNCTIONS_H_
