@@ -119,6 +119,7 @@ extern s32 (*OSScreenClearBufferEx)(u32 bufferNum, u32 temp);
 extern s32 (*OSScreenFlipBuffersEx)(u32 bufferNum);
 extern s32 (*OSScreenPutFontEx)(u32 bufferNum, u32 posX, u32 posY, const char * buffer);
 extern s32 (*OSScreenEnableEx)(u32 bufferNum, s32 enable);
+extern u32 (*OSScreenPutPixelEx)(u32 bufferNum, u32 posX, u32 posY, u32 color);
 
 typedef unsigned char (*exception_callback)(void * interruptedContext);
 extern void (* OSSetExceptionCallback)(u8 exceptionType, exception_callback newCallback);
@@ -166,7 +167,7 @@ extern void (* addr_PrepareTitle_hook)(void);
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Other function addresses
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-extern void (*DCInvalidateRange)(void *buffer, uint32_t length);
+extern void (*DCInvalidateRange)(void *buffer, u32 length);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Energy Saver functions

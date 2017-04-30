@@ -1,5 +1,5 @@
 #ifndef FS_DEFS_H
-#define	FS_DEFS_H
+#define FS_DEFS_H
 
 #include <gctypes.h>
 
@@ -57,5 +57,5 @@ typedef struct
 }
 #endif
 
-#endif	/* FS_DEFS_H */
+#endif  /* FS_DEFS_H */
 

@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#include <gctypes.h>
+
 extern u32 aoc_handle;
 
 #define AOC_TITLE_SIZE              104

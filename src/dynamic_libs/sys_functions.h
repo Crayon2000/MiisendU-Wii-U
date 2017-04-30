@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#include <gctypes.h>
+
 extern u32 sysapp_handle;
 
 void InitSysFunctionPointers(void);

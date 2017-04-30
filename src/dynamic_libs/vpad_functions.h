@@ -99,9 +99,9 @@ typedef struct
     VPADTPData tpdata1;          /* Modified touchscreen data 1 */
     VPADTPData tpdata2;          /* Modified touchscreen data 2 */
     char unknown6a[0xa0 - 0x6a];
-    uint8_t volume;
-    uint8_t battery;             /* 0 to 6 */
-    uint8_t unk_volume;          /* One less than volume */
+    u8 volume;
+    u8 battery;                  /* 0 to 6 */
+    u8 unk_volume;               /* One less than volume */
     char unknowna4[0xac - 0xa4];
 } VPADData;
 
