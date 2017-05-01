@@ -40,7 +40,7 @@ extern s32 (* FSDelClient)(void *pClient);
 extern void (* FSInitCmdBlock)(void *pCmd);
 extern s32 (* FSGetMountSource)(void *pClient, void *pCmd, s32 type, void *source, s32 errHandling);
 
-extern s32 (* FSMount)(void *pClient, void *pCmd, void *source, char *target, uint32_t bytes, s32 errHandling);
+extern s32 (* FSMount)(void *pClient, void *pCmd, void *source, char *target, u32 bytes, s32 errHandling);
 extern s32 (* FSUnmount)(void *pClient, void *pCmd, const char *target, s32 errHandling);
 extern s32 (* FSRename)(void *pClient, void *pCmd, const char *oldPath, const char *newPath, s32 error);
 extern s32 (* FSRenameAsync)(void *pClient, void *pCmd, const char *oldPath, const char *newPath, s32 error, void *asyncParams);

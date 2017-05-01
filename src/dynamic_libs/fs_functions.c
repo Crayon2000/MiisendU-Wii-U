@@ -31,7 +31,7 @@ EXPORT_DECL(s32, FSDelClient, void *pClient);
 EXPORT_DECL(void, FSInitCmdBlock, void *pCmd);
 EXPORT_DECL(s32, FSGetMountSource, void *pClient, void *pCmd, s32 type, void *source, s32 errHandling);
 
-EXPORT_DECL(s32, FSMount, void *pClient, void *pCmd, void *source, char *target, uint32_t bytes, s32 errHandling);
+EXPORT_DECL(s32, FSMount, void *pClient, void *pCmd, void *source, char *target, u32 bytes, s32 errHandling);
 EXPORT_DECL(s32, FSUnmount, void *pClient, void *pCmd, const char *target, s32 errHandling);
 
 EXPORT_DECL(s32, FSGetStat, void *pClient, void *pCmd, const char *path, FSStat *stats, s32 errHandling);
