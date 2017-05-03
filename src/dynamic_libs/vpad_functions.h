@@ -91,7 +91,10 @@ typedef struct
     u32 btns_d;                  /* Buttons that are pressed at that instant */
     u32 btns_r;                  /* Released buttons */
     Vec2D lstick, rstick;        /* Each contains 4-byte X and Y components */
-    char unknown1c[0x38 - 0x1c]; /* Contains accelerometer data somewhere */
+    Vec3D acc;                   /* Status of DRC accelerometer */
+    f32 acc_magnitude;           /* Accelerometer magnitude */
+    f32 acc_variation;           /* Accelerometer variation */
+    Vec2D acc_vertical;          /* Vertical */
     Vec3D gyro;                  /* Gyro data */
     Vec3D angle;                 /* Angle data */
     char unknown50[0x52 - 0x50]; /* Two bytes of unknown data */
