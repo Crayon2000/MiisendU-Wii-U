@@ -97,15 +97,16 @@ typedef struct
     Vec2D acc_vertical;          /* Vertical */
     Vec3D gyro;                  /* Gyro data */
     Vec3D angle;                 /* Angle data */
-    char unknown50[0x52 - 0x50]; /* Two bytes of unknown data */
+    u8 unknown50[0x52 - 0x50];   /* Two bytes of unknown data */
     VPADTPData tpdata;           /* Normal touchscreen data */
     VPADTPData tpdata1;          /* Modified touchscreen data 1 */
     VPADTPData tpdata2;          /* Modified touchscreen data 2 */
-    char unknown6a[0xa0 - 0x6a];
+    u8 unknown6a[0xa0 - 0x6a];
     u8 volume;
     u8 battery;                  /* 0 to 6 */
+    u8 mic;
     u8 unk_volume;               /* One less than volume */
-    char unknowna4[0xac - 0xa4];
+    u8 paddings[7];
 } VPADData;
 
 void InitVPadFunctionPointers(void);
