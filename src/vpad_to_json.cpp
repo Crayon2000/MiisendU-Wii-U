@@ -66,13 +66,13 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         vpad_data->acc.x,
         vpad_data->acc.y,
         vpad_data->acc.z,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f);
+        vpad_data->dir.X.x,
+        vpad_data->dir.X.y,
+        vpad_data->dir.X.z,
+        vpad_data->dir.Y.x,
+        vpad_data->dir.Y.y,
+        vpad_data->dir.Y.z,
+        vpad_data->dir.Z.x,
+        vpad_data->dir.Z.y,
+        vpad_data->dir.Z.z);
 }

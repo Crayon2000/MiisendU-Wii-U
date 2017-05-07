@@ -87,6 +87,11 @@ typedef struct
 
 typedef struct
 {
+    Vec3D X,Y,Z;
+} VPADOrientation;
+
+typedef struct
+{
     u16 x, y;               /* Touch coordinates */
     u16 touched;            /* 1 = Touched, 0 = Not touched */
     u16 invalid;            /* 0 = All valid, 1 = X invalid, 2 = Y invalid, 3 = Both invalid? */
@@ -112,14 +117,16 @@ typedef struct
     Vec2D acc_vertical;          /* Vertical */
     Vec3D gyro;                  /* Gyro data */
     Vec3D angle;                 /* Angle data */
-    u8 unknown50[0x52 - 0x50];   /* Two bytes of unknown data */
+    s8 error;                    /* Error */
     VPADTPData tpdata;           /* Normal touchscreen data */
     VPADTPData tpdata1;          /* Modified touchscreen data 1 */
     VPADTPData tpdata2;          /* Modified touchscreen data 2 */
-    u8 unknown6a[0xa0 - 0x6a];
-    u8 volume;
+    VPADOrientation dir;         /* Orientation in three-dimensional space */
+    BOOL headphone;              /* Set to TRUE if headphones are plugged in, FALSE otherwise */
+    Vec3D mag;                   /* Magnetometer data */
+    u8 volume;                   /* 0 to 255 */
     u8 battery;                  /* 0 to 6 */
-    u8 mic;
+    u8 mic;                      /* Microphone status */
     u8 unk_volume;               /* One less than volume */
     u8 paddings[7];
 } VPADData;
