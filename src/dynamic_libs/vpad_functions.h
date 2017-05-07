@@ -68,6 +68,13 @@ extern u32 vpadbase_handle;
 #define VPAD_MASK_EMULATED_STICKS       0x7F800000
 #define VPAD_MASK_BUTTONS               ~VPAD_MASK_EMULATED_STICKS
 
+typedef enum VPADTPResolution
+{
+    VPAD_TP_1920x1080,
+    VPAD_TP_1280x720,
+    VPAD_TP_854x480
+} VPADTPResolution;
+
 typedef struct
 {
     f32 x,y;
@@ -84,6 +91,14 @@ typedef struct
     u16 touched;            /* 1 = Touched, 0 = Not touched */
     u16 invalid;            /* 0 = All valid, 1 = X invalid, 2 = Y invalid, 3 = Both invalid? */
 } VPADTPData;
+
+typedef struct
+{
+    s16 offsetX;
+    s16 offsetY;
+    f32 scaleX;
+    f32 scaleY;
+} VPADTPCalibrationParam;
 
 typedef struct
 {
@@ -113,6 +128,10 @@ void InitVPadFunctionPointers(void);
 void InitAcquireVPad(void);
 
 extern s32 (* VPADRead)(s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+extern void (* VPADSetTPCalibrationParam) (s32 chan, const VPADTPCalibrationParam param);
+extern void (* VPADGetTPCalibrationParam) (s32 chan, VPADTPCalibrationParam* param);
+extern void (* VPADGetTPCalibratedPoint) (s32 chan, VPADTPData *disp, const VPADTPData *raw);
+extern void (* VPADGetTPCalibratedPointEx) (s32 chan, VPADTPResolution tpReso, VPADTPData *disp, const VPADTPData *raw);
 extern s32 (* VPADGetLcdMode)(s32 padnum, s32 *lcdmode);
 extern s32 (* VPADSetLcdMode)(s32 padnum, s32 lcdmode);
 extern void (* VPADInit)(void);

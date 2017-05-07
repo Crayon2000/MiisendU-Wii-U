@@ -29,6 +29,10 @@ u32 vpadbase_handle __attribute__((section(".data"))) = 0;
 
 EXPORT_DECL(void, VPADInit, void);
 EXPORT_DECL(s32, VPADRead, s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+EXPORT_DECL(void, VPADSetTPCalibrationParam, s32 chan, const VPADTPCalibrationParam param);
+EXPORT_DECL(void, VPADGetTPCalibrationParam, s32 chan, VPADTPCalibrationParam* param);
+EXPORT_DECL(void, VPADGetTPCalibratedPoint, s32 chan, VPADTPData *disp, const VPADTPData *raw);
+EXPORT_DECL(void, VPADGetTPCalibratedPointEx, s32 chan, VPADTPResolution tpReso, VPADTPData *disp, const VPADTPData *raw);
 EXPORT_DECL(s32, VPADGetLcdMode, s32 padnum, s32 *lcdmode);
 EXPORT_DECL(s32, VPADSetLcdMode, s32 padnum, s32 lcdmode);
 EXPORT_DECL(s32, VPADBASEGetMotorOnRemainingCount, s32 padnum);
@@ -48,6 +52,10 @@ void InitVPadFunctionPointers(void)
 
     OS_FIND_EXPORT(vpad_handle, VPADInit);
     OS_FIND_EXPORT(vpad_handle, VPADRead);
+    OS_FIND_EXPORT(vpad_handle, VPADSetTPCalibrationParam);
+    OS_FIND_EXPORT(vpad_handle, VPADGetTPCalibrationParam);
+    OS_FIND_EXPORT(vpad_handle, VPADGetTPCalibratedPoint);
+    OS_FIND_EXPORT(vpad_handle, VPADGetTPCalibratedPointEx);
     OS_FIND_EXPORT(vpad_handle, VPADGetLcdMode);
     OS_FIND_EXPORT(vpad_handle, VPADSetLcdMode);
     OS_FIND_EXPORT(vpadbase_handle, VPADBASEGetMotorOnRemainingCount);

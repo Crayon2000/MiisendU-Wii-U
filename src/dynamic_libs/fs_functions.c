@@ -26,9 +26,11 @@
 
 EXPORT_DECL(s32, FSInit, void);
 EXPORT_DECL(s32, FSShutdown, void);
+EXPORT_DECL(s32, FSAddClient, void *pClient, s32 errHandling);
 EXPORT_DECL(s32, FSAddClientEx, void *pClient, s32 unk_zero_param, s32 errHandling);
 EXPORT_DECL(s32, FSDelClient, void *pClient);
 EXPORT_DECL(void, FSInitCmdBlock, void *pCmd);
+EXPORT_DECL(void *, FSGetCurrentCmdBlock, void *pClient);
 EXPORT_DECL(s32, FSGetMountSource, void *pClient, void *pCmd, s32 type, void *source, s32 errHandling);
 
 EXPORT_DECL(s32, FSMount, void *pClient, void *pCmd, void *source, char *target, u32 bytes, s32 errHandling);
@@ -80,9 +82,11 @@ void InitFSFunctionPointers(void)
 
     OS_FIND_EXPORT(coreinit_handle, FSInit);
     OS_FIND_EXPORT(coreinit_handle, FSShutdown);
+    OS_FIND_EXPORT(coreinit_handle, FSAddClient);
     OS_FIND_EXPORT(coreinit_handle, FSAddClientEx);
     OS_FIND_EXPORT(coreinit_handle, FSDelClient);
     OS_FIND_EXPORT(coreinit_handle, FSInitCmdBlock);
+    OS_FIND_EXPORT(coreinit_handle, FSGetCurrentCmdBlock);
     OS_FIND_EXPORT(coreinit_handle, FSGetMountSource);
 
     OS_FIND_EXPORT(coreinit_handle, FSMount);
