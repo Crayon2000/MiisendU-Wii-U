@@ -135,6 +135,7 @@ void InitVPadFunctionPointers(void);
 void InitAcquireVPad(void);
 
 extern s32 (* VPADRead)(s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+extern s16 (* VPADCalcTPCalibrationParam) (VPADTPCalibrationParam* param, u16 rawX1, u16 rawY1, u16 x1, u16 y1, u16 rawX2, u16 rawY2, u16 x2, u16 y2);
 extern void (* VPADSetTPCalibrationParam) (s32 chan, const VPADTPCalibrationParam param);
 extern void (* VPADGetTPCalibrationParam) (s32 chan, VPADTPCalibrationParam* param);
 extern void (* VPADGetTPCalibratedPoint) (s32 chan, VPADTPData *disp, const VPADTPData *raw);

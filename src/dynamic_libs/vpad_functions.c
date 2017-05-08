@@ -29,6 +29,7 @@ u32 vpadbase_handle __attribute__((section(".data"))) = 0;
 
 EXPORT_DECL(void, VPADInit, void);
 EXPORT_DECL(s32, VPADRead, s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+EXPORT_DECL(s16, VPADCalcTPCalibrationParam, VPADTPCalibrationParam* param, u16 rawX1, u16 rawY1, u16 x1, u16 y1, u16 rawX2, u16 rawY2, u16 x2, u16 y2);
 EXPORT_DECL(void, VPADSetTPCalibrationParam, s32 chan, const VPADTPCalibrationParam param);
 EXPORT_DECL(void, VPADGetTPCalibrationParam, s32 chan, VPADTPCalibrationParam* param);
 EXPORT_DECL(void, VPADGetTPCalibratedPoint, s32 chan, VPADTPData *disp, const VPADTPData *raw);
@@ -52,6 +53,7 @@ void InitVPadFunctionPointers(void)
 
     OS_FIND_EXPORT(vpad_handle, VPADInit);
     OS_FIND_EXPORT(vpad_handle, VPADRead);
+    OS_FIND_EXPORT(vpad_handle, VPADCalcTPCalibrationParam);
     OS_FIND_EXPORT(vpad_handle, VPADSetTPCalibrationParam);
     OS_FIND_EXPORT(vpad_handle, VPADGetTPCalibrationParam);
     OS_FIND_EXPORT(vpad_handle, VPADGetTPCalibratedPoint);
