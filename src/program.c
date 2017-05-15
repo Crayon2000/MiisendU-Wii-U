@@ -16,7 +16,7 @@ static void PrintHeader(u32 bufferNum)
     OSScreenPutFontEx(bufferNum, 0, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
     OSScreenPutFontEx(bufferNum, 0, 1, "| | | |___ ___ _ _  __| |  \\/  (_|_)  / __| (_)___ _ _| |");
     OSScreenPutFontEx(bufferNum, 0, 2, "| |_| (_-</ -_) ' \\/ _` | |\\/| | | | | (__| | / -_) ' \\  _|");
-    OSScreenPutFontEx(bufferNum, 0, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.0.2");
+    OSScreenPutFontEx(bufferNum, 0, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.0.3");
 }
 
 int _entryPoint()
@@ -47,7 +47,7 @@ int _entryPoint()
     char * IP_str = malloc(32);
     int selected_digit = 0;
 
-    // Insert the IP adress (some code was taken from the IP Adress selector of geckiine made by brienj)
+    // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
     for (;;) {
         VPADRead(0, &vpad_data, 1, &error);
         if (vpad_data.btns_d & VPAD_BUTTON_LEFT  && selected_digit > 0) {
@@ -68,8 +68,8 @@ int _entryPoint()
         OSScreenClearBufferEx(1, 0);
         // print to DRC
         PrintHeader(1);
-        OSScreenPutFontEx(1, 0, 5, "Please insert your computer's IP adress below");
-        OSScreenPutFontEx(1, 0, 6, "(use the DPAD to edit the IP adress)");
+        OSScreenPutFontEx(1, 0, 5, "Please insert your computer's IP address below");
+        OSScreenPutFontEx(1, 0, 6, "(use the DPAD to edit the IP address)");
         OSScreenPutFontEx(1, 4 * selected_digit, 8, "vvv");
         snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
         OSScreenPutFontEx(1, 0, 9, IP_str);
@@ -93,16 +93,16 @@ int _entryPoint()
     }
     free(IP_str);
 
-    // Get IP Adress (without spaces)
-    char * IP_ADRESS = malloc(32);
-    snprintf(IP_ADRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
+    // Get IP Address (without spaces)
+    char * IP_ADDRESS = malloc(32);
+    snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
 
     // Initialize the UDP connection
-    udp_init(IP_ADRESS, Port);
+    udp_init(IP_ADDRESS, Port);
 
-    // Output the IP adress
+    // Output the IP address
     char * msg_connected = malloc(255);
-    snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADRESS, Port);
+    snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
     // Clear the screen
     OSScreenClearBufferEx(0, 0);
@@ -161,7 +161,7 @@ int _entryPoint()
         }
     }
 
-    free(IP_ADRESS);
+    free(IP_ADDRESS);
     MEM1_free(ScreenBuffer0);
     MEM1_free(ScreenBuffer1);
     ScreenBuffer0 = NULL;
