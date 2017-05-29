@@ -1,7 +1,10 @@
 #include "program.h"
 #include "dynamic_libs/os_functions.h"
+#include "dynamic_libs/fs_functions.h"
 #include "dynamic_libs/vpad_functions.h"
 #include "dynamic_libs/socket_functions.h"
+#include "fs/fs_utils.h"
+#include "fs/sd_fat_devoptab.h"
 #include "vpad_to_json.h"
 #include "udp.h"
 #include "system/memory.h"
@@ -22,10 +25,12 @@ static void PrintHeader(u32 bufferNum)
 int _entryPoint()
 {
     InitOSFunctionPointers();
+    InitFSFunctionPointers();
     InitSocketFunctionPointers();
     InitVPadFunctionPointers();
 
     memoryInitialize();
+    mount_sd_fat("sd");
 
     // Init screen and screen buffers
     OSScreenInit();
@@ -46,6 +51,13 @@ int _entryPoint()
 
     char * IP_str = malloc(32);
     int selected_digit = 0;
+
+    // Read default IP address from file
+    FILE * IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/default_ip.bin", "rb");
+    if (IP_file!=NULL) {
+        fread(IP, 1, 4, IP_file);
+        fclose(IP_file);
+    }
 
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
     for (;;) {
@@ -92,6 +104,13 @@ int _entryPoint()
         }
     }
     free(IP_str);
+
+    // Save entered IP address to file
+    IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/default_ip.bin", "wb");
+    if (IP_file!=NULL) {
+        fwrite(IP, 1, 4, IP_file);
+        fclose(IP_file);
+    }
 
     // Get IP Address (without spaces)
     char * IP_ADDRESS = malloc(32);
@@ -162,6 +181,7 @@ int _entryPoint()
     }
 
     free(IP_ADDRESS);
+    unmount_sd_fat("sd");
     MEM1_free(ScreenBuffer0);
     MEM1_free(ScreenBuffer1);
     ScreenBuffer0 = NULL;
