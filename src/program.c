@@ -54,7 +54,7 @@ int _entryPoint()
 
     // Read default IP address from file
     FILE * IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/default_ip.bin", "rb");
-    if (IP_file!=NULL) {
+    if (IP_file != NULL) {
         fread(IP, 1, 4, IP_file);
         fclose(IP_file);
     }
@@ -107,7 +107,7 @@ int _entryPoint()
 
     // Save entered IP address to file
     IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/default_ip.bin", "wb");
-    if (IP_file!=NULL) {
+    if (IP_file != NULL) {
         fwrite(IP, 1, 4, IP_file);
         fclose(IP_file);
     }

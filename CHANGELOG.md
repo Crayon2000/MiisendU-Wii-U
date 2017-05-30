@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-* Corrected a typo
+* The IP address is saved in a file and loaded on next use.
+* Corrected a typo.
 
 ## [0.0.2]
 * Gyroscope, angle, accelerometer and direction data are sent to UsendMii.
