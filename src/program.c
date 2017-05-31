@@ -1,4 +1,5 @@
 #include "program.h"
+#include "vendor/iniparser/iniparser.h"
 #include "dynamic_libs/os_functions.h"
 #include "dynamic_libs/fs_functions.h"
 #include "dynamic_libs/vpad_functions.h"
@@ -11,7 +12,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-char IP[4] = {192, 168, 1, 100};
+unsigned char IP[4] = {192, 168, 1, 100};
 unsigned short Port = 4242;
 
 static void PrintHeader(u32 bufferNum)
@@ -52,11 +53,15 @@ int _entryPoint()
     char * IP_str = malloc(32);
     int selected_digit = 0;
 
-    // Read default IP address from file
-    FILE * IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/default_ip.bin", "rb");
-    if (IP_file != NULL) {
-        fread(IP, 1, 4, IP_file);
-        fclose(IP_file);
+    // Read default settings from file
+    dictionary * ini = iniparser_load("sd:/wiiu/apps/UsendMii_Client/settings.ini");
+    if (ini != NULL) {
+        const char * temp = iniparser_getstring(ini, "server:ipaddress", NULL);
+        if (temp != NULL) {
+            udp_string_to_ipv4(temp, IP, 4);
+        }
+        Port = iniparser_getint(ini, "server:port", Port);
+        iniparser_freedict(ini);
     }
 
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
@@ -105,13 +110,6 @@ int _entryPoint()
     }
     free(IP_str);
 
-    // Save entered IP address to file
-    IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/default_ip.bin", "wb");
-    if (IP_file != NULL) {
-        fwrite(IP, 1, 4, IP_file);
-        fclose(IP_file);
-    }
-
     // Get IP Address (without spaces)
     char * IP_ADDRESS = malloc(32);
     snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
@@ -149,6 +147,17 @@ int _entryPoint()
 
     free(msg_connected);
 
+    // Save settings to file
+    FILE * IP_file = fopen("sd:/wiiu/apps/UsendMii_Client/settings.ini", "w");
+    if (IP_file != NULL) {
+        fprintf(IP_file,
+            "[server]\n"
+            "ipaddress=%s\n"
+            "port=%d\n"
+            "\n",
+            IP_ADDRESS, Port);
+        fclose(IP_file);
+    }
 
     // The buffer sent to the computer
     char msg_data[512];

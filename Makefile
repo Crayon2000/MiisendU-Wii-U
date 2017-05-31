@@ -35,7 +35,8 @@ SOURCES		:=	src \
 				src/dynamic_libs \
 				src/fs \
 				src/system \
-				src/utils
+				src/utils \
+				src/vendor/iniparser
 DATA		:=	
 
 INCLUDES	:=  src

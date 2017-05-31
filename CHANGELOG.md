@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-* The IP address is saved in a file and loaded on next use.
+* The IP address and port number are saved in a file and loaded on next use.
 * Corrected a typo.
 
 ## [0.0.2]
