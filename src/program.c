@@ -12,9 +12,6 @@
 #include <stdio.h>
 #include <malloc.h>
 
-unsigned char IP[4] = {192, 168, 1, 100};
-unsigned short Port = 4242;
-
 static void PrintHeader(u32 bufferNum)
 {
     OSScreenPutFontEx(bufferNum, 0, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
@@ -25,6 +22,9 @@ static void PrintHeader(u32 bufferNum)
 
 int _entryPoint()
 {
+    unsigned char IP[4] = {192, 168, 1, 100};
+    unsigned short Port = 4242;
+
     InitOSFunctionPointers();
     InitFSFunctionPointers();
     InitSocketFunctionPointers();
@@ -51,7 +51,7 @@ int _entryPoint()
     VPADData vpad_data;
 
     char * IP_str = malloc(32);
-    int selected_digit = 0;
+    s8 selected_digit = 0;
 
     // Read default settings from file
     dictionary * ini = iniparser_load("sd:/wiiu/apps/UsendMii_Client/settings.ini");
