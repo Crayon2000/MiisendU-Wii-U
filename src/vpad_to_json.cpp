@@ -10,11 +10,23 @@
 void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
 {
     s32 x = (vpad_data->tpdata.x - 100) * 854 / (3970 - 100);
-    if(x > 854) x = 854;
-    if(x < 0) x = 0;
+    if(x > 854)
+    {
+        x = 854;
+    }
+    if(x < 0)
+    {
+        x = 0;
+    }
     s32 y = 480 - ((vpad_data->tpdata.y - 165) * 480 / (3890 - 165));
-    if(y > 480) y = 480;
-    if(y < 0) y = 0;
+    if(y > 480)
+    {
+        y = 480;
+    }
+    if(y < 0)
+    {
+        y = 0;
+    }
 
     snprintf(out, out_size,
         "{" \
