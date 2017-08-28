@@ -7,6 +7,7 @@
 extern "C" {
 #endif
 
+#include "os_types.h"
 
 /* FS defines and types */
 #define FS_MAX_LOCALPATH_SIZE           511
@@ -15,6 +16,8 @@ extern "C" {
 #define FS_MAX_ARGPATH_SIZE             FS_MAX_FULLPATH_SIZE
 
 #define FS_STATUS_OK                    0
+#define FS_STATUS_EOF                   -2
+#define FS_STATUS_FATAL_ERROR           -0x400
 #define FS_RET_UNSUPPORTED_CMD          0x0400
 #define FS_RET_NO_ERROR                 0x0000
 #define FS_RET_ALL_ERROR                (u32)(-1)
@@ -30,6 +33,14 @@ extern "C" {
 #define FS_MOUNT_SOURCE_SIZE            0x300
 #define FS_CLIENT_SIZE                  0x1700
 #define FS_CMD_BLOCK_SIZE               0xA80
+
+typedef struct FSClient_ {
+    u8 buffer[FS_CLIENT_SIZE];
+}FSClient;
+
+typedef struct FSCmdBlock_ {
+    u8 buffer[FS_CMD_BLOCK_SIZE];
+} FSCmdBlock;
 
 typedef struct
 {
@@ -52,14 +63,29 @@ typedef struct
     char        name[FS_MAX_ENTNAME_SIZE];
 } FSDirEntry;
 
-typedef void (*FSAsyncCallback)(void *pClient, void *pCmd, int result, void *context);
+typedef void (*FSAsyncCallback)(FSClient * pClient, FSCmdBlock * pCmd, int result, void *context);
 typedef struct
 {
     FSAsyncCallback userCallback;
     void            *userContext;
-    void            *ioMsgQueue;
+    OSMessageQueue  *ioMsgQueue;
 } FSAsyncParams;
 
+typedef struct{
+    void*               data; // pointer to a FSAsyncResult;
+    u32                 unkwn1;
+    u32                 unkwn2;
+    u32                 unkwn3; // always 0x08
+} __attribute__((packed)) FSMessage;
+
+typedef struct FSAsyncResult_{
+    FSAsyncParams       userParams;
+    FSMessage           ioMsg;
+
+    FSClient *          client;
+    FSCmdBlock *        block;
+    u32                 result;
+} FSAsyncResult;
 
 #ifdef __cplusplus
 }

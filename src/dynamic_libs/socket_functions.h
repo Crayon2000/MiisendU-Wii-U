@@ -33,6 +33,7 @@ extern u32 nsysnet_handle;
 #include <gctypes.h>
 
 #define INADDR_ANY      0
+#define INADDR_BROADCAST 0xFFFFFFFF
 
 #define AF_INET         2
 
@@ -47,6 +48,7 @@ extern u32 nsysnet_handle;
 
 #define SOL_SOCKET      -1
 #define SO_REUSEADDR    0x0004
+#define SO_BROADCAST    0x0020      // broadcast
 #define SO_NONBLOCK     0x1016
 #define SO_MYADDR       0x1013
 #define SO_RCVTIMEO	0x1006
@@ -80,7 +82,8 @@ struct sockaddr
 void InitSocketFunctionPointers(void);
 void InitAcquireSocket(void);
 
-extern void (*socket_lib_init)(void);
+extern s32 (*socket_lib_init)(void);
+extern s32 (*socket_lib_finish)(void);
 extern s32 (*socket)(s32 domain, s32 type, s32 protocol);
 extern s32 (*socketclose)(s32 s);
 extern s32 (*connect)(s32 s, void *addr, s32 addrlen);
@@ -90,6 +93,7 @@ extern s32 (*accept)(s32 s,struct sockaddr *addr,s32 *addrlen);
 extern s32 (*send)(s32 s, const void *buffer, s32 size, s32 flags);
 extern s32 (*recv)(s32 s, void *buffer, s32 size, s32 flags);
 extern s32 (*recvfrom)(s32 sockfd, void *buf, s32 len, s32 flags,struct sockaddr *src_addr, s32 *addrlen);
+extern s32 (*socketlasterr)(void);
 
 extern s32 (*sendto)(s32 s, const void *buffer, s32 size, s32 flags, const struct sockaddr *dest, s32 dest_len);
 extern s32 (*setsockopt)(s32 s, s32 level, s32 optname, void *optval, s32 optlen);

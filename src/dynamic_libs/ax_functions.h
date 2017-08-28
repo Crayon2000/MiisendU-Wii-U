@@ -31,6 +31,7 @@ extern "C" {
 #include <gctypes.h>
 
 extern u32 sound_handle;
+extern u32 sound_handle_old;
 
 void InitAXFunctionPointers(void);
 void InitAcquireAX(void);

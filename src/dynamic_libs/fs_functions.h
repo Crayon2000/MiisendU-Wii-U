@@ -80,7 +80,7 @@ extern s32 (* FSCloseFile)(void *pClient, void *pCmd, s32 fd, s32 errHandling);
 extern s32 (* FSFlushFile)(void *pClient, void *pCmd, s32 fd, s32 error);
 extern s32 (* FSTruncateFile)(void *pClient, void *pCmd, s32 fd, s32 error);
 extern s32 (* FSGetStatFile)(void *pClient, void *pCmd, s32 fd, void *buffer, s32 error);
-extern s32 (* FSSetPosFile)(void *pClient, void *pCmd, s32 fd, s32 pos, s32 error);
+extern s32 (* FSSetPosFile)(void *pClient, void *pCmd, s32 fd, u32 pos, s32 error);
 extern s32 (* FSWriteFile)(void *pClient, void *pCmd, const void *source, s32 block_size, s32 block_count, s32 fd, s32 flag, s32 error);
 
 extern s32 (* FSBindMount)(void *pClient, void *pCmd, char *source, char *target, s32 error);
@@ -88,6 +88,8 @@ extern s32 (* FSBindUnmount)(void *pClient, void *pCmd, char *target, s32 error)
 
 extern s32 (* FSMakeQuota)( void *pClient, void *pCmd, const char *path,u32 mode, u64 size, s32 errHandling);
 extern s32 (* FSMakeQuotaAsync)(void *pClient, void *pCmd, const char *path,u32 mode, u64 size, s32 errHandling,const void  *asyncParams);
+
+extern s32 (* FSGetCwd)(void * client,void * block,char * buffer,u32 bufferSize,u32 flags);
 
 
 #ifdef __cplusplus

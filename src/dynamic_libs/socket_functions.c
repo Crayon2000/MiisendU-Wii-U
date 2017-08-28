@@ -28,7 +28,8 @@ u32 hostIpAddress = 0;
 
 u32 nsysnet_handle __attribute__((section(".data"))) = 0;
 
-EXPORT_DECL(void, socket_lib_init, void);
+EXPORT_DECL(s32, socket_lib_init, void);
+EXPORT_DECL(s32, socket_lib_finish, void);
 EXPORT_DECL(s32, socket, s32 domain, s32 type, s32 protocol);
 EXPORT_DECL(s32, socketclose, s32 s);
 EXPORT_DECL(s32, connect, s32 s, void *addr, s32 addrlen);
@@ -42,6 +43,7 @@ EXPORT_DECL(s32, sendto, s32 s, const void *buffer, s32 size, s32 flags, const s
 EXPORT_DECL(s32, setsockopt, s32 s, s32 level, s32 optname, void *optval, s32 optlen);
 EXPORT_DECL(char *, inet_ntoa, struct in_addr in);
 EXPORT_DECL(s32, inet_aton, const char *cp, struct in_addr *inp);
+EXPORT_DECL(s32, socketlasterr, void);
 
 EXPORT_DECL(s32, NSSLWrite, s32 connection, const void* buf, s32 len,s32 * written);
 EXPORT_DECL(s32, NSSLRead, s32 connection, const void* buf, s32 len,s32 * read);
@@ -70,6 +72,8 @@ void InitSocketFunctionPointers(void)
     OSDynLoad_FindExport(nn_ac_handle, 0, "ACGetAssignedAddress",&ACGetAssignedAddress);
 
     OS_FIND_EXPORT(nsysnet_handle, socket_lib_init);
+    OS_FIND_EXPORT(nsysnet_handle, socket_lib_finish);
+    OS_FIND_EXPORT(nsysnet_handle, socketlasterr);
     OS_FIND_EXPORT(nsysnet_handle, socket);
     OS_FIND_EXPORT(nsysnet_handle, socketclose);
     OS_FIND_EXPORT(nsysnet_handle, connect);

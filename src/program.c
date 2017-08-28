@@ -178,7 +178,7 @@ int _entryPoint()
         udp_printf(msg_data);
 
         // Make a small delay to prevent filling up the computer receive buffer
-        usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing
+        os_usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing
 
         // Check for exit signal
         if (vpad_data.btns_h & VPAD_BUTTON_HOME && ++holdTime > 500) {

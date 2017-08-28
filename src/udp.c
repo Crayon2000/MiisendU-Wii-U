@@ -52,7 +52,7 @@ void udp_print(const char *str)
     }
 
     while(udp_lock)
-        usleep(1000);
+        os_usleep(1000);
     udp_lock = 1;
 
     int len = strlen(str);

@@ -26,6 +26,7 @@
 #include "ax_functions.h"
 
 u32 sound_handle __attribute__((section(".data"))) = 0;
+u32 sound_handle_old __attribute__((section(".data"))) = 0;
 
 EXPORT_DECL(void, AXInitWithParams, u32 * params);
 EXPORT_DECL(void, AXInit, void);
@@ -57,6 +58,7 @@ void InitAcquireAX(void)
     {
         AXInit = 0;
 
+        OSDynLoad_Acquire("snd_core.rpl", &sound_handle_old);
         OSDynLoad_Acquire("sndcore2.rpl", &sound_handle);
         OS_FIND_EXPORT(sound_handle, AXInitWithParams);
         OS_FIND_EXPORT(sound_handle, AXGetInputSamplesPerSec);
@@ -67,6 +69,7 @@ void InitAcquireAX(void)
         AXGetInputSamplesPerSec = 0;
 
         OSDynLoad_Acquire("snd_core.rpl", &sound_handle);
+        sound_handle_old = sound_handle;
         OS_FIND_EXPORT(sound_handle, AXInit);
     }
 }

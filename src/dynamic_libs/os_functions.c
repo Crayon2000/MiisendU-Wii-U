@@ -40,19 +40,31 @@ EXPORT_DECL(s32, OSGetSecurityLevel, void);
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Thread functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-EXPORT_DECL(s32, OSCreateThread, void *thread, s32 (*callback)(s32, void*), s32 argc, void *args, u32 stack, u32 stack_size, s32 priority, u32 attr);
-EXPORT_DECL(s32, OSResumeThread, void *thread);
-EXPORT_DECL(s32, OSSuspendThread, void *thread);
-EXPORT_DECL(s32, OSIsThreadTerminated, void *thread);
-EXPORT_DECL(s32, OSIsThreadSuspended, void *thread);
-EXPORT_DECL(s32, OSSetThreadPriority, void * thread, s32 priority);
-EXPORT_DECL(s32, OSJoinThread, void * thread, s32 * ret_val);
-EXPORT_DECL(void, OSDetachThread, void * thread);
+EXPORT_DECL(s32, OSCreateThread, OSThread *thread, s32 (*callback)(s32, void*), s32 argc, void *args, u32 stack, u32 stack_size, s32 priority, u32 attr);
+EXPORT_DECL(s32, OSResumeThread, OSThread *thread);
+EXPORT_DECL(s32, OSSuspendThread, OSThread *thread);
+EXPORT_DECL(s32, OSIsThreadTerminated, OSThread *thread);
+EXPORT_DECL(s32, OSIsThreadSuspended, OSThread *thread);
+EXPORT_DECL(s32, OSSetThreadPriority, OSThread * thread, s32 priority);
+EXPORT_DECL(s32, OSJoinThread, OSThread * thread, s32 * ret_val);
+EXPORT_DECL(void, OSDetachThread, OSThread * thread);
+EXPORT_DECL(OSThread *,OSGetCurrentThread,void);
+EXPORT_DECL(const char *,OSGetThreadName,OSThread * thread);
+EXPORT_DECL(void ,OSGetActiveThreadLink,OSThread * thread, void* link);
+EXPORT_DECL(u32 ,OSGetThreadAffinity,OSThread * thread);
+EXPORT_DECL(s32 ,OSGetThreadPriority,OSThread * thread);
+EXPORT_DECL(void ,OSSetThreadName,OSThread * thread, const char *name);
 EXPORT_DECL(void, OSSleepTicks, u64 ticks);
 EXPORT_DECL(u64, OSGetTick, void);
 EXPORT_DECL(u64, OSGetTime, void);
 EXPORT_DECL(void, OSTicksToCalendarTime, u64 time, OSCalendarTime * calendarTime);
 
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//! Message functions
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+EXPORT_DECL(void,OSInitMessageQueue,OSMessageQueue *queue, OSMessage *messages, s32 size);
+EXPORT_DECL(u32,OSSendMessage,OSMessageQueue *queue, OSMessage *message, s32 flags);
+EXPORT_DECL(u32,OSReceiveMessage,OSMessageQueue *queue, OSMessage *message, s32 flags);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Mutex functions
@@ -69,7 +81,9 @@ EXPORT_DECL(u64, OSGetTitleID, void);
 EXPORT_DECL(void, OSGetArgcArgv, s32* argc, char*** argv);
 EXPORT_DECL(void, __Exit, void);
 EXPORT_DECL(void, OSFatal, const char* msg);
-EXPORT_DECL(void, OSSetExceptionCallback, u8 exceptionType, exception_callback newCallback);
+EXPORT_DECL(void *, OSSetExceptionCallback, u8 exceptionType, exception_callback newCallback);
+EXPORT_DECL(void *, OSSetExceptionCallbackEx, s32 unkwn, u8 exceptionType, exception_callback newCallback);
+EXPORT_DECL(void , OSLoadContext, OSContext * context);
 EXPORT_DECL(void, DCFlushRange, const void *addr, u32 length);
 EXPORT_DECL(void, ICInvalidateRange, const void *addr, u32 length);
 EXPORT_DECL(void*, OSEffectiveToPhysical, const void*);
@@ -129,6 +143,7 @@ EXPORT_DECL(void, addr_PrepareTitle_hook, void);
 //! Other function addresses
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 EXPORT_DECL(void, DCInvalidateRange, void *buffer, u32 length);
+EXPORT_DECL(s32, OSDynLoad_GetModuleName, s32 handle, char *name_buffer, s32 *name_buffer_size);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Energy Saver functions
@@ -150,6 +165,7 @@ EXPORT_DECL(s32, OSSendAppSwitchRequest,s32 param,void* unknown1,void* unknown2)
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 EXPORT_DECL(s32, IOS_Ioctl,s32 fd, u32 request, void *input_buffer,u32 input_buffer_len, void *output_buffer, u32 output_buffer_len);
+EXPORT_DECL(s32, IOS_IoctlAsync,s32 fd, u32 request, void *input_buffer,u32 input_buffer_len, void *output_buffer, u32 output_buffer_len, void *cb, void *cbarg);
 EXPORT_DECL(s32, IOS_Open,char *path, u32 mode);
 EXPORT_DECL(s32, IOS_Close,s32 fd);
 
@@ -212,6 +228,8 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, OSGetTitleID);
     OS_FIND_EXPORT(coreinit_handle, OSGetArgcArgv);
     OS_FIND_EXPORT(coreinit_handle, OSSetExceptionCallback);
+    OS_FIND_EXPORT(coreinit_handle, OSSetExceptionCallbackEx);
+    OS_FIND_EXPORT(coreinit_handle, OSLoadContext);
     OS_FIND_EXPORT(coreinit_handle, DCFlushRange);
     OS_FIND_EXPORT(coreinit_handle, ICInvalidateRange);
     OS_FIND_EXPORT(coreinit_handle, OSEffectiveToPhysical);
@@ -239,10 +257,24 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, OSJoinThread);
     OS_FIND_EXPORT(coreinit_handle, OSSetThreadPriority);
     OS_FIND_EXPORT(coreinit_handle, OSDetachThread);
+    OS_FIND_EXPORT(coreinit_handle, OSGetCurrentThread);
+    OS_FIND_EXPORT(coreinit_handle, OSGetThreadName);
+    OS_FIND_EXPORT(coreinit_handle, OSGetActiveThreadLink);
+    OS_FIND_EXPORT(coreinit_handle, OSGetThreadAffinity);
+    OS_FIND_EXPORT(coreinit_handle, OSGetThreadPriority);
+    OS_FIND_EXPORT(coreinit_handle, OSSetThreadName);
+
     OS_FIND_EXPORT(coreinit_handle, OSSleepTicks);
     OS_FIND_EXPORT(coreinit_handle, OSGetTick);
     OS_FIND_EXPORT(coreinit_handle, OSGetTime);
     OS_FIND_EXPORT(coreinit_handle, OSTicksToCalendarTime);
+
+    //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //! Message functions
+    //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    OS_FIND_EXPORT(coreinit_handle, OSInitMessageQueue);
+    OS_FIND_EXPORT(coreinit_handle, OSSendMessage);
+    OS_FIND_EXPORT(coreinit_handle, OSReceiveMessage);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Mutex functions
@@ -281,6 +313,7 @@ void InitOSFunctionPointers(void)
     //! Other function addresses
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OS_FIND_EXPORT(coreinit_handle, DCInvalidateRange);
+    OS_FIND_EXPORT(coreinit_handle, OSDynLoad_GetModuleName);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Energy Saver functions
@@ -301,6 +334,7 @@ void InitOSFunctionPointers(void)
     //! IOS functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OS_FIND_EXPORT(coreinit_handle, IOS_Ioctl);
+    OS_FIND_EXPORT(coreinit_handle, IOS_IoctlAsync);
     OS_FIND_EXPORT(coreinit_handle, IOS_Open);
     OS_FIND_EXPORT(coreinit_handle, IOS_Close);
 
