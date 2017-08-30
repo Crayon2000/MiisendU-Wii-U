@@ -1,40 +1,29 @@
 #include <stdio.h>
+#include <math.h>
 #include "vpad_to_json.h"
 
 /**
  * Convert GamePad data to JSON string used by UsendMii.
- * @param[in] vpad_data GamePad data.
+ * @param[in] vpad_data Wii U GamePad data.
  * @param[out] out Buffer where to copy the formatted data.
  * @param[in] out_size Size of the out buffer.
  */
 void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
 {
-    s32 x = (vpad_data->tpdata.x - 100) * 854 / (3970 - 100);
-    if(x > 854)
-    {
-        x = 854;
-    }
-    if(x < 0)
-    {
-        x = 0;
-    }
-    s32 y = 480 - ((vpad_data->tpdata.y - 165) * 480 / (3890 - 165));
-    if(y > 480)
-    {
-        y = 480;
-    }
-    if(y < 0)
-    {
-        y = 0;
-    }
+    VPADTPData TPCalibrated;
+    VPADGetTPCalibratedPoint(0, &TPCalibrated, &vpad_data->tpdata);
+
+    // Adjust calibrated screen coordinates to 854x480 resolution
+    const u16 x = round(TPCalibrated.x * 854.0 / 1280.0);
+    const u16 y = round(TPCalibrated.y * 480.0 / 720.0);
 
     snprintf(out, out_size,
         "{" \
         "\"hold\":%lu," \
         "\"tpTouch\":%u," \
         "\"tpValidity\":%u," \
-        "\"tpX\":%ld," \
-        "\"tpY\":%ld," \
+        "\"tpX\":%d," \
+        "\"tpY\":%d," \
         "\"volume\":%d," \
         "\"lStickX\":%0.8f," \
         "\"lStickY\":%0.8f," \
@@ -60,8 +49,8 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         "\"dirZz\":%0.8f" \
         "}",
         vpad_data->btns_h,
-        vpad_data->tpdata.touched,
-        vpad_data->tpdata.invalid,
+        TPCalibrated.touched,
+        TPCalibrated.invalid,
         x,
         y,
         vpad_data->volume,
