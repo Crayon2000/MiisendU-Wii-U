@@ -188,7 +188,7 @@ extern s32 (* WPADProbe)(s32 chan, u32 * pad_type);
 extern s32 (* WPADSetDataFormat)(s32 chan, s32 format);
 extern void (* WPADEnableURCC)(s32 enable);
 extern void (* WPADRead)(s32 chan, void * data);
-extern s32 (* KPADRead)(s32 chan, void * data, u32 size);
+extern s32 (* KPADRead)(s32 chan, KPADData * data, u32 size);
 extern s32 (* KPADReadEx)(s32 chan, KPADData * data, u32 size, s32 *error);
 extern void (*WPADSetAutoSleepTime)(u8 time);
 extern void (*WPADDisconnect)( s32 chan );
