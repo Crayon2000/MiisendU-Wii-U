@@ -75,6 +75,13 @@ typedef enum VPADTPResolution
     VPAD_TP_854x480
 } VPADTPResolution;
 
+typedef enum VPADGyroZeroDriftMode
+{
+    VPAD_GYRO_ZERODRIFT_LOOSE,
+    VPAD_GYRO_ZERODRIFT_STANDARD,
+    VPAD_GYRO_ZERODRIFT_TIGHT
+} VPADGyroZeroDriftMode;
+
 typedef struct
 {
     f32 x,y;
@@ -88,7 +95,7 @@ typedef struct
 typedef struct
 {
     Vec3D X,Y,Z;
-} VPADOrientation;
+} VPADDir;
 
 typedef struct
 {
@@ -121,7 +128,7 @@ typedef struct
     VPADTPData tpdata;           /* Normal touchscreen data */
     VPADTPData tpdata1;          /* Modified touchscreen data 1 */
     VPADTPData tpdata2;          /* Modified touchscreen data 2 */
-    VPADOrientation dir;         /* Orientation in three-dimensional space */
+    VPADDir dir;                 /* Orientation in three-dimensional space */
     BOOL headphone;              /* Set to TRUE if headphones are plugged in, FALSE otherwise */
     Vec3D mag;                   /* Magnetometer data */
     u8 volume;                   /* 0 to 255 */
@@ -134,17 +141,54 @@ typedef struct
 void InitVPadFunctionPointers(void);
 void InitAcquireVPad(void);
 
-extern s32 (* VPADRead)(s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
-extern s16 (* VPADCalcTPCalibrationParam) (VPADTPCalibrationParam* param, u16 rawX1, u16 rawY1, u16 x1, u16 y1, u16 rawX2, u16 rawY2, u16 x2, u16 y2);
-extern void (* VPADSetTPCalibrationParam) (s32 chan, const VPADTPCalibrationParam param);
-extern void (* VPADGetTPCalibrationParam) (s32 chan, VPADTPCalibrationParam* param);
-extern void (* VPADGetTPCalibratedPoint) (s32 chan, VPADTPData *disp, const VPADTPData *raw);
-extern void (* VPADGetTPCalibratedPointEx) (s32 chan, VPADTPResolution tpReso, VPADTPData *disp, const VPADTPData *raw);
-extern s32 (* VPADGetLcdMode)(s32 padnum, s32 *lcdmode);
-extern s32 (* VPADSetLcdMode)(s32 padnum, s32 lcdmode);
 extern void (* VPADInit)(void);
+extern void (* VPADShutdown)(void);
+extern s32 (* VPADRead)(s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
+extern void (* VPADSetAccParam)(s32 chan, f32 play_radius, f32 sensitivity);
+extern void (* VPADGetAccParam)(s32 chan, f32 *play_radius, f32 *sensitivity);
+extern void (* VPADEnableStickCrossClamp)(s32 chan);
+extern void (* VPADDisableStickCrossClamp)(s32 chan);
+extern void (* VPADSetLStickClampThreshold)(s32 chan, s32 max, s32 min);
+extern void (* VPADSetRStickClampThreshold)(s32 chan, s32 max, s32 min);
+extern void (* VPADGetLStickClampThreshold)(s32 chan, s32* max, s32* min);
+extern void (* VPADGetRStickClampThreshold)(s32 chan, s32* max, s32* min);
+extern void (* VPADSetStickOrigin)(s32 chan);
+extern void (* VPADSetGyroAngle)(s32 chan, f32 ax, f32 ay, f32 az);
+extern void (* VPADSetGyroDirection)(s32 chan, VPADDir *dir);
+extern void (* VPADSetGyroDirectionMag)(s32 chan, f32 mag);
+extern void (* VPADSetGyroMagnification)(s32 chan, f32 pitch, f32 yaw, f32 roll);
+extern void (* VPADEnableGyroZeroPlay)(s32 chan);
+extern void (* VPADEnableGyroDirRevise)(s32 chan);
+extern void (* VPADEnableGyroAccRevise)(s32 chan);
+extern void (* VPADDisableGyroZeroPlay)(s32 chan);
+extern void (* VPADDisableGyroDirRevise)(s32 chan);
+extern void (* VPADDisableGyroAccRevise)(s32 chan);
+extern f32 (* VPADIsEnableGyroZeroPlay)(s32 chan);
+extern f32 (* VPADIsEnableGyroZeroDrift)(s32 chan);
+extern f32 (* VPADIsEnableGyroDirRevise)(s32 chan);
+extern f32 (* VPADIsEnableGyroAccRevise)(s32 chan);
+extern void (* VPADSetGyroZeroPlayParam)(s32 chan, f32 radius);
+extern void (* VPADSetGyroDirReviseParam)(s32 chan, f32 revis_pw);
+extern void (* VPADSetGyroAccReviseParam)(s32 chan, f32 revise_pw, f32 revise_range);
+extern void (* VPADSetGyroDirReviseBase)(s32 chan, VPADDir *base);
+extern void (* VPADGetGyroZeroPlayParam)(s32 chan, f32 *radius);
+extern void (* VPADGetGyroDirReviseParam)(s32 chan, f32 *revise_pw);
+extern void (* VPADGetGyroAccReviseParam)(s32 chan, f32 *revise_pw, f32 *revise_range);
+extern void (* VPADInitGyroZeroPlayParam)(s32 chan);
+extern void (* VPADInitGyroDirReviseParam)(s32 chan);
+extern void (* VPADInitGyroAccReviseParam)(s32 chan);
+extern void (* VPADInitGyroZeroDriftMode)(s32 chan);
+extern void (* VPADSetGyroZeroDriftMode)(s32 chan, VPADGyroZeroDriftMode mode);
+extern void (* VPADGetGyroZeroDriftMode)(s32 chan, VPADGyroZeroDriftMode *mode);
+extern s16 (* VPADCalcTPCalibrationParam)(VPADTPCalibrationParam* param, u16 rawX1, u16 rawY1, u16 x1, u16 y1, u16 rawX2, u16 rawY2, u16 x2, u16 y2);
+extern void (* VPADSetTPCalibrationParam)(s32 chan, const VPADTPCalibrationParam param);
+extern void (* VPADGetTPCalibrationParam)(s32 chan, VPADTPCalibrationParam* param);
+extern void (* VPADGetTPCalibratedPoint)(s32 chan, VPADTPData *disp, const VPADTPData *raw);
+extern void (* VPADGetTPCalibratedPointEx)(s32 chan, VPADTPResolution tpReso, VPADTPData *disp, const VPADTPData *raw);
+extern s32 (* VPADSetLcdMode)(s32 padnum, s32 lcdmode);
+extern s32 (* VPADGetLcdMode)(s32 padnum, s32 *lcdmode);
 extern s32 (* VPADBASEGetMotorOnRemainingCount)(s32 lcdmode);
-extern s32 (* VPADBASESetMotorOnRemainingCount)(s32 lcdmode,s32 counter);
+extern s32 (* VPADBASESetMotorOnRemainingCount)(s32 lcdmode, s32 counter);
 
 #ifdef __cplusplus
 }
