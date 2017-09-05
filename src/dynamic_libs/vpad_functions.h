@@ -146,6 +146,7 @@ extern void (* VPADShutdown)(void);
 extern s32 (* VPADRead)(s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
 extern void (* VPADSetAccParam)(s32 chan, f32 play_radius, f32 sensitivity);
 extern void (* VPADGetAccParam)(s32 chan, f32 *play_radius, f32 *sensitivity);
+extern void (* VPADSetBtnRepeat)(s32 chan, f32 delay_sec, f32 pulse_sec);
 extern void (* VPADEnableStickCrossClamp)(s32 chan);
 extern void (* VPADDisableStickCrossClamp)(s32 chan);
 extern void (* VPADSetLStickClampThreshold)(s32 chan, s32 max, s32 min);

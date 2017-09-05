@@ -32,6 +32,7 @@ EXPORT_DECL(void, VPADShutdown, void);
 EXPORT_DECL(s32, VPADRead, s32 chan, VPADData *buffer, u32 buffer_size, s32 *error);
 EXPORT_DECL(void, VPADSetAccParam, s32 chan, f32 play_radius, f32 sensitivity);
 EXPORT_DECL(void, VPADGetAccParam, s32 chan, f32 *play_radius, f32 *sensitivity);
+EXPORT_DECL(void, VPADSetBtnRepeat, s32 chan, f32 delay_sec, f32 pulse_sec);
 EXPORT_DECL(void, VPADEnableStickCrossClamp, s32 chan);
 EXPORT_DECL(void, VPADDisableStickCrossClamp, s32 chan);
 EXPORT_DECL(void, VPADSetLStickClampThreshold, s32 chan, s32 max, s32 min);
@@ -93,6 +94,7 @@ void InitVPadFunctionPointers(void)
     OS_FIND_EXPORT(vpad_handle, VPADRead);
     OS_FIND_EXPORT(vpad_handle, VPADSetAccParam);
     OS_FIND_EXPORT(vpad_handle, VPADGetAccParam);
+    OS_FIND_EXPORT(vpad_handle, VPADSetBtnRepeat);
     OS_FIND_EXPORT(vpad_handle, VPADEnableStickCrossClamp);
     OS_FIND_EXPORT(vpad_handle, VPADDisableStickCrossClamp);
     OS_FIND_EXPORT(vpad_handle, VPADSetLStickClampThreshold);
