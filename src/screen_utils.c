@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include "dynamic_libs/os_functions.h"
 
+// Exchanges the values of x and y.
+#define SWAP(x, y) do {  \
+    typeof(x) _x = x;    \
+    typeof(y) _y = y;    \
+    x = _y;              \
+    y = _x;              \
+} while(0)
+
 /**
  * Draw a pixel.
  * @param bufferNum The buffer number where to draw.
@@ -187,6 +195,80 @@ void DrawFillRect(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, u32 color)
         for(u32 y = Y0; y <= Y1; y++)
         {
             DrawPixel(bufferNum, x, y, color);
+        }
+    }
+}
+
+/**
+ * Draw a triangle.
+ * @param bufferNum The buffer number where to draw.
+ * @param x0 The x0 coordinate.
+ * @param y0 The y0 coordinate.
+ * @param x1 The x1 coordinate.
+ * @param y1 The y1 coordinate.
+ * @param x2 The x2 coordinate.
+ * @param y2 The y2 coordinate.
+ * @param color The triangle color in RGBA.
+ */
+void DrawTriangle(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, f32 x2, f32 y2, u32 color)
+{
+    DrawLine(bufferNum, x0, y0, x1, y1, color);
+    DrawLine(bufferNum, x1, y1, x2, y2, color);
+    DrawLine(bufferNum, x2, y2, x0, y0, color);
+}
+
+/**
+ * Draw a filled triangle.
+ * @param bufferNum The buffer number where to draw.
+ * @param x0 The x0 coordinate.
+ * @param y0 The y0 coordinate.
+ * @param x1 The x1 coordinate.
+ * @param y1 The y1 coordinate.
+ * @param x2 The x2 coordinate.
+ * @param y2 The y2 coordinate.
+ * @param color The filled triangle color in RGBA.
+ */
+void DrawFillTriangle(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, f32 x2, f32 y2, u32 color)
+{
+    // Sort the points vertically
+    if(y1 > y2)
+    {
+        SWAP(x1, x2);
+        SWAP(y1, y2);
+    }
+    if(y0 > y1)
+    {
+        SWAP(x0, x1);
+        SWAP(y0, y1);
+    }
+    if(y1 > y2)
+    {
+        SWAP(x1, x2);
+        SWAP(y1, y2);
+    }
+
+    // Define more algorithm variables
+    f32 dx_far = (x2 - x0) / (y2 - y0 + 0.001f);
+    f32 dx_upper = (x1 - x0) / (y1 - y0 + 0.001f);
+    f32 dx_low = (x2 - x1) / (y2 - y1 + 0.001f);
+    f32 xf = x0;
+    f32 xt = x0 + dx_upper; // if y0 == y1, special case
+
+    // Loop through coordinates
+    for(int y = y0; y <= y2; y++)
+    {
+        if(y >= 0)
+        {
+            DrawLine(bufferNum, round(xf), y, round(xt), y, color);
+        }
+        xf += dx_far;
+        if(y < y1)
+        {
+            xt += dx_upper;
+        }
+        else
+        {
+            xt += dx_low;
         }
     }
 }
