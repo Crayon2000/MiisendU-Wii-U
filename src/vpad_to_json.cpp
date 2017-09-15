@@ -4,14 +4,14 @@
 
 /**
  * Convert GamePad data to JSON string used by UsendMii.
- * @param[in] vpad_data Wii U GamePad data.
+ * @param[in] pad_data Controllers data.
  * @param[out] out Buffer where to copy the formatted data.
  * @param[in] out_size Size of the out buffer.
  */
-void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
+void pad_to_json(PADData pad_data, char* out, u32 out_size)
 {
     VPADTPData TPCalibrated;
-    VPADGetTPCalibratedPoint(0, &TPCalibrated, &vpad_data->tpdata);
+    VPADGetTPCalibratedPoint(0, &TPCalibrated, &pad_data.vpad->tpdata);
 
     // Adjust calibrated screen coordinates to 854x480 resolution
     const u16 x = round(TPCalibrated.x * 854.0 / 1280.0);
@@ -48,32 +48,32 @@ void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size)
         "\"dirZy\":%0.8f" \
         "\"dirZz\":%0.8f" \
         "}",
-        vpad_data->btns_h,
+        pad_data.vpad->btns_h,
         TPCalibrated.touched,
         TPCalibrated.invalid,
         x,
         y,
-        vpad_data->volume,
-        vpad_data->lstick.x,
-        vpad_data->lstick.y,
-        vpad_data->rstick.x,
-        vpad_data->rstick.y,
-        vpad_data->gyro.x,
-        vpad_data->gyro.y,
-        vpad_data->gyro.z,
-        vpad_data->angle.x,
-        vpad_data->angle.y,
-        vpad_data->angle.z,
-        vpad_data->acc.x,
-        vpad_data->acc.y,
-        vpad_data->acc.z,
-        vpad_data->dir.X.x,
-        vpad_data->dir.X.y,
-        vpad_data->dir.X.z,
-        vpad_data->dir.Y.x,
-        vpad_data->dir.Y.y,
-        vpad_data->dir.Y.z,
-        vpad_data->dir.Z.x,
-        vpad_data->dir.Z.y,
-        vpad_data->dir.Z.z);
+        pad_data.vpad->volume,
+        pad_data.vpad->lstick.x,
+        pad_data.vpad->lstick.y,
+        pad_data.vpad->rstick.x,
+        pad_data.vpad->rstick.y,
+        pad_data.vpad->gyro.x,
+        pad_data.vpad->gyro.y,
+        pad_data.vpad->gyro.z,
+        pad_data.vpad->angle.x,
+        pad_data.vpad->angle.y,
+        pad_data.vpad->angle.z,
+        pad_data.vpad->acc.x,
+        pad_data.vpad->acc.y,
+        pad_data.vpad->acc.z,
+        pad_data.vpad->dir.X.x,
+        pad_data.vpad->dir.X.y,
+        pad_data.vpad->dir.X.z,
+        pad_data.vpad->dir.Y.x,
+        pad_data.vpad->dir.Y.y,
+        pad_data.vpad->dir.Y.z,
+        pad_data.vpad->dir.Z.x,
+        pad_data.vpad->dir.Z.y,
+        pad_data.vpad->dir.Z.z);
 }

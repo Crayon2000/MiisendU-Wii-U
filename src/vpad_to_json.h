@@ -2,13 +2,21 @@
 #define	_VPADTOJSON_H_
 
 #include "dynamic_libs/vpad_functions.h"
+#include "dynamic_libs/padscore_functions.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void vpad_to_json(VPADData* vpad_data, char* out, u32 out_size);
+/**
+ * Struct to hold all controllers data.
+ */
+typedef struct {
+    VPADData* vpad;     /**< Wii U Gamepad. */
+    KPADData* kpad[4];  /**< Wii Remotes. */
+} PADData;
 
+void pad_to_json(PADData pad_data, char* out, u32 out_size);
 
 #ifdef __cplusplus
 }

@@ -3,6 +3,7 @@
 #include "dynamic_libs/os_functions.h"
 #include "dynamic_libs/fs_functions.h"
 #include "dynamic_libs/vpad_functions.h"
+#include "dynamic_libs/padscore_functions.h"
 #include "dynamic_libs/socket_functions.h"
 #include "fs/fs_utils.h"
 #include "fs/sd_fat_devoptab.h"
@@ -12,6 +13,9 @@
 #include <stdio.h>
 #include <malloc.h>
 
+/**
+ * Print the header.
+ */
 static void PrintHeader(u32 bufferNum)
 {
     OSScreenPutFontEx(bufferNum, 0, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
@@ -29,6 +33,7 @@ int _entryPoint()
     InitFSFunctionPointers();
     InitSocketFunctionPointers();
     InitVPadFunctionPointers();
+    InitPadScoreFunctionPointers();
 
     memoryInitialize();
     mount_sd_fat("sd");
@@ -165,14 +170,48 @@ int _entryPoint()
     u16 holdTime = 0;
 
     for(;;) {
+        s32 kpad_error1 = -6;
+        s32 kpad_error2 = -6;
+        s32 kpad_error3 = -6;
+        s32 kpad_error4 = -6;
+        KPADData kpad_data1;
+        KPADData kpad_data2;
+        KPADData kpad_data3;
+        KPADData kpad_data4;
+
         // Read the VPAD
         VPADRead(0, &vpad_data, 1, &error);
+
+        // Read the KPADs
+        KPADReadEx(0, &kpad_data1, 1, &kpad_error1);
+        KPADReadEx(1, &kpad_data2, 1, &kpad_error2);
+        KPADReadEx(2, &kpad_data3, 1, &kpad_error3);
+        KPADReadEx(3, &kpad_data4, 1, &kpad_error4);
 
         // Flush the cache (may be needed due to continuous refresh of the data ?)
         DCFlushRange(&vpad_data, sizeof(VPADData));
 
         // Transform to JSON
-        vpad_to_json(&vpad_data, msg_data, sizeof(msg_data));
+        PADData pad_data;
+        memset(&pad_data, 0, sizeof(PADData));
+        pad_data.vpad = &vpad_data;
+        if(kpad_error1 == 0)
+        {
+            pad_data.kpad[0] = &kpad_data1;
+        }
+        if(kpad_error2 == 0)
+        {
+            pad_data.kpad[1] = &kpad_data2;
+        }
+        if(kpad_error3 == 0)
+        {
+            pad_data.kpad[2] = &kpad_data3;
+        }
+        if(kpad_error4 == 0)
+        {
+            pad_data.kpad[3] = &kpad_data4;
+        }
+        pad_to_json(pad_data, msg_data, sizeof(msg_data));
 
         // Send the message
         udp_printf(msg_data);
