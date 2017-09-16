@@ -36,6 +36,7 @@ EXPORT_DECL(s32, OSDynLoad_FindExport, u32 handle, s32 isdata, const char *symbo
 //! Security functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 EXPORT_DECL(s32, OSGetSecurityLevel, void);
+EXPORT_DECL(s32, OSForceFullRelaunch, void);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Thread functions
@@ -54,6 +55,7 @@ EXPORT_DECL(void ,OSGetActiveThreadLink,OSThread * thread, void* link);
 EXPORT_DECL(u32 ,OSGetThreadAffinity,OSThread * thread);
 EXPORT_DECL(s32 ,OSGetThreadPriority,OSThread * thread);
 EXPORT_DECL(void ,OSSetThreadName,OSThread * thread, const char *name);
+EXPORT_DECL(s32, OSGetCoreId, void);
 EXPORT_DECL(void, OSSleepTicks, u64 ticks);
 EXPORT_DECL(u64, OSGetTick, void);
 EXPORT_DECL(u64, OSGetTime, void);
@@ -85,6 +87,7 @@ EXPORT_DECL(void *, OSSetExceptionCallback, u8 exceptionType, exception_callback
 EXPORT_DECL(void *, OSSetExceptionCallbackEx, s32 unkwn, u8 exceptionType, exception_callback newCallback);
 EXPORT_DECL(void , OSLoadContext, OSContext * context);
 EXPORT_DECL(void, DCFlushRange, const void *addr, u32 length);
+EXPORT_DECL(void, DCStoreRange, const void *addr, u32 length);
 EXPORT_DECL(void, ICInvalidateRange, const void *addr, u32 length);
 EXPORT_DECL(void*, OSEffectiveToPhysical, const void*);
 EXPORT_DECL(s32, __os_snprintf, char* s, s32 n, const char * format, ...);
@@ -221,6 +224,7 @@ void InitOSFunctionPointers(void)
     //! Security functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OS_FIND_EXPORT(coreinit_handle, OSGetSecurityLevel);
+    OS_FIND_EXPORT(coreinit_handle, OSForceFullRelaunch);
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! System functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,6 +235,7 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, OSSetExceptionCallbackEx);
     OS_FIND_EXPORT(coreinit_handle, OSLoadContext);
     OS_FIND_EXPORT(coreinit_handle, DCFlushRange);
+    OS_FIND_EXPORT(coreinit_handle, DCStoreRange);
     OS_FIND_EXPORT(coreinit_handle, ICInvalidateRange);
     OS_FIND_EXPORT(coreinit_handle, OSEffectiveToPhysical);
     OS_FIND_EXPORT(coreinit_handle, __os_snprintf);
@@ -263,6 +268,7 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, OSGetThreadAffinity);
     OS_FIND_EXPORT(coreinit_handle, OSGetThreadPriority);
     OS_FIND_EXPORT(coreinit_handle, OSSetThreadName);
+    OS_FIND_EXPORT(coreinit_handle, OSGetCoreId);
 
     OS_FIND_EXPORT(coreinit_handle, OSSleepTicks);
     OS_FIND_EXPORT(coreinit_handle, OSGetTick);
