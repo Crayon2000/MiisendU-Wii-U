@@ -165,7 +165,7 @@ int _entryPoint()
     }
 
     // The buffer sent to the computer
-    char msg_data[512];
+    char msg_data[1024];
 
     u16 holdTime = 0;
 

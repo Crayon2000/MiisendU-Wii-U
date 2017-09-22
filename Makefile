@@ -57,13 +57,14 @@ MAKEFLAGS += --no-print-directory
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -lgcc -lgd -lpng -lz -lfreetype -lvorbisidec
+LIBS	:= -ljansson -lgcc -lgd -lpng -lz -lfreetype -lvorbisidec
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
 LIBDIRS	:=	$(CURDIR)	\
+			$(CURDIR)/src/vendor/jansson	\
 			$(DEVKITPPC)/lib  \
 			$(DEVKITPPC)/lib/gcc/powerpc-eabi/4.8.2
 

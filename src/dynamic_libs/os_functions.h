@@ -128,6 +128,7 @@ extern void (* DCFlushRange)(const void *addr, u32 length);
 extern void (* DCStoreRange)(const void *addr, u32 length);
 extern void (* ICInvalidateRange)(const void *addr, u32 length);
 extern void* (* OSEffectiveToPhysical)(const void*);
+extern void* (* __OSPhysicalToEffectiveUncached)(const void*);
 extern s32 (* __os_snprintf)(char* s, s32 n, const char * format, ...);
 extern s32 * (* __gh_errno_ptr)(void);
 
