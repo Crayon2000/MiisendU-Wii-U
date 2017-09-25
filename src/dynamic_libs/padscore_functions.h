@@ -108,16 +108,29 @@ typedef struct _KPADData
     u32 btns_h;
     u32 btns_d;
     u32 btns_r;
-    u32 unused_1[5];
+    f32 acc_x;
+    f32 acc_y;
+    f32 acc_z;
+    f32 acc_value;
+    f32 acc_speed;
     f32 pos_x;
     f32 pos_y;
-    u32 unused_2[3];
+    f32 vec_x;
+    f32 vec_y;
+    f32 speed;
     f32 angle_x;
     f32 angle_y;
-    u32 unused_3[8];
+    f32 angle_vec_x;
+    f32 angle_vec_y;
+    f32 angle_speed;
+    f32 dist;
+    f32 dist_vec;
+    f32 dist_speed;
+    f32 acc_vertical_x;
+    f32 acc_vertical_y;
     u8 device_type;
-    u8 wpad_error;
-    u8 pos_valid;
+    s8 wpad_error;
+    s8 pos_valid;
     u8 format;
 
     union
