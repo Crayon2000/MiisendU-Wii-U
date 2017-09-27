@@ -57,7 +57,7 @@ MAKEFLAGS += --no-print-directory
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -ljansson -lgcc -lgd -lpng -lz -lfreetype -lvorbisidec
+LIBS	:= -lgcc -ljansson
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
