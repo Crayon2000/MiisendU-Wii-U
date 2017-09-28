@@ -1,5 +1,4 @@
 #include <string.h>
-#include <math.h>
 #include <jansson.h>
 #include "vpad_to_json.h"
 
@@ -12,19 +11,15 @@
 void pad_to_json(PADData pad_data, char* out, u32 out_size)
 {
     VPADTPData TPCalibrated;
-    VPADGetTPCalibratedPoint(0, &TPCalibrated, &pad_data.vpad->tpdata);
-
-    // Adjust calibrated screen coordinates to 854x480 resolution
-    const u16 x = round(TPCalibrated.x * 854.0 / 1280.0);
-    const u16 y = round(TPCalibrated.y * 480.0 / 720.0);
+    VPADGetTPCalibratedPointEx(0, VPAD_TP_854x480, &TPCalibrated, &pad_data.vpad->tpdata);
 
     // Wii U Gamepad
     json_t *wiiugamepad = json_object();
     json_object_set_new_nocheck(wiiugamepad, "hold", json_integer(pad_data.vpad->btns_h));
     json_object_set_new_nocheck(wiiugamepad, "tpTouch", json_integer(TPCalibrated.touched));
     json_object_set_new_nocheck(wiiugamepad, "tpValidity", json_integer(TPCalibrated.invalid));
-    json_object_set_new_nocheck(wiiugamepad, "tpX", json_integer(x));
-    json_object_set_new_nocheck(wiiugamepad, "tpY", json_integer(y));
+    json_object_set_new_nocheck(wiiugamepad, "tpX", json_integer(TPCalibrated.x));
+    json_object_set_new_nocheck(wiiugamepad, "tpY", json_integer(TPCalibrated.y));
     json_object_set_new_nocheck(wiiugamepad, "volume", json_integer(pad_data.vpad->volume));
     json_object_set_new_nocheck(wiiugamepad, "lStickX", json_real(pad_data.vpad->lstick.x));
     json_object_set_new_nocheck(wiiugamepad, "lStickY", json_real(pad_data.vpad->lstick.y));

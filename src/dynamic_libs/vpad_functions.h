@@ -190,6 +190,8 @@ extern s32 (* VPADSetLcdMode)(s32 padnum, s32 lcdmode);
 extern s32 (* VPADGetLcdMode)(s32 padnum, s32 *lcdmode);
 extern s32 (* VPADBASEGetMotorOnRemainingCount)(s32 lcdmode);
 extern s32 (* VPADBASESetMotorOnRemainingCount)(s32 lcdmode, s32 counter);
+extern void (* VPADBASESetSensorBarSetting)(s32 chan, s8 setting);
+extern void (* VPADBASEGetSensorBarSetting)(s32 chan, s8 *setting);
 
 #ifdef __cplusplus
 }
