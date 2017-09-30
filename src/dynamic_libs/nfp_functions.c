@@ -33,6 +33,6 @@ void InitAcquireNFP(void)
 
 void InitNFPFunctionPointers(void)
 {
-    u32 *funcPointer = 0;
+    // u32 *funcPointer = 0;
     InitAcquireNFP();
 }

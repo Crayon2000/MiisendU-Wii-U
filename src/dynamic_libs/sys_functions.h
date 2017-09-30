@@ -35,11 +35,13 @@ extern u32 sysapp_handle;
 void InitSysFunctionPointers(void);
 void InitAcquireSys(void);
 
-extern int(*_SYSLaunchTitleByPathFromLauncher)(const char* path, s32 len, s32 zero);
-extern int (* SYSRelaunchTitle)(s32 argc, char** argv);
-extern int (* SYSLaunchMenu)(void);
-extern int (* SYSCheckTitleExists)(u64 titleId);
-extern int (* SYSLaunchTitle)(u64 titleId);
+extern s32(*_SYSLaunchTitleByPathFromLauncher)(const char* path, s32 len, s32 zero);
+extern s32 (* SYSRelaunchTitle)(s32 argc, char** argv);
+extern s32 (* SYSLaunchMenu)(void);
+extern s32 (* _SYSLaunchMenuWithCheckingAccount)(unsigned char slot);
+extern s32 (* SYSCheckTitleExists)(u64 titleId);
+extern s32 (* SYSLaunchTitle)(u64 titleId);
+extern s32 (* SYSLaunchSettings)(s32 unk);
 
 
 #ifdef __cplusplus

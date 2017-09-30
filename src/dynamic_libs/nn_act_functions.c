@@ -29,6 +29,7 @@ u32 nn_act_handle __attribute__((section(".data"))) = 0;
 EXPORT_DECL(void, nn_act_Initialize, void);
 EXPORT_DECL(void, nn_act_Finalize, void);
 EXPORT_DECL(u8, nn_act_GetSlotNo, void);
+EXPORT_DECL(u8, nn_act_GetDefaultAccount, void);
 EXPORT_DECL(u32, nn_act_GetPersistentIdEx, u8 slot);
 
 void InitAcquireACT(void)
@@ -42,7 +43,8 @@ void InitACTFunctionPointers(void)
     InitAcquireACT();
 
     OS_FIND_EXPORT_EX(nn_act_handle, Initialize__Q2_2nn3actFv, nn_act_Initialize)
-	OS_FIND_EXPORT_EX(nn_act_handle, Finalize__Q2_2nn3actFv, nn_act_Finalize)
-	OS_FIND_EXPORT_EX(nn_act_handle, GetSlotNo__Q2_2nn3actFv, nn_act_GetSlotNo)
-	OS_FIND_EXPORT_EX(nn_act_handle, GetPersistentIdEx__Q2_2nn3actFUc, nn_act_GetPersistentIdEx)
+    OS_FIND_EXPORT_EX(nn_act_handle, Finalize__Q2_2nn3actFv, nn_act_Finalize)
+    OS_FIND_EXPORT_EX(nn_act_handle, GetSlotNo__Q2_2nn3actFv, nn_act_GetSlotNo)
+    OS_FIND_EXPORT_EX(nn_act_handle, GetDefaultAccount__Q2_2nn3actFv, nn_act_GetDefaultAccount)
+    OS_FIND_EXPORT_EX(nn_act_handle, GetPersistentIdEx__Q2_2nn3actFUc, nn_act_GetPersistentIdEx)
 }

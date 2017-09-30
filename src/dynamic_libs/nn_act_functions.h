@@ -35,6 +35,7 @@ extern u32 nn_act_handle;
 extern void(* nn_act_Initialize)(void);
 extern void(* nn_act_Finalize)(void);
 extern u8(* nn_act_GetSlotNo)(void);
+extern u8(* nn_act_GetDefaultAccount)(void);
 extern u32(*nn_act_GetPersistentIdEx)(u8 slot);
 
 void InitACTFunctionPointers(void);

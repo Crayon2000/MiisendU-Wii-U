@@ -42,6 +42,15 @@ EXPORT_DECL(s32, OSForceFullRelaunch, void);
 //! Thread functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 EXPORT_DECL(s32, OSCreateThread, OSThread *thread, s32 (*callback)(s32, void*), s32 argc, void *args, u32 stack, u32 stack_size, s32 priority, u32 attr);
+
+EXPORT_DECL(void, OSEnableInterrupts, void);
+EXPORT_DECL(void, __OSClearAndEnableInterrupt, void);
+EXPORT_DECL(s32, OSIsInterruptEnabled, void);
+EXPORT_DECL(s32, OSIsDebuggerPresent, void);
+EXPORT_DECL(void, OSRestoreInterrupts, void);
+EXPORT_DECL(void, OSSetDABR, s32, s32, s32, s32);
+EXPORT_DECL(void, OSSetIABR, s32, s32);
+
 EXPORT_DECL(s32, OSResumeThread, OSThread *thread);
 EXPORT_DECL(s32, OSSuspendThread, OSThread *thread);
 EXPORT_DECL(s32, OSIsThreadTerminated, OSThread *thread);
@@ -91,10 +100,12 @@ EXPORT_DECL(void, DCStoreRange, const void *addr, u32 length);
 EXPORT_DECL(void, ICInvalidateRange, const void *addr, u32 length);
 EXPORT_DECL(void*, OSEffectiveToPhysical, const void*);
 EXPORT_DECL(void*, __OSPhysicalToEffectiveUncached, const void*);
+EXPORT_DECL(s32, __OSValidateAddressSpaceRange, s32, void*, s32);
 EXPORT_DECL(s32, __os_snprintf, char* s, s32 n, const char * format, ...);
 EXPORT_DECL(s32 *, __gh_errno_ptr, void);
 
 EXPORT_DECL(void, OSScreenInit, void);
+EXPORT_DECL(void, OSScreenShutdown, void);
 EXPORT_DECL(u32, OSScreenGetBufferSizeEx, u32 bufferNum);
 EXPORT_DECL(s32, OSScreenSetBufferEx, u32 bufferNum, void * addr);
 EXPORT_DECL(s32, OSScreenClearBufferEx, u32 bufferNum, u32 temp);
@@ -102,6 +113,11 @@ EXPORT_DECL(s32, OSScreenFlipBuffersEx, u32 bufferNum);
 EXPORT_DECL(s32, OSScreenPutFontEx, u32 bufferNum, u32 posX, u32 posY, const char * buffer);
 EXPORT_DECL(s32, OSScreenEnableEx, u32 bufferNum, s32 enable);
 EXPORT_DECL(u32, OSScreenPutPixelEx, u32 bufferNum, u32 posX, u32 posY, u32 color);
+
+EXPORT_DECL(void, DisassemblePPCRange, void *, void *, DisasmReport, DisasmGetSym, u32);
+EXPORT_DECL(bool, DisassemblePPCOpcode, u32 *, char *, u32, DisasmGetSym, u32);
+EXPORT_DECL(void*, OSGetSymbolName, u32, u8 *, u32);
+EXPORT_DECL(int, OSIsDebuggerInitialized, void);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Memory functions
@@ -118,9 +134,9 @@ EXPORT_DECL(void *, MEMAllocFromExpHeapEx, s32 heap, u32 size, s32 align);
 EXPORT_DECL(s32 , MEMCreateExpHeapEx, void* address, u32 size, unsigned short flags);
 EXPORT_DECL(void *, MEMDestroyExpHeap, s32 heap);
 EXPORT_DECL(void, MEMFreeToExpHeap, s32 heap, void* ptr);
-EXPORT_DECL(void *, OSAllocFromSystem, int size, int alignment);
+EXPORT_DECL(void *, OSAllocFromSystem, u32 size, s32 alignment);
 EXPORT_DECL(void, OSFreeToSystem, void *addr);
-EXPORT_DECL(int, OSIsAddressValid, void *ptr);
+EXPORT_DECL(s32, OSIsAddressValid, const void *ptr);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! MCP functions
@@ -239,13 +255,15 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, DCStoreRange);
     OS_FIND_EXPORT(coreinit_handle, ICInvalidateRange);
     OS_FIND_EXPORT(coreinit_handle, OSEffectiveToPhysical);
-	OS_FIND_EXPORT(coreinit_handle, __OSPhysicalToEffectiveUncached);
+    OS_FIND_EXPORT(coreinit_handle, __OSPhysicalToEffectiveUncached);
+    OS_FIND_EXPORT(coreinit_handle, __OSValidateAddressSpaceRange);
     OS_FIND_EXPORT(coreinit_handle, __os_snprintf);
     OS_FIND_EXPORT(coreinit_handle, __gh_errno_ptr);
 
     OSDynLoad_FindExport(coreinit_handle, 0, "_Exit", &__Exit);
 
     OS_FIND_EXPORT(coreinit_handle, OSScreenInit);
+    OS_FIND_EXPORT(coreinit_handle, OSScreenShutdown);
     OS_FIND_EXPORT(coreinit_handle, OSScreenGetBufferSizeEx);
     OS_FIND_EXPORT(coreinit_handle, OSScreenSetBufferEx);
     OS_FIND_EXPORT(coreinit_handle, OSScreenClearBufferEx);
@@ -253,9 +271,22 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, OSScreenPutFontEx);
     OS_FIND_EXPORT(coreinit_handle, OSScreenEnableEx);
     OS_FIND_EXPORT(coreinit_handle, OSScreenPutPixelEx);
+
+    OS_FIND_EXPORT(coreinit_handle, DisassemblePPCRange);
+	OS_FIND_EXPORT(coreinit_handle, DisassemblePPCOpcode);
+	OS_FIND_EXPORT(coreinit_handle, OSGetSymbolName);
+    OS_FIND_EXPORT(coreinit_handle, OSIsDebuggerInitialized);
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Thread functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    OS_FIND_EXPORT(coreinit_handle, OSEnableInterrupts);
+	OS_FIND_EXPORT(coreinit_handle, __OSClearAndEnableInterrupt);
+	OS_FIND_EXPORT(coreinit_handle, OSIsInterruptEnabled);
+	OS_FIND_EXPORT(coreinit_handle, OSIsDebuggerPresent);
+	OS_FIND_EXPORT(coreinit_handle, OSRestoreInterrupts);
+	OS_FIND_EXPORT(coreinit_handle, OSSetDABR);
+    OS_FIND_EXPORT(coreinit_handle, OSSetIABR);
+
     OS_FIND_EXPORT(coreinit_handle, OSCreateThread);
     OS_FIND_EXPORT(coreinit_handle, OSResumeThread);
     OS_FIND_EXPORT(coreinit_handle, OSSuspendThread);

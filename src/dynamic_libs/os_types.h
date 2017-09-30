@@ -17,12 +17,22 @@ extern "C" {
 #define OS_EXCEPTION_MODE_THREAD 1
 #define OS_EXCEPTION_MODE_GLOBAL_ALL_CORES 4
 
+#define OS_THREAD_ATTR_AFFINITY_NONE    0x0007u        // affinity to run on every core
+#define OS_THREAD_ATTR_AFFINITY_CORE0   0x0001u        // run only on core0
+#define OS_THREAD_ATTR_AFFINITY_CORE1   0x0002u        // run only on core1
+#define OS_THREAD_ATTR_AFFINITY_CORE2   0x0004u        // run only on core2
+#define OS_THREAD_ATTR_DETACH           0x0008u        // detached
+#define OS_THREAD_ATTR_PINNED_AFFINITY  0x0010u        // pinned (affinitized) to a single core
+#define OS_THREAD_ATTR_CHECK_STACK_USE  0x0040u        // check for stack usage
+#define OS_THREAD_ATTR_NAME_SENT        0x0080u        // debugger has seen the name
+#define OS_THREAD_ATTR_LAST (OS_THREAD_ATTR_DETACH | OS_THREAD_ATTR_PINNED_AFFINITY | OS_THREAD_ATTR_AFFINITY_NONE)
+
 typedef struct OSThread_ OSThread;
 
-struct OSThreadLink {
+typedef struct OSThreadLink_ {
     OSThread *next;
     OSThread *prev;
-};
+}  OSThreadLink;
 
 typedef struct OSThreadQueue_ {
 	OSThread *head;
@@ -113,7 +123,6 @@ typedef enum OSExceptionType
    OS_EXCEPTION_TYPE_ICI                  = 14,
 } OSExceptionType;
 
-
 typedef int (*ThreadFunc)(int argc, void *argv);
 
 struct OSThread_ {
@@ -127,14 +136,15 @@ struct OSThread_ {
     int suspend;
     int priority;
 
-    char _[0x394 - 0x330];
+    char _[0x394 - 0x330 - sizeof(OSThreadLink)];
+	OSThreadLink linkActive;
 
-	void *stackBase;
-	void *stackEnd;
+    void *stackBase;
+    void *stackEnd;
 
-	ThreadFunc entryPoint;
+    ThreadFunc entryPoint;
 
-	char _3A0[0x6A0 - 0x3A0];
+    char _3A0[0x6A0 - 0x3A0];
 };
 
 typedef struct _OSCalendarTime {

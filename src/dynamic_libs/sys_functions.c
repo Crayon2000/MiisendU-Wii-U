@@ -28,8 +28,10 @@ u32 sysapp_handle __attribute__((section(".data"))) = 0;
 EXPORT_DECL(s32, _SYSLaunchTitleByPathFromLauncher, const char* path, s32 len, s32 zero);
 EXPORT_DECL(s32, SYSRelaunchTitle, s32 argc, char** argv);
 EXPORT_DECL(s32, SYSLaunchMenu, void);
+EXPORT_DECL(s32, _SYSLaunchMenuWithCheckingAccount, unsigned char slot);
 EXPORT_DECL(s32, SYSCheckTitleExists, u64 titleId);
 EXPORT_DECL(s32, SYSLaunchTitle, u64 titleId);
+EXPORT_DECL(s32, SYSLaunchSettings, s32 unk);
 
 void InitAcquireSys(void)
 {
@@ -44,6 +46,8 @@ void InitSysFunctionPointers(void)
     OS_FIND_EXPORT(sysapp_handle, _SYSLaunchTitleByPathFromLauncher);
     OS_FIND_EXPORT(sysapp_handle, SYSRelaunchTitle);
     OS_FIND_EXPORT(sysapp_handle, SYSLaunchMenu);
+    OS_FIND_EXPORT(sysapp_handle, _SYSLaunchMenuWithCheckingAccount);
     OS_FIND_EXPORT(sysapp_handle, SYSCheckTitleExists);
     OS_FIND_EXPORT(sysapp_handle, SYSLaunchTitle);
+    OS_FIND_EXPORT(sysapp_handle, SYSLaunchSettings);
 }

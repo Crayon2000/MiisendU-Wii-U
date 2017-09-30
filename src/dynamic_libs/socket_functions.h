@@ -32,6 +32,8 @@ extern u32 nsysnet_handle;
 
 #include <gctypes.h>
 
+extern u32 hostIpAddress;
+
 #define INADDR_ANY      0
 #define INADDR_BROADCAST 0xFFFFFFFF
 
@@ -60,7 +62,6 @@ extern u32 nsysnet_handle;
 #define htons(x) x
 #define ntohl(x) x
 #define ntohs(x) x
-
 
 struct in_addr {
     u32 s_addr;

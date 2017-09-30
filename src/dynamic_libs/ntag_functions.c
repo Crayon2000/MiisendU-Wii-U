@@ -33,6 +33,6 @@ void InitAcquireNTAG(void)
 
 void InitNTAGFunctionPointers(void)
 {
-    u32 *funcPointer = 0;
+    // u32 *funcPointer = 0;
     InitAcquireNTAG();
 }

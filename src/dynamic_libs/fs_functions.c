@@ -44,8 +44,8 @@ EXPORT_DECL(s32, FSRemove, void *pClient, void *pCmd, const char *path, s32 erro
 EXPORT_DECL(s32, FSRemoveAsync, void *pClient, void *pCmd, const char *path, s32 error, void *asyncParams);
 EXPORT_DECL(s32, FSFlushQuota, void *pClient, void *pCmd, const char* path, s32 error);
 EXPORT_DECL(s32, FSFlushQuotaAsync, void *pClient, void *pCmd, const char *path, s32 error, void *asyncParams);
-EXPORT_DECL(s32, FSGetFreeSpaceSize, void *pClient, void *pCmd, const char *path, uint64_t *returnedFreeSize, s32 error);
-EXPORT_DECL(s32, FSGetFreeSpaceSizeAsync, void *pClient, void *pCmd, const char *path, uint64_t *returnedFreeSize, s32 error, void *asyncParams);
+EXPORT_DECL(s32, FSGetFreeSpaceSize, void *pClient, void *pCmd, const char *path, u64 *returnedFreeSize, s32 error);
+EXPORT_DECL(s32, FSGetFreeSpaceSizeAsync, void *pClient, void *pCmd, const char *path, u64 *returnedFreeSize, s32 error, void *asyncParams);
 EXPORT_DECL(s32, FSRollbackQuota, void *pClient, void *pCmd, const char *path, s32 error);
 EXPORT_DECL(s32, FSRollbackQuotaAsync, void *pClient, void *pCmd, const char *path, s32 error, void *asyncParams);
 

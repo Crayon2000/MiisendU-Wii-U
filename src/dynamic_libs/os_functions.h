@@ -32,6 +32,36 @@
 extern "C" {
 #endif
 
+/* Disassembler */
+typedef void (*DisasmReport)(char *outputBuffer, ...);
+
+typedef void *(*DisasmGetSym)(u32 addr, u8 *symbolName, u32 nameBufSize);
+
+#define PPC_DISASM_MAX_BUFFER 64
+
+#define PPC_DISASM_DEFAULT     0x00000000  // use defaults
+#define PPC_DISASM_SIMPLIFY    0x00000001  // use simplified mnemonics
+#define PPC_DISASM_REG_SPACES  0x00000020  // emit spaces between registers
+#define PPC_DISASM_EMIT_DISASM 0x00000040  // emit only disassembly
+#define PPC_DISASM_EMIT_ADDR   0x00000080  // emit only addresses + disassembly
+#define PPC_DISASM_EMIT_FUNCS  0x00000100  // emit function names before and during disassembly
+
+/* zlib */
+
+/*#define Z_NO_COMPRESSION         0
+#define Z_BEST_SPEED             1
+#define Z_BEST_COMPRESSION       9
+#define Z_DEFAULT_COMPRESSION  (-1)
+#define Z_OK            0
+#define Z_STREAM_END    1
+#define Z_NEED_DICT     2
+#define Z_ERRNO        (-1)
+#define Z_STREAM_ERROR (-2)
+#define Z_DATA_ERROR   (-3)
+#define Z_MEM_ERROR    (-4)
+#define Z_BUF_ERROR    (-5)
+#define Z_VERSION_ERROR (-6)*/
+
 #define BUS_SPEED                       248625000
 #define SECS_TO_TICKS(sec)              (((unsigned long long)(sec)) * (BUS_SPEED/4))
 #define MILLISECS_TO_TICKS(msec)        (SECS_TO_TICKS(msec) / 1000)
@@ -81,6 +111,16 @@ extern s32 (* OSForceFullRelaunch)(void);
 //! Thread functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 extern s32 (* OSCreateThread)(OSThread *thread, s32 (*callback)(s32, void*), s32 argc, void *args, u32 stack, u32 stack_size, s32 priority, u32 attr);
+
+extern void (*OSEnableInterrupts)(void);
+extern void (*__OSClearAndEnableInterrupt)(void);
+extern s32 (*OSIsInterruptEnabled)(void);
+extern s32 (*OSIsDebuggerPresent)(void);
+
+extern void (*OSRestoreInterrupts)(void);
+extern void (*OSSetDABR)(s32, s32, s32, s32);
+extern void (*OSSetIABR)(s32, s32);
+
 extern s32 (* OSResumeThread)(OSThread *thread);
 extern s32 (* OSSuspendThread)(OSThread *thread);
 extern s32 (* OSIsThreadTerminated)(OSThread *thread);
@@ -129,10 +169,12 @@ extern void (* DCStoreRange)(const void *addr, u32 length);
 extern void (* ICInvalidateRange)(const void *addr, u32 length);
 extern void* (* OSEffectiveToPhysical)(const void*);
 extern void* (* __OSPhysicalToEffectiveUncached)(const void*);
+extern s32 (* __OSValidateAddressSpaceRange)(s32, void*, s32);
 extern s32 (* __os_snprintf)(char* s, s32 n, const char * format, ...);
 extern s32 * (* __gh_errno_ptr)(void);
 
 extern void (*OSScreenInit)(void);
+extern void (*OSScreenShutdown)(void);
 extern u32 (*OSScreenGetBufferSizeEx)(u32 bufferNum);
 extern s32 (*OSScreenSetBufferEx)(u32 bufferNum, void * addr);
 extern s32 (*OSScreenClearBufferEx)(u32 bufferNum, u32 temp);
@@ -145,6 +187,11 @@ typedef unsigned char (*exception_callback)(OSContext * interruptedContext);
 extern void * (* OSSetExceptionCallback)(u8 exceptionType, exception_callback newCallback);
 extern void * (* OSSetExceptionCallbackEx)(s32 unknwn,u8 exceptionType, exception_callback newCallback);
 extern void (* OSLoadContext)(OSContext * context);
+
+extern void (*DisassemblePPCRange)(void *rangeStart, void *rangeEnd, DisasmReport disasmReport, DisasmGetSym disasmGetSym, u32 disasmOptions);
+extern bool (*DisassemblePPCOpcode)(u32 *opcode, char *outputBuffer, u32 bufferSize, DisasmGetSym disasmGetSym, u32 disasmOptions);
+extern void *(*OSGetSymbolName)(u32 addr, u8 *symbolName, u32 nameBufSize);
+extern int (*OSIsDebuggerInitialized)(void);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Memory functions
@@ -161,9 +208,9 @@ extern void *(* MEMAllocFromExpHeapEx)(s32 heap, u32 size, s32 align);
 extern s32 (* MEMCreateExpHeapEx)(void* address, u32 size, unsigned short flags);
 extern void *(* MEMDestroyExpHeap)(s32 heap);
 extern void (* MEMFreeToExpHeap)(s32 heap, void* ptr);
-extern void* (* OSAllocFromSystem)(int size, int alignment);
+extern void* (* OSAllocFromSystem)(u32 size, s32 alignment);
 extern void (* OSFreeToSystem)(void *addr);
-extern int (* OSIsAddressValid)(void *ptr);
+extern s32 (* OSIsAddressValid)(const void *ptr);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! MCP functions

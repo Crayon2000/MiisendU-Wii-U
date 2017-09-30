@@ -57,8 +57,8 @@ extern s32 (* FSRemove)(void *pClient, void *pCmd, const char *path, s32 error);
 extern s32 (* FSRemoveAsync)(void *pClient, void *pCmd, const char *path, s32 error, void *asyncParams);
 extern s32 (* FSFlushQuota)(void *pClient, void *pCmd, const char* path, s32 error);
 extern s32 (* FSFlushQuotaAsync)(void *pClient, void *pCmd, const char *path, s32 error, void *asyncParams);
-extern s32 (* FSGetFreeSpaceSize)(void *pClient, void *pCmd, const char *path, uint64_t *returnedFreeSize, s32 error);
-extern s32 (* FSGetFreeSpaceSizeAsync)(void *pClient, void *pCmd, const char *path, uint64_t *returnedFreeSize, s32 error, void *asyncParams);
+extern s32 (* FSGetFreeSpaceSize)(void *pClient, void *pCmd, const char *path, u64 *returnedFreeSize, s32 error);
+extern s32 (* FSGetFreeSpaceSizeAsync)(void *pClient, void *pCmd, const char *path, u64 *returnedFreeSize, s32 error, void *asyncParams);
 extern s32 (* FSRollbackQuota)(void *pClient, void *pCmd, const char *path, s32 error);
 extern s32 (* FSRollbackQuotaAsync)(void *pClient, void *pCmd, const char *path, s32 error, void *asyncParams);
 
