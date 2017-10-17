@@ -35,10 +35,10 @@ typedef struct OSThreadLink_ {
 }  OSThreadLink;
 
 typedef struct OSThreadQueue_ {
-	OSThread *head;
-	OSThread *tail;
-	void *parentStruct;
-	u32 reserved;
+    OSThread *head;
+    OSThread *tail;
+    void *parentStruct;
+    u32 reserved;
 } OSThreadQueue;
 
 typedef struct OSMessage_ {
@@ -62,46 +62,46 @@ typedef struct OSMessageQueue_ {
 } OSMessageQueue;
 
 typedef struct OSContext_ {
-	char tag[8];
+    char tag[8];
 
-	u32 gpr[32];
+    u32 gpr[32];
 
-	u32 cr;
-	u32 lr;
-	u32 ctr;
-	u32 xer;
+    u32 cr;
+    u32 lr;
+    u32 ctr;
+    u32 xer;
 
-	u32 srr0;
-	u32 srr1;
+    u32 srr0;
+    u32 srr1;
 
-	u32 ex0;
-	u32 ex1;
+    u32 ex0;
+    u32 ex1;
 
-	u32 exception_type;
-	u32 reserved;
+    u32 exception_type;
+    u32 reserved;
 
-	double fpscr;
-	double fpr[32];
+    double fpscr;
+    double fpr[32];
 
-	u16 spinLockCount;
-	u16 state;
+    u16 spinLockCount;
+    u16 state;
 
-	u32 gqr[8];
-	u32 pir;
-	double psf[32];
+    u32 gqr[8];
+    u32 pir;
+    double psf[32];
 
-	u64 coretime[3];
-	u64 starttime;
+    u64 coretime[3];
+    u64 starttime;
 
-	u32 error;
-	u32 attributes;
+    u32 error;
+    u32 attributes;
 
-	u32 pmc1;
-	u32 pmc2;
-	u32 pmc3;
-	u32 pmc4;
-	u32 mmcr0;
-	u32 mmcr1;
+    u32 pmc1;
+    u32 pmc2;
+    u32 pmc3;
+    u32 pmc4;
+    u32 mmcr0;
+    u32 mmcr1;
 } OSContext;
 
 typedef enum OSExceptionType
@@ -137,7 +137,7 @@ struct OSThread_ {
     int priority;
 
     char _[0x394 - 0x330 - sizeof(OSThreadLink)];
-	OSThreadLink linkActive;
+    OSThreadLink linkActive;
 
     void *stackBase;
     void *stackEnd;

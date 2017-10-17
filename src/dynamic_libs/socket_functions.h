@@ -53,7 +53,7 @@ extern u32 hostIpAddress;
 #define SO_BROADCAST    0x0020      // broadcast
 #define SO_NONBLOCK     0x1016
 #define SO_MYADDR       0x1013
-#define SO_RCVTIMEO	0x1006
+#define SO_RCVTIMEO     0x1006
 
 #define SOL_SOCKET      -1
 #define MSG_DONTWAIT    32

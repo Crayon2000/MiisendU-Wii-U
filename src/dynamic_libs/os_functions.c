@@ -273,18 +273,18 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, OSScreenPutPixelEx);
 
     OS_FIND_EXPORT(coreinit_handle, DisassemblePPCRange);
-	OS_FIND_EXPORT(coreinit_handle, DisassemblePPCOpcode);
-	OS_FIND_EXPORT(coreinit_handle, OSGetSymbolName);
+    OS_FIND_EXPORT(coreinit_handle, DisassemblePPCOpcode);
+    OS_FIND_EXPORT(coreinit_handle, OSGetSymbolName);
     OS_FIND_EXPORT(coreinit_handle, OSIsDebuggerInitialized);
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Thread functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OS_FIND_EXPORT(coreinit_handle, OSEnableInterrupts);
-	OS_FIND_EXPORT(coreinit_handle, __OSClearAndEnableInterrupt);
-	OS_FIND_EXPORT(coreinit_handle, OSIsInterruptEnabled);
-	OS_FIND_EXPORT(coreinit_handle, OSIsDebuggerPresent);
-	OS_FIND_EXPORT(coreinit_handle, OSRestoreInterrupts);
-	OS_FIND_EXPORT(coreinit_handle, OSSetDABR);
+    OS_FIND_EXPORT(coreinit_handle, __OSClearAndEnableInterrupt);
+    OS_FIND_EXPORT(coreinit_handle, OSIsInterruptEnabled);
+    OS_FIND_EXPORT(coreinit_handle, OSIsDebuggerPresent);
+    OS_FIND_EXPORT(coreinit_handle, OSRestoreInterrupts);
+    OS_FIND_EXPORT(coreinit_handle, OSSetDABR);
     OS_FIND_EXPORT(coreinit_handle, OSSetIABR);
 
     OS_FIND_EXPORT(coreinit_handle, OSCreateThread);

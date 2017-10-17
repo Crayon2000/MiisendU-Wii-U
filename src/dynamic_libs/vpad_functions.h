@@ -129,7 +129,7 @@ typedef struct
     VPADTPData tpdata1;          /* Modified touchscreen data 1 */
     VPADTPData tpdata2;          /* Modified touchscreen data 2 */
     VPADDir dir;                 /* Orientation in three-dimensional space */
-    BOOL headphone;              /* Set to TRUE if headphones are plugged in, FALSE otherwise */
+    s32 headphone;               /* Set to TRUE if headphones are plugged in, FALSE otherwise */
     Vec3D mag;                   /* Magnetometer data */
     u8 volume;                   /* 0 to 255 */
     u8 battery;                  /* 0 to 6 */
