@@ -95,13 +95,12 @@ EXPORT_DECL(void, GX2CopySurface, GX2Surface * srcSurface,u32 srcMip,u32 srcSlic
 
 EXPORT_DECL(void, GX2ClearBuffersEx, GX2ColorBuffer * colorBuffer,GX2DepthBuffer * depthBuffer,f32 r, f32 g, f32 b, f32 a,f32 depthValue,u8 stencilValue,s32 clearFlags);
 
-void InitAcquireGX2(void)
-{
+void InitAcquireGX2(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("gx2.rpl", &gx2_handle);
 }
 
-void InitGX2FunctionPointers(void)
-{
+void InitGX2FunctionPointers(void){
     u32 *funcPointer = 0;
     InitAcquireGX2();
 

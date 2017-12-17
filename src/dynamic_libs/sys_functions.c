@@ -33,13 +33,12 @@ EXPORT_DECL(s32, SYSCheckTitleExists, u64 titleId);
 EXPORT_DECL(s32, SYSLaunchTitle, u64 titleId);
 EXPORT_DECL(s32, SYSLaunchSettings, s32 unk);
 
-void InitAcquireSys(void)
-{
+void InitAcquireSys(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("sysapp.rpl", &sysapp_handle);
 }
 
-void InitSysFunctionPointers(void)
-{
+void InitSysFunctionPointers(void){
     u32 *funcPointer = 0;
     InitAcquireSys();
 

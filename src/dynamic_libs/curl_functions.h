@@ -28,7 +28,8 @@
 extern "C" {
 #endif
 
-#include <gctypes.h>
+#include "os_types.h"
+
 #include "socket_functions.h"
 typedef int socklen_t;
 #include <curl/curl.h>

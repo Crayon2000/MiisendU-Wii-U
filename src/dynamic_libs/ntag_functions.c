@@ -26,13 +26,12 @@
 
 u32 ntag_handle __attribute__((section(".data"))) = 0;
 
-void InitAcquireNTAG(void)
-{
+void InitAcquireNTAG(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("ntag.rpl", &ntag_handle);
 }
 
-void InitNTAGFunctionPointers(void)
-{
+void InitNTAGFunctionPointers(void){
     // u32 *funcPointer = 0;
     InitAcquireNTAG();
 }

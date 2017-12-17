@@ -30,13 +30,12 @@ u32 nn_save_handle __attribute__((section(".data"))) = 0;
 EXPORT_DECL(void, SAVEInit, void);
 EXPORT_DECL(int, SAVEOpenFile, void *pClient, void *pCmd, unsigned char user, const char *path, const char *mode, int *fd, int errHandling);
 
-void InitAcquireSave(void)
-{
+void InitAcquireSave(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("nn_save.rpl", &nn_save_handle);
 }
 
-void InitSaveFunctionPointers(void)
-{
+void InitSaveFunctionPointers(void){
     u32 *funcPointer = 0;
     InitAcquireSave();
     OS_FIND_EXPORT(nn_save_handle, SAVEInit);

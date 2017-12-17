@@ -1,8 +1,6 @@
 #ifndef FS_DEFS_H
 #define FS_DEFS_H
 
-#include <gctypes.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

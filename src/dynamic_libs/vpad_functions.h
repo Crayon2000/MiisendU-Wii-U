@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include <gctypes.h>
+#include "os_types.h"
 
 extern u32 vpad_handle;
 extern u32 vpadbase_handle;
@@ -192,6 +192,7 @@ extern s32 (* VPADBASEGetMotorOnRemainingCount)(s32 lcdmode);
 extern s32 (* VPADBASESetMotorOnRemainingCount)(s32 lcdmode, s32 counter);
 extern void (* VPADBASESetSensorBarSetting)(s32 chan, s8 setting);
 extern void (* VPADBASEGetSensorBarSetting)(s32 chan, s8 *setting);
+extern s32 (*VPADSetSensorBar)(s32 chan, bool on);
 
 #ifdef __cplusplus
 }

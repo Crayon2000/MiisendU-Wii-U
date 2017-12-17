@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include <gctypes.h>
+#include "os_types.h"
 
 /* Handle for coreinit */
 extern u32 nn_nim_handle;

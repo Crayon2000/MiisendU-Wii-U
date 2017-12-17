@@ -28,11 +28,11 @@
 extern "C" {
 #endif
 
-#include "dynamic_libs/vpad_functions.h"
+#include "os_types.h"
+
+#include "vpad_functions.h"
 
 extern u32 padscore_handle;
-
-#include <gctypes.h>
 
 #define WPAD_EXT_CORE           0
 #define WPAD_EXT_NUNCHUK        1

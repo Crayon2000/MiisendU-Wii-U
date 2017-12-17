@@ -24,13 +24,21 @@
 #ifndef __OS_FUNCTIONS_H_
 #define __OS_FUNCTIONS_H_
 
-#include <gctypes.h>
-#include "common/os_defs.h"
 #include "os_types.h"
+#include "os_defs.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#ifndef MEM_BASE
+#define MEM_BASE                    (0x00800000)
+#endif
+
+
+#define OS_FIRMWARE                 (*(volatile u32*)(MEM_BASE + 0x1400 + 0x04))
+
+#define OS_SPECIFICS                ((OsSpecifics*)(MEM_BASE + 0x1500))
 
 /* Disassembler */
 typedef void (*DisasmReport)(char *outputBuffer, ...);
@@ -218,6 +226,7 @@ extern s32 (* OSIsAddressValid)(const void *ptr);
 extern s32 (* MCP_Open)(void);
 extern s32 (* MCP_Close)(s32 handle);
 extern s32 (* MCP_GetOwnTitleInfo)(s32 handle, void * data);
+extern void* (* MCP_GetDeviceId)(s32 handle, u32 * id);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! LOADER functions

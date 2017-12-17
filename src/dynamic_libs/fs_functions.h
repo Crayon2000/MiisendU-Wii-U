@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include <gctypes.h>
+#include "os_types.h"
 #include "fs_defs.h"
 
 void InitFSFunctionPointers(void);

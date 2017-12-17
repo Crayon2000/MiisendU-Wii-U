@@ -21,7 +21,6 @@
  * 3. This notice may not be removed or altered from any source
  * distribution.
  ***************************************************************************/
-#include "common/common.h"
 #include "os_functions.h"
 
 u32 coreinit_handle __attribute__((section(".data"))) = 0;
@@ -144,6 +143,7 @@ EXPORT_DECL(s32, OSIsAddressValid, const void *ptr);
 EXPORT_DECL(s32, MCP_Open, void);
 EXPORT_DECL(s32, MCP_Close, s32 handle);
 EXPORT_DECL(s32, MCP_GetOwnTitleInfo, s32 handle, void * data);
+EXPORT_DECL(void*, MCP_GetDeviceId, s32 handle, u32 * id);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Loader functions (not real rpl)
@@ -220,8 +220,7 @@ void _os_find_export(u32 handle, const char *funcName, void *funcPointer)
     }
 }
 
-void InitAcquireOS(void)
-{
+void InitAcquireOS(void){
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Lib handle functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,8 +230,7 @@ void InitAcquireOS(void)
     OSDynLoad_Acquire("coreinit.rpl", &coreinit_handle);
 }
 
-void InitOSFunctionPointers(void)
-{
+void InitOSFunctionPointers(void){
     u32 *funcPointer = 0;
 
     InitAcquireOS();
@@ -328,6 +326,7 @@ void InitOSFunctionPointers(void)
     OS_FIND_EXPORT(coreinit_handle, MCP_Open);
     OS_FIND_EXPORT(coreinit_handle, MCP_Close);
     OS_FIND_EXPORT(coreinit_handle, MCP_GetOwnTitleInfo);
+    OS_FIND_EXPORT(coreinit_handle, MCP_GetDeviceId);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Memory functions

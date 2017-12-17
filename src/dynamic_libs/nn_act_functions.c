@@ -32,13 +32,12 @@ EXPORT_DECL(u8, nn_act_GetSlotNo, void);
 EXPORT_DECL(u8, nn_act_GetDefaultAccount, void);
 EXPORT_DECL(u32, nn_act_GetPersistentIdEx, u8 slot);
 
-void InitAcquireACT(void)
-{
+void InitAcquireACT(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("nn_act.rpl", &nn_act_handle);
 }
 
-void InitACTFunctionPointers(void)
-{
+void InitACTFunctionPointers(void){
     u32 *funcPointer = 0;
     InitAcquireACT();
 

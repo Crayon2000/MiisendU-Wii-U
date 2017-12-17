@@ -21,7 +21,6 @@
  * 3. This notice may not be removed or altered from any source
  * distribution.
  ***************************************************************************/
-#include "common/common.h"
 #include "os_functions.h"
 #include "ax_functions.h"
 
@@ -50,8 +49,8 @@ EXPORT_DECL(u32, AXGetVoiceLoopCount, void *v);
 EXPORT_DECL(void, AXSetVoiceEndOffset, void *v, u32 offset);
 EXPORT_DECL(void, AXSetVoiceLoopOffset, void *v, u32 offset);
 
-void InitAcquireAX(void)
-{
+void InitAcquireAX(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     u32 *funcPointer = 0;
 
     if(OS_FIRMWARE >= 400)
@@ -74,8 +73,7 @@ void InitAcquireAX(void)
     }
 }
 
-void InitAXFunctionPointers(void)
-{
+void InitAXFunctionPointers(void){
     u32 *funcPointer = 0;
 
     InitAcquireAX();

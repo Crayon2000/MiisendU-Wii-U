@@ -29,13 +29,12 @@ u32 proc_ui_handle __attribute__((section(".data"))) = 0;
 EXPORT_DECL(u32, ProcUIInForeground, void);
 EXPORT_DECL(void, ProcUIRegisterCallback, u32 type,ProcUICallback callback,void* param, u32 unkwn);
 
-void InitAcquireProcUI(void)
-{
+void InitAcquireProcUI(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("proc_ui.rpl", &proc_ui_handle);
 }
 
-void InitProcUIFunctionPointers(void)
-{
+void InitProcUIFunctionPointers(void){
     u32 *funcPointer = 0;
     InitAcquireProcUI();
 

@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include <gctypes.h>
+#include "os_types.h"
 
 extern u32 proc_ui_handle;
 

@@ -33,13 +33,12 @@ EXPORT_DECL(CURLcode, n_curl_easy_perform, CURL *curl);
 EXPORT_DECL(void, n_curl_easy_cleanup, CURL *curl);
 EXPORT_DECL(CURLcode, n_curl_easy_getinfo, CURL *curl, CURLINFO info, ...);
 
-void InitAcquireCurl(void)
-{
+void InitAcquireCurl(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("nlibcurl", &libcurl_handle);
 }
 
-void InitCurlFunctionPointers(void)
-{
+void InitCurlFunctionPointers(void){
     InitAcquireCurl();
     u32 *funcPointer = 0;
 

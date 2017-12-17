@@ -35,13 +35,12 @@ EXPORT_DECL(s32, AOC_CloseTitle, void * title);
 EXPORT_DECL(s32, AOC_DeleteContent, u64 title_id, u16 contentIndexes[], u32 numberOfContent, void* buffer, u32 buffer_size);
 EXPORT_DECL(s32, AOC_GetPurchaseInfo, u32 * bResult, u64 title_id, u16 contentIndexes[], u32 numberOfContent, void * buffer, u32 buffer_size);
 
-void InitAcquireAoc(void)
-{
+void InitAcquireAoc(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("nn_aoc.rpl", &aoc_handle);
 }
 
-void InitAocFunctionPointers(void)
-{
+void InitAocFunctionPointers(void){
     InitAcquireAoc();
     if(aoc_handle == 0)
         return;

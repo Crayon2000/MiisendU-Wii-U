@@ -37,13 +37,12 @@ EXPORT_DECL(s32, KPADReadEx, s32 chan, KPADData * data, u32 size, s32 *error);
 EXPORT_DECL(void,WPADSetAutoSleepTime,u8 minute);
 EXPORT_DECL(void,WPADDisconnect,s32 chan);
 
-void InitAcquirePadScore(void)
-{
+void InitAcquirePadScore(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
     OSDynLoad_Acquire("padscore.rpl", &padscore_handle);
 }
 
-void InitPadScoreFunctionPointers(void)
-{
+void InitPadScoreFunctionPointers(void){
     u32 *funcPointer = 0;
     InitAcquirePadScore();
 
