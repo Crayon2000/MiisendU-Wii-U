@@ -18,6 +18,13 @@ typedef struct _OsSpecifics
     unsigned int addr_KernSyscallTbl5;
 } OsSpecifics;
 
+typedef struct _s_mem_area
+{
+    unsigned int        address;
+    unsigned int        size;
+    struct _s_mem_area* next;
+} s_mem_area;
+
 #ifdef __cplusplus
 }
 #endif

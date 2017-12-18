@@ -5,11 +5,10 @@
 #include "dynamic_libs/vpad_functions.h"
 #include "dynamic_libs/padscore_functions.h"
 #include "dynamic_libs/socket_functions.h"
-#include "fs/fs_utils.h"
 #include "fs/sd_fat_devoptab.h"
+#include "system/memory.h"
 #include "vpad_to_json.h"
 #include "udp.h"
-#include "system/memory.h"
 #include <stdio.h>
 #include <malloc.h>
 
@@ -24,7 +23,7 @@ static void PrintHeader(u32 bufferNum)
     OSScreenPutFontEx(bufferNum, 0, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.0.3");
 }
 
-int _entryPoint()
+int _entryPoint(int argc, char **argv)
 {
     unsigned char IP[4] = {192, 168, 1, 100};
     unsigned short Port = 4242;
@@ -40,8 +39,8 @@ int _entryPoint()
 
     // Init screen and screen buffers
     OSScreenInit();
-    u8 *ScreenBuffer0 = MEM1_alloc(OSScreenGetBufferSizeEx(0), 0x40);
-    u8 *ScreenBuffer1 = MEM1_alloc(OSScreenGetBufferSizeEx(1), 0x40);
+    void *ScreenBuffer0 = MEM1_alloc(OSScreenGetBufferSizeEx(0), 0x40);
+    void *ScreenBuffer1 = MEM1_alloc(OSScreenGetBufferSizeEx(1), 0x40);
     OSScreenSetBufferEx(0, ScreenBuffer0);
     OSScreenSetBufferEx(1, ScreenBuffer1);
     OSScreenEnableEx(0, 1);
@@ -55,7 +54,7 @@ int _entryPoint()
     s32 error;
     VPADData vpad_data;
 
-    char * IP_str = malloc(32);
+    char * IP_str = (char*)malloc(32);
     s8 selected_digit = 0;
 
     // Read default settings from file
@@ -116,14 +115,14 @@ int _entryPoint()
     free(IP_str);
 
     // Get IP Address (without spaces)
-    char * IP_ADDRESS = malloc(32);
+    char * IP_ADDRESS = (char*)malloc(32);
     snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
 
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
     // Output the IP address
-    char * msg_connected = malloc(255);
+    char * msg_connected = (char*)malloc(255);
     snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
     // Clear the screen
