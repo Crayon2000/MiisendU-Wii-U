@@ -20,7 +20,7 @@ static void PrintHeader(u32 bufferNum)
     OSScreenPutFontEx(bufferNum, 0, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
     OSScreenPutFontEx(bufferNum, 0, 1, "| | | |___ ___ _ _  __| |  \\/  (_|_)  / __| (_)___ _ _| |");
     OSScreenPutFontEx(bufferNum, 0, 2, "| |_| (_-</ -_) ' \\/ _` | |\\/| | | | | (__| | / -_) ' \\  _|");
-    OSScreenPutFontEx(bufferNum, 0, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.0.3");
+    OSScreenPutFontEx(bufferNum, 0, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.1.0");
 }
 
 int _entryPoint(int argc, char **argv)
@@ -133,7 +133,7 @@ int _entryPoint(int argc, char **argv)
     PrintHeader(0);
     OSScreenPutFontEx(0, 0, 5, msg_connected);
     OSScreenPutFontEx(0, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(0, 0, 8, "UsendMii running on your computer.");
+    OSScreenPutFontEx(0, 0, 8, "UsendMii 0.6.0 running on your computer.");
     OSScreenPutFontEx(0, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(0, 0, 16, "Hold the HOME button to exit.");
 
@@ -141,7 +141,7 @@ int _entryPoint(int argc, char **argv)
     PrintHeader(1);
     OSScreenPutFontEx(1, 0, 5, msg_connected);
     OSScreenPutFontEx(1, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(1, 0, 8, "UsendMii running on your computer.");
+    OSScreenPutFontEx(1, 0, 8, "UsendMii 0.6.0 running on your computer.");
     OSScreenPutFontEx(1, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(1, 0, 16, "Hold the HOME button to exit.");
 

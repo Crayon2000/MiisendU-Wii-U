@@ -25,7 +25,7 @@ void log_init_(){
 	memset(&connect_addr, 0, sizeof(struct sockaddr_in));
 	connect_addr.sin_family = AF_INET;
 	connect_addr.sin_port = 4405;
-    connect_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);	
+    connect_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 }
 
 void log_print_(const char *str){
@@ -33,11 +33,11 @@ void log_print_(const char *str){
     if(log_socket < 0) {
         return;
     }
-	
+
     while(log_lock)
         os_usleep(1000);
     log_lock = 1;
-	
+
     int len = strlen(str);
     int ret;
     while (len > 0) {
@@ -53,13 +53,23 @@ void log_print_(const char *str){
     log_lock = 0;
 }
 
+void OSFatal_printf(const char *format, ...){
+	char * tmp = NULL;
+	va_list va;
+	va_start(va, format);
+	if((vasprintf(&tmp, format, va) >= 0) && tmp){
+        OSFatal(tmp);
+	}
+	va_end(va);
+}
+
 void log_printf_(const char *format, ...)
 {
     if(log_socket < 0) {
         return;
     }
 
-	
+
 	char * tmp = NULL;
 
 	va_list va;

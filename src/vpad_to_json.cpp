@@ -13,8 +13,11 @@ void pad_to_json(PADData pad_data, char* out, u32 out_size)
     VPADTPData TPCalibrated;
     VPADGetTPCalibratedPointEx(0, VPAD_TP_854x480, &TPCalibrated, &pad_data.vpad->tpdata);
 
+    json_t *root = json_object();
+
     // Wii U Gamepad
     json_t *wiiugamepad = json_object();
+    json_object_set_new_nocheck(root, "wiiUGamePad", wiiugamepad);
     json_object_set_new_nocheck(wiiugamepad, "hold", json_integer(pad_data.vpad->btns_h));
     json_object_set_new_nocheck(wiiugamepad, "tpTouch", json_integer(TPCalibrated.touched));
     json_object_set_new_nocheck(wiiugamepad, "tpValidity", json_integer(TPCalibrated.invalid));
@@ -45,9 +48,9 @@ void pad_to_json(PADData pad_data, char* out, u32 out_size)
     json_object_set_new_nocheck(wiiugamepad, "dirZz", json_real(pad_data.vpad->dir.Z.z));
 
     // Convert to string
-    char* s = json_dumps(wiiugamepad, JSON_COMPACT | JSON_REAL_PRECISION(10));
+    char* s = json_dumps(root, JSON_COMPACT | JSON_REAL_PRECISION(10));
     strncpy(out, s, out_size);
     free(s);
 
-    json_decref(wiiugamepad);
+    json_decref(root);
 }
