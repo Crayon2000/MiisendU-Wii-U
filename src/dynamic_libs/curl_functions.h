@@ -43,7 +43,12 @@ extern CURL * (* n_curl_easy_init)(void);
 extern CURLcode (* n_curl_easy_setopt)(CURL *curl, CURLoption option, ...);
 extern CURLcode (* n_curl_easy_perform)(CURL *curl);
 extern void (* n_curl_easy_cleanup)(CURL *curl);
+extern void (* n_curl_easy_reset)(CURL *curl);
 extern CURLcode (* n_curl_easy_getinfo)(CURL *curl, CURLINFO info, ...);
+extern CURLFORMcode (* n_curl_formadd)(struct curl_httppost **firstitem, struct curl_httppost **lastitem, ...);
+extern void (* n_curl_formfree)(struct curl_httppost *form);
+extern struct curl_slist * (* n_curl_slist_append)(struct curl_slist *list, const char *string);
+extern void (* n_curl_slist_free_all)(struct curl_slist *list);
 
 #ifdef __cplusplus
 }

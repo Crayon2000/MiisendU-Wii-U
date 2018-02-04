@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+* 
+
 ## [0.1.0]
 * Compatible with UsendMii 0.6.0.
 
@@ -14,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ## 0.0.1
 * Initial release.
 
+[Unreleased]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.1...v0.0.2

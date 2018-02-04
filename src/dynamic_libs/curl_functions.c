@@ -31,7 +31,12 @@ EXPORT_DECL(CURL *, n_curl_easy_init, void);
 EXPORT_DECL(CURLcode, n_curl_easy_setopt, CURL *curl, CURLoption option, ...);
 EXPORT_DECL(CURLcode, n_curl_easy_perform, CURL *curl);
 EXPORT_DECL(void, n_curl_easy_cleanup, CURL *curl);
+EXPORT_DECL(void, n_curl_easy_reset, CURL *curl);
 EXPORT_DECL(CURLcode, n_curl_easy_getinfo, CURL *curl, CURLINFO info, ...);
+EXPORT_DECL(CURLFORMcode, n_curl_formadd, struct curl_httppost **firstitem, struct curl_httppost **lastitem, ...);
+EXPORT_DECL(void, n_curl_formfree, struct curl_httppost *form);
+EXPORT_DECL(struct curl_slist *, n_curl_slist_append, struct curl_slist *list, const char *string);
+EXPORT_DECL(void, n_curl_slist_free_all, struct curl_slist *list);
 
 void InitAcquireCurl(void){
     if(coreinit_handle == 0){ InitAcquireOS(); };
@@ -47,7 +52,12 @@ void InitCurlFunctionPointers(void){
     OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_setopt, n_curl_easy_setopt);
     OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_perform, n_curl_easy_perform);
     OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_cleanup, n_curl_easy_cleanup);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_reset, n_curl_easy_reset);
     OS_FIND_EXPORT_EX(libcurl_handle, curl_easy_getinfo, n_curl_easy_getinfo);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_formadd, n_curl_formadd);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_formfree, n_curl_formfree);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_slist_append, n_curl_slist_append);
+    OS_FIND_EXPORT_EX(libcurl_handle, curl_slist_free_all, n_curl_slist_free_all);
 
     n_curl_global_init(CURL_GLOBAL_ALL);
 }
