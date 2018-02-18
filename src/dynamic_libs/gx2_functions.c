@@ -93,6 +93,13 @@ EXPORT_DECL(s32, GX2GetSystemDRCScanMode, void);
 EXPORT_DECL(void, GX2RSetAllocator, void * (* allocFunc)(u32, u32, u32), void (* freeFunc)(u32, void*));
 EXPORT_DECL(void, GX2CopySurface, GX2Surface * srcSurface,u32 srcMip,u32 srcSlice,GX2Surface * dstSurface,u32 dstMip,u32 dstSlice );
 
+EXPORT_DECL(s32, GX2GetLastFrame, s32 target, GX2Texture * texture);
+EXPORT_DECL(void, GX2BeginDisplayListEx,void * displayList,u32 size,s32 unkwn);
+EXPORT_DECL(u32, GX2EndDisplayList, void * list);
+EXPORT_DECL(void, GX2CallDisplayList, void * list, u32 size);
+EXPORT_DECL(void, GX2ExpandAAColorBuffer,GX2ColorBuffer * buffer); 	
+EXPORT_DECL(void, GX2ResolveAAColorBuffer, const GX2ColorBuffer * srcBuffer, GX2Surface * dstSurface,u32 dstMip,u32 dstSlice);
+
 EXPORT_DECL(void, GX2ClearBuffersEx, GX2ColorBuffer * colorBuffer,GX2DepthBuffer * depthBuffer,f32 r, f32 g, f32 b, f32 a,f32 depthValue,u8 stencilValue,s32 clearFlags);
 
 void InitAcquireGX2(void){
@@ -167,6 +174,12 @@ void InitGX2FunctionPointers(void){
     OS_FIND_EXPORT(gx2_handle, GX2GetSystemDRCScanMode);
     OS_FIND_EXPORT(gx2_handle, GX2RSetAllocator);
     OS_FIND_EXPORT(gx2_handle, GX2CopySurface);
+    OS_FIND_EXPORT(gx2_handle, GX2GetLastFrame);
     OS_FIND_EXPORT(gx2_handle, GX2ClearBuffersEx);
+    OS_FIND_EXPORT(gx2_handle, GX2BeginDisplayListEx);
+    OS_FIND_EXPORT(gx2_handle, GX2EndDisplayList);
+    OS_FIND_EXPORT(gx2_handle, GX2CallDisplayList);
+    OS_FIND_EXPORT(gx2_handle, GX2ExpandAAColorBuffer);    
+    OS_FIND_EXPORT(gx2_handle, GX2ResolveAAColorBuffer);    
     OS_FIND_EXPORT(gx2_handle, GX2SetClearDepthStencil);
 }

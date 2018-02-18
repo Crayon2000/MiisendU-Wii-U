@@ -125,6 +125,8 @@ EXPORT_VAR(u32 *, pMEMAllocFromDefaultHeapEx);
 EXPORT_VAR(u32 *, pMEMAllocFromDefaultHeap);
 EXPORT_VAR(u32 *, pMEMFreeToDefaultHeap);
 
+EXPORT_DECL(void *, MEMAllocFromAllocator, void * allocator, u32 size);
+EXPORT_DECL(void, MEMFreeToAllocator, void * allocator, void* address);
 EXPORT_DECL(s32, MEMGetBaseHeapHandle, s32 mem_arena);
 EXPORT_DECL(u32, MEMGetAllocatableSizeForFrmHeapEx, s32 heap, s32 align);
 EXPORT_DECL(void *, MEMAllocFromFrmHeapEx, s32 heap, u32 size, s32 align);
@@ -164,6 +166,9 @@ EXPORT_DECL(void, addr_PrepareTitle_hook, void);
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 EXPORT_DECL(void, DCInvalidateRange, void *buffer, u32 length);
 EXPORT_DECL(s32, OSDynLoad_GetModuleName, s32 handle, char *name_buffer, s32 *name_buffer_size);
+EXPORT_DECL(s32, OSIsHomeButtonMenuEnabled, void);
+EXPORT_DECL(s32, OSSetScreenCapturePermissionEx, s32 tvEnabled, s32 drcEnabled);
+
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Energy Saver functions
@@ -335,6 +340,8 @@ void InitOSFunctionPointers(void){
     OSDynLoad_FindExport(coreinit_handle, 1, "MEMAllocFromDefaultHeap", &pMEMAllocFromDefaultHeap);
     OSDynLoad_FindExport(coreinit_handle, 1, "MEMFreeToDefaultHeap", &pMEMFreeToDefaultHeap);
 
+    OS_FIND_EXPORT(coreinit_handle, MEMAllocFromAllocator);
+    OS_FIND_EXPORT(coreinit_handle, MEMFreeToAllocator);
     OS_FIND_EXPORT(coreinit_handle, MEMGetBaseHeapHandle);
     OS_FIND_EXPORT(coreinit_handle, MEMGetAllocatableSizeForFrmHeapEx);
     OS_FIND_EXPORT(coreinit_handle, MEMAllocFromFrmHeapEx);
@@ -352,6 +359,8 @@ void InitOSFunctionPointers(void){
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OS_FIND_EXPORT(coreinit_handle, DCInvalidateRange);
     OS_FIND_EXPORT(coreinit_handle, OSDynLoad_GetModuleName);
+    OS_FIND_EXPORT(coreinit_handle, OSIsHomeButtonMenuEnabled);
+    OS_FIND_EXPORT(coreinit_handle, OSSetScreenCapturePermissionEx);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Energy Saver functions

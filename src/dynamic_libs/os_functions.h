@@ -208,6 +208,8 @@ extern u32 *pMEMAllocFromDefaultHeapEx;
 extern u32 *pMEMAllocFromDefaultHeap;
 extern u32 *pMEMFreeToDefaultHeap;
 
+extern void* (* MEMAllocFromAllocator) (void * allocator, u32 size);
+extern void (* MEMFreeToAllocator) (void * allocator, void* address);
 extern s32 (* MEMGetBaseHeapHandle)(s32 mem_arena);
 extern u32 (* MEMGetAllocatableSizeForFrmHeapEx)(s32 heap, s32 align);
 extern void* (* MEMAllocFromFrmHeapEx)(s32 heap, u32 size, s32 align);
@@ -247,6 +249,8 @@ extern void (* addr_PrepareTitle_hook)(void);
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 extern void (*DCInvalidateRange)(void *buffer, u32 length);
 extern s32 (*OSDynLoad_GetModuleName)(s32 handle, char *name_buffer, s32 *name_buffer_size);
+extern s32 (*OSIsHomeButtonMenuEnabled) (void);
+extern s32 (*OSSetScreenCapturePermissionEx) (s32 tvEnabled, s32 drcEnabled);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Energy Saver functions
