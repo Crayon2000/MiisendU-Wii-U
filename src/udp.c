@@ -85,18 +85,3 @@ void udp_printf(const char *format, ...)
     if(tmp)
         free(tmp);
 }
-
-// Similar to the parseBytes function from Luis Chavier on stackoverflow
-void udp_string_to_ipv4(const char* str, unsigned char* bytes, unsigned char maxBytes)
-{
-    for (int i = 0; i < maxBytes; i++)
-    {
-        bytes[i] = atoi(str);             // Convert byte
-        str = strchr(str, '.');           // Find next separator
-        if (str == NULL || *str == '\0')
-        {
-            break;                        // No more separators, exit
-        }
-        str++;                            // Point to next character after separator
-    }
-}

@@ -25,7 +25,7 @@ static void PrintHeader(u32 bufferNum)
 
 int _entryPoint(int argc, char **argv)
 {
-    unsigned char IP[4] = {192, 168, 1, 100};
+    u8 IP[4] = {192, 168, 1, 100};
     unsigned short Port = 4242;
 
     InitOSFunctionPointers();
@@ -62,7 +62,7 @@ int _entryPoint(int argc, char **argv)
     if (ini != NULL) {
         const char * temp = iniparser_getstring(ini, "server:ipaddress", NULL);
         if (temp != NULL) {
-            udp_string_to_ipv4(temp, IP, 4);
+            inet_pton(AF_INET, temp, &IP);
         }
         Port = iniparser_getint(ini, "server:port", Port);
         iniparser_freedict(ini);

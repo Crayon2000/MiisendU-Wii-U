@@ -44,6 +44,8 @@ EXPORT_DECL(s32, sendto, s32 s, const void *buffer, s32 size, s32 flags, const s
 EXPORT_DECL(s32, setsockopt, s32 s, s32 level, s32 optname, void *optval, s32 optlen);
 EXPORT_DECL(char *, inet_ntoa, struct in_addr in);
 EXPORT_DECL(s32, inet_aton, const char *cp, struct in_addr *inp);
+EXPORT_DECL(const char *, inet_ntop, s32 af, const void *src, char *dst, s32 size);
+EXPORT_DECL(s32, inet_pton, s32 af, const char *src, void *dst);
 EXPORT_DECL(s32, socketlasterr, void);
 
 EXPORT_DECL(s32, NSSLWrite, s32 connection, const void* buf, s32 len,s32 * written);
@@ -88,6 +90,8 @@ void InitSocketFunctionPointers(void){
     OS_FIND_EXPORT(nsysnet_handle, setsockopt);
     OS_FIND_EXPORT(nsysnet_handle, inet_ntoa);
     OS_FIND_EXPORT(nsysnet_handle, inet_aton);
+    OS_FIND_EXPORT(nsysnet_handle, inet_ntop);
+    OS_FIND_EXPORT(nsysnet_handle, inet_pton);
 
     OS_FIND_EXPORT(nsysnet_handle, NSSLWrite);
     OS_FIND_EXPORT(nsysnet_handle, NSSLRead);

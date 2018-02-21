@@ -107,9 +107,9 @@ extern s32 (* GX2GetLastFrame)(s32 target, GX2Texture * texture);
 extern void (* GX2BeginDisplayListEx)(void * displayList,u32 size,s32 unkwn);
 extern u32 (*GX2EndDisplayList)(void * list);
 extern void (*GX2CallDisplayList)(void * list, u32 size);
-extern void (*GX2ExpandAAColorBuffer)(GX2ColorBuffer * buffer); 
+extern void (*GX2ExpandAAColorBuffer)(GX2ColorBuffer * buffer);
 extern void (*GX2ResolveAAColorBuffer)(const GX2ColorBuffer * srcBuffer, GX2Surface * dstSurface,u32 dstMip,u32 dstSlice);
-    
+
 static inline void GX2InitDepthBuffer(GX2DepthBuffer *depthBuffer, s32 dimension, u32 width, u32 height, u32 depth, s32 format, s32 aa)
 {
     depthBuffer->surface.dimension = dimension;

@@ -110,6 +110,8 @@ extern s32 (* NSSLCreateConnection)(s32 context, const char* host, s32 hotlen,s3
 
 extern char * (*inet_ntoa)(struct in_addr in);
 extern s32 (*inet_aton)(const char *cp, struct in_addr *inp);
+extern const char * (*inet_ntop)(s32 af, const void *src, char *dst, s32 size);
+extern s32 (*inet_pton)(s32 af, const char *src, void *dst);
 
 #ifdef __cplusplus
 }
