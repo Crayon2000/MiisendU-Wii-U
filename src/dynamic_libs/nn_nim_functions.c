@@ -26,12 +26,14 @@
 
 u32 nn_nim_handle __attribute__((section(".data"))) = 0;
 
-void InitAcquireNim(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitAcquireNim(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     OSDynLoad_Acquire("nn_nim.rpl", &nn_nim_handle);
 }
 
-void InitNimFunctionPointers(void){
+void InitNimFunctionPointers(void) {
     // u32 *funcPointer = 0;
     InitAcquireNim();
 }

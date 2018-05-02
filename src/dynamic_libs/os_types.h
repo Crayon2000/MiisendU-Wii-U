@@ -82,7 +82,7 @@ typedef struct OSMessage_ {
     u32 data0;
     u32 data1;
     u32 data2;
-}OSMessage;
+} OSMessage;
 
 typedef struct OSMessageQueue_ {
     u32 tag;
@@ -140,23 +140,22 @@ typedef struct OSContext_ {
     u32 mmcr1;
 } OSContext;
 
-typedef enum OSExceptionType
-{
-   OS_EXCEPTION_TYPE_SYSTEM_RESET         = 0,
-   OS_EXCEPTION_TYPE_MACHINE_CHECK        = 1,
-   OS_EXCEPTION_TYPE_DSI                  = 2,
-   OS_EXCEPTION_TYPE_ISI                  = 3,
-   OS_EXCEPTION_TYPE_EXTERNAL_INTERRUPT   = 4,
-   OS_EXCEPTION_TYPE_ALIGNMENT            = 5,
-   OS_EXCEPTION_TYPE_PROGRAM              = 6,
-   OS_EXCEPTION_TYPE_FLOATING_POINT       = 7,
-   OS_EXCEPTION_TYPE_DECREMENTER          = 8,
-   OS_EXCEPTION_TYPE_SYSTEM_CALL          = 9,
-   OS_EXCEPTION_TYPE_TRACE                = 10,
-   OS_EXCEPTION_TYPE_PERFORMANCE_MONITOR  = 11,
-   OS_EXCEPTION_TYPE_BREAKPOINT           = 12,
-   OS_EXCEPTION_TYPE_SYSTEM_INTERRUPT     = 13,
-   OS_EXCEPTION_TYPE_ICI                  = 14,
+typedef enum OSExceptionType {
+    OS_EXCEPTION_TYPE_SYSTEM_RESET         = 0,
+    OS_EXCEPTION_TYPE_MACHINE_CHECK        = 1,
+    OS_EXCEPTION_TYPE_DSI                  = 2,
+    OS_EXCEPTION_TYPE_ISI                  = 3,
+    OS_EXCEPTION_TYPE_EXTERNAL_INTERRUPT   = 4,
+    OS_EXCEPTION_TYPE_ALIGNMENT            = 5,
+    OS_EXCEPTION_TYPE_PROGRAM              = 6,
+    OS_EXCEPTION_TYPE_FLOATING_POINT       = 7,
+    OS_EXCEPTION_TYPE_DECREMENTER          = 8,
+    OS_EXCEPTION_TYPE_SYSTEM_CALL          = 9,
+    OS_EXCEPTION_TYPE_TRACE                = 10,
+    OS_EXCEPTION_TYPE_PERFORMANCE_MONITOR  = 11,
+    OS_EXCEPTION_TYPE_BREAKPOINT           = 12,
+    OS_EXCEPTION_TYPE_SYSTEM_INTERRUPT     = 13,
+    OS_EXCEPTION_TYPE_ICI                  = 14,
 } OSExceptionType;
 
 typedef int (*ThreadFunc)(int argc, void *argv);
@@ -184,18 +183,30 @@ struct OSThread_ {
 };
 
 typedef struct _OSCalendarTime {
-  int sec;
-  int min;
-  int hour;
-  int mday;
-  int mon;
-  int year;
-  int wday;
-  int yday;
-  int msec;
-  int usec;
+    int sec;
+    int min;
+    int hour;
+    int mday;
+    int mon;
+    int year;
+    int wday;
+    int yday;
+    int msec;
+    int usec;
 } OSCalendarTime;
 
+
+typedef struct MCPTitleListType {
+    u64 titleId;
+    u8 unknwn[4];
+    s8 path[56];
+    u32 appType;
+    u8 unknwn1[0x54 - 0x48];
+    u8 device;
+    u8 unknwn2;
+    s8 indexedDevice[10];
+    u8 unk0x60;
+} MCPTitleListType;
 
 #ifdef __cplusplus
 }

@@ -21,46 +21,41 @@
 #include "CThread.h"
 #include "CMutex.h"
 
-class AsyncDeleter : public CThread
-{
+class AsyncDeleter : public CThread {
 public:
-    static void destroyInstance()
-    {
-        if(deleterInstance != NULL){
+    static void destroyInstance() {
+        if(deleterInstance != NULL) {
             delete deleterInstance;
             deleterInstance = NULL;
         }
     }
 
-    class Element
-    {
+    class Element {
     public:
         Element() {}
         virtual ~Element() {}
     };
 
-    static void pushForDelete(AsyncDeleter::Element *e)
-    {
-        if(!deleterInstance)
+    static void pushForDelete(AsyncDeleter::Element *e) {
+        if(!deleterInstance) {
             deleterInstance = new AsyncDeleter;
+        }
         deleterInstance->deleteElements.push(e);
     }
 
-     static bool deleteListEmpty()
-    {
-        if(!deleterInstance)
+    static bool deleteListEmpty() {
+        if(!deleterInstance) {
             return true;
+        }
         return deleterInstance->deleteElements.empty();
     }
 
-     static bool realListEmpty()
-    {
-        if(!deleterInstance)
+    static bool realListEmpty() {
+        if(!deleterInstance) {
             return true;
+        }
         return deleterInstance->realDeleteElements.empty();
     }
-
-
 
     static void triggerDeleteProcess(void);
 

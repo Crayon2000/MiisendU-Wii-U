@@ -9,8 +9,7 @@ extern "C" {
 #endif
 
 // original structure in the kernel that is originally 0x1270 long
-typedef struct
-{
+typedef struct {
     uint32_t version_cos_xml;           // version tag from cos.xml
     uint64_t os_version;                // os_version from app.xml
     uint64_t title_id;                  // title_id tag from app.xml
@@ -71,8 +70,7 @@ typedef struct
 
 // Our own cos/app.xml struct which uses only uses as much memory as really needed, since many things are just zeros in the above structure
 // This structure is only 0x64 bytes long + RPX name length (dynamic up to 0x1000 theoretically)
-typedef struct
-{
+typedef struct {
     uint32_t version_cos_xml;           // version tag from cos.xml
     uint64_t os_version;                // os_version from app.xml
     uint64_t title_id;                  // title_id tag from app.xml

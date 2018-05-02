@@ -41,6 +41,9 @@ extern "C" {
 
 unsigned int getApplicationEndAddr(void);
 
+//Need to have log_init() called beforehand.
+void dumpHex(const void* data, size_t size);
+
 #ifdef __cplusplus
 }
 #endif

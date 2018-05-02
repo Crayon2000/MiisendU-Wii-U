@@ -22,18 +22,22 @@
  * distribution.
  ***************************************************************************/
 #include "os_functions.h"
-#include "nfp_functions.h"
+#include "nn_fp_functions.h"
 
-u32 nfp_handle __attribute__((section(".data"))) = 0;
+u32 nn_fp_handle __attribute__((section(".data"))) = 0;
 
-void InitAcquireNFP(void) {
-    if(coreinit_handle == 0) {
-        InitAcquireOS();
-    };
-    OSDynLoad_Acquire("nn_nfp.rpl", &nfp_handle);
+EXPORT_DECL(void, nn_fp_GetMyPresence, void *);
+EXPORT_DECL(void, nn_fp_Initialize, void);
+
+void InitAcquireFp(void){
+    if(coreinit_handle == 0){ InitAcquireOS(); };
+    OSDynLoad_Acquire("nn_fp.rpl", &nn_fp_handle);
 }
 
-void InitNFPFunctionPointers(void) {
-    // u32 *funcPointer = 0;
-    InitAcquireNFP();
+void InitFpFunctionPointers(void){
+    u32 *funcPointer = 0;
+    InitAcquireFp();
+    
+    OS_FIND_EXPORT_EX(nn_fp_handle, GetMyPresence__Q2_2nn2fpFPQ3_2nn2fp10MyPresence, nn_fp_GetMyPresence)
+    OS_FIND_EXPORT_EX(nn_fp_handle, Initialize__Q2_2nn2fpFv, nn_fp_Initialize)
 }

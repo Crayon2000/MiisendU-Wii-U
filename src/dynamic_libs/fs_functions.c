@@ -78,8 +78,10 @@ EXPORT_DECL(s32, FSMakeQuotaAsync ,void *pClient, void *pCmd, const char *path,u
 
 EXPORT_DECL(s32, FSGetCwd,void * client,void * block,char * buffer,u32 bufferSize,u32 flags);
 
-void InitFSFunctionPointers(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitFSFunctionPointers(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     u32 *funcPointer = 0;
 
     OS_FIND_EXPORT(coreinit_handle, FSInit);

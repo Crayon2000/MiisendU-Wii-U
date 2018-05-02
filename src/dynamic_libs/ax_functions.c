@@ -49,21 +49,20 @@ EXPORT_DECL(u32, AXGetVoiceLoopCount, void *v);
 EXPORT_DECL(void, AXSetVoiceEndOffset, void *v, u32 offset);
 EXPORT_DECL(void, AXSetVoiceLoopOffset, void *v, u32 offset);
 
-void InitAcquireAX(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitAcquireAX(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     u32 *funcPointer = 0;
 
-    if(OS_FIRMWARE >= 400)
-    {
+    if(OS_FIRMWARE >= 400) {
         AXInit = 0;
 
         OSDynLoad_Acquire("snd_core.rpl", &sound_handle_old);
         OSDynLoad_Acquire("sndcore2.rpl", &sound_handle);
         OS_FIND_EXPORT(sound_handle, AXInitWithParams);
         OS_FIND_EXPORT(sound_handle, AXGetInputSamplesPerSec);
-    }
-    else
-    {
+    } else {
         AXInitWithParams = 0;
         AXGetInputSamplesPerSec = 0;
 
@@ -73,7 +72,7 @@ void InitAcquireAX(void){
     }
 }
 
-void InitAXFunctionPointers(void){
+void InitAXFunctionPointers(void) {
     u32 *funcPointer = 0;
 
     InitAcquireAX();
@@ -97,8 +96,7 @@ void InitAXFunctionPointers(void){
     OS_FIND_EXPORT(sound_handle, AXSetVoiceLoopOffset);
 }
 
-void ProperlyEndTransitionAudio(void)
-{
+void ProperlyEndTransitionAudio(void) {
     bool (* check_os_audio_transition_flag_old)(void);
     void (* AXInit_old)(void);
     void (* AXQuit_old)(void);
@@ -111,8 +109,7 @@ void ProperlyEndTransitionAudio(void)
     OS_FIND_EXPORT_EX(sound_handle, AXInit, AXInit_old);
     OS_FIND_EXPORT_EX(sound_handle, AXQuit, AXQuit_old);
 
-    if (check_os_audio_transition_flag_old())
-    {
+    if (check_os_audio_transition_flag_old()) {
         AXInit_old();
         AXQuit_old();
     }

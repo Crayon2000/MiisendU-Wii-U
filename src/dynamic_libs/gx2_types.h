@@ -590,8 +590,7 @@ typedef struct _GX2FetchShader {
     u32 divisor[3];
 } GX2FetchShader;
 
-typedef struct _GX2AttribVar
-{
+typedef struct _GX2AttribVar {
     const char *name;
     s32 var_type;
     u32 array_count;
@@ -610,15 +609,13 @@ typedef struct _GX2UniformInitialValue {
     u32 offset;
 } GX2UniformInitialValue;
 
-typedef struct _GX2SamplerVar
-{
+typedef struct _GX2SamplerVar {
     const char *name;
     s32 sampler_type;
     u32 location;
 } GX2SamplerVar;
 
-typedef struct _GX2UniformVar
-{
+typedef struct _GX2UniformVar {
     const char *name;
     s32 var_type;
     u32 array_count;

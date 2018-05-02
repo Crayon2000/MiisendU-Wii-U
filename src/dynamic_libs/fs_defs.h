@@ -36,14 +36,13 @@ extern "C" {
 
 typedef struct FSClient_ {
     u8 buffer[FS_CLIENT_SIZE];
-}FSClient;
+} FSClient;
 
 typedef struct FSCmdBlock_ {
     u8 buffer[FS_CMD_BLOCK_SIZE];
 } FSCmdBlock;
 
-typedef struct
-{
+typedef struct {
     u32 flag;
     u32 permission;
     u32 owner_id;
@@ -57,28 +56,26 @@ typedef struct
     u8 attributes[48];
 } __attribute__((packed)) FSStat;
 
-typedef struct
-{
+typedef struct {
     FSStat      stat;
     char        name[FS_MAX_ENTNAME_SIZE];
 } FSDirEntry;
 
 typedef void (*FSAsyncCallback)(FSClient * pClient, FSCmdBlock * pCmd, s32 result, void *context);
-typedef struct
-{
+typedef struct {
     FSAsyncCallback userCallback;
     void            *userContext;
     OSMessageQueue  *ioMsgQueue;
 } FSAsyncParams;
 
-typedef struct{
+typedef struct {
     void*               data; // pointer to a FSAsyncResult;
     u32                 unkwn1;
     u32                 unkwn2;
     u32                 unkwn3; // always 0x08
 } __attribute__((packed)) FSMessage;
 
-typedef struct FSAsyncResult_{
+typedef struct FSAsyncResult_ {
     FSAsyncParams       userParams;
     FSMessage           ioMsg;
 

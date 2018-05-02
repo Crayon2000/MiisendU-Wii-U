@@ -82,8 +82,8 @@ EXPORT_DECL(void, GX2SetDRCEnable, s32 enable);
 EXPORT_DECL(void, GX2SetPolygonControl, s32 front_face_mode, s32 cull_front, s32 cull_back, s32 enable_mode, s32 mode_font, s32 mode_back, s32 poly_offset_front, s32 poly_offset_back, s32 point_line_offset);
 EXPORT_DECL(void, GX2SetCullOnlyControl, s32 front_face_mode, s32 cull_front, s32 cull_back);
 EXPORT_DECL(void, GX2SetDepthStencilControl, s32 enable_depth_test, s32 enable_depth_write, s32 depth_comp_function,  s32 stencil_test_enable, s32 back_stencil_enable,
-                                   s32 font_stencil_func, s32 front_stencil_z_pass, s32 front_stencil_z_fail, s32 front_stencil_fail,
-                                   s32 back_stencil_func, s32 back_stencil_z_pass, s32 back_stencil_z_fail, s32 back_stencil_fail);
+            s32 font_stencil_func, s32 front_stencil_z_pass, s32 front_stencil_z_fail, s32 front_stencil_fail,
+            s32 back_stencil_func, s32 back_stencil_z_pass, s32 back_stencil_z_fail, s32 back_stencil_fail);
 EXPORT_DECL(void, GX2SetStencilMask, u8 mask_front, u8 write_mask_front, u8 ref_front, u8 mask_back, u8 write_mask_back, u8 ref_back);
 EXPORT_DECL(void, GX2SetLineWidth, f32 width);
 EXPORT_DECL(void, GX2SetTVGamma, f32 val);
@@ -102,12 +102,14 @@ EXPORT_DECL(void, GX2ResolveAAColorBuffer, const GX2ColorBuffer * srcBuffer, GX2
 
 EXPORT_DECL(void, GX2ClearBuffersEx, GX2ColorBuffer * colorBuffer,GX2DepthBuffer * depthBuffer,f32 r, f32 g, f32 b, f32 a,f32 depthValue,u8 stencilValue,s32 clearFlags);
 
-void InitAcquireGX2(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitAcquireGX2(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     OSDynLoad_Acquire("gx2.rpl", &gx2_handle);
 }
 
-void InitGX2FunctionPointers(void){
+void InitGX2FunctionPointers(void) {
     u32 *funcPointer = 0;
     InitAcquireGX2();
 

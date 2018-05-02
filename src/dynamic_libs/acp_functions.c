@@ -26,14 +26,16 @@
 
 u32 acp_handle __attribute__((section(".data"))) = 0;
 
-EXPORT_DECL(void, GetMetaXml, void * _ACPMetaXml);
+EXPORT_DECL(void, GetMetaXml, ACPMetaXml * _ACPMetaXml);
 
-void InitAcquireACP(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitAcquireACP(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     OSDynLoad_Acquire("nn_acp.rpl", &acp_handle);
 }
 
-void InitACPFunctionPointers(void){
+void InitACPFunctionPointers(void) {
     InitAcquireACP();
     OSDynLoad_FindExport(acp_handle,0,"GetMetaXml__Q2_2nn3acpFP11_ACPMetaXml",&GetMetaXml);
 }

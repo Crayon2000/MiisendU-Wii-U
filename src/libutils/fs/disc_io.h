@@ -4,7 +4,7 @@
 
  Copyright (c) 2006 Michael "Chishm" Chisholm
  Based on code originally written by MightyMax
-	
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
 
@@ -53,14 +53,14 @@ typedef bool (* FN_MEDIUM_CLEARSTATUS)(void) ;
 typedef bool (* FN_MEDIUM_SHUTDOWN)(void) ;
 
 struct DISC_INTERFACE_STRUCT {
-	unsigned long			ioType ;
-	unsigned long			features ;
-	FN_MEDIUM_STARTUP		startup ;
-	FN_MEDIUM_ISINSERTED	isInserted ;
-	FN_MEDIUM_READSECTORS	readSectors ;
-	FN_MEDIUM_WRITESECTORS	writeSectors ;
-	FN_MEDIUM_CLEARSTATUS	clearStatus ;
-	FN_MEDIUM_SHUTDOWN		shutdown ;
+    unsigned long			ioType ;
+    unsigned long			features ;
+    FN_MEDIUM_STARTUP		startup ;
+    FN_MEDIUM_ISINSERTED	isInserted ;
+    FN_MEDIUM_READSECTORS	readSectors ;
+    FN_MEDIUM_WRITESECTORS	writeSectors ;
+    FN_MEDIUM_CLEARSTATUS	clearStatus ;
+    FN_MEDIUM_SHUTDOWN		shutdown ;
 } ;
 
 typedef struct DISC_INTERFACE_STRUCT DISC_INTERFACE ;

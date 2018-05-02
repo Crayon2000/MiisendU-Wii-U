@@ -201,6 +201,8 @@ extern bool (*DisassemblePPCOpcode)(u32 *opcode, char *outputBuffer, u32 bufferS
 extern void *(*OSGetSymbolName)(u32 addr, u8 *symbolName, u32 nameBufSize);
 extern int (*OSIsDebuggerInitialized)(void);
 
+extern bool (*OSGetSharedData)(u32 type, u32 unk_r4, u8 *addr, u32 *size);
+
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Memory functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -211,23 +213,30 @@ extern u32 *pMEMFreeToDefaultHeap;
 extern void* (* MEMAllocFromAllocator) (void * allocator, u32 size);
 extern void (* MEMFreeToAllocator) (void * allocator, void* address);
 extern s32 (* MEMGetBaseHeapHandle)(s32 mem_arena);
+extern u32 (* MEMGetTotalFreeSizeForExpHeap)(s32 heap);
+extern u32 (* MEMGetAllocatableSizeForExpHeapEx)(s32 heap, s32 align);
 extern u32 (* MEMGetAllocatableSizeForFrmHeapEx)(s32 heap, s32 align);
 extern void* (* MEMAllocFromFrmHeapEx)(s32 heap, u32 size, s32 align);
 extern void (* MEMFreeToFrmHeap)(s32 heap, s32 mode);
 extern void *(* MEMAllocFromExpHeapEx)(s32 heap, u32 size, s32 align);
 extern s32 (* MEMCreateExpHeapEx)(void* address, u32 size, unsigned short flags);
+extern s32 (* MEMCreateFrmHeapEx)(void* address, u32 size, unsigned short flags);
 extern void *(* MEMDestroyExpHeap)(s32 heap);
 extern void (* MEMFreeToExpHeap)(s32 heap, void* ptr);
 extern void* (* OSAllocFromSystem)(u32 size, s32 alignment);
 extern void (* OSFreeToSystem)(void *addr);
 extern s32 (* OSIsAddressValid)(const void *ptr);
+extern s32 (* MEMFindParentHeap)(s32 heap);
+extern s32 (* OSGetMemBound)(s32 type, u32 * startAddress, u32 * size);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! MCP functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 extern s32 (* MCP_Open)(void);
 extern s32 (* MCP_Close)(s32 handle);
-extern s32 (* MCP_GetOwnTitleInfo)(s32 handle, void * data);
+extern s32 (* MCP_TitleCount)(s32 handle);
+extern s32 (* MCP_TitleList)(s32 handle, s32 *res, void *data, s32 count);
+extern s32 (* MCP_GetOwnTitleInfo)(s32 handle, void *data);
 extern void* (* MCP_GetDeviceId)(s32 handle, u32 * id);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -11,24 +11,24 @@ static int log_socket __attribute__((section(".data")))= -1;
 static struct sockaddr_in connect_addr __attribute__((section(".data")));
 static volatile int log_lock __attribute__((section(".data"))) = 0;
 
-void log_init_(){
+void log_init_() {
     InitOSFunctionPointers();
     InitSocketFunctionPointers();
 
     int broadcastEnable = 1;
-	log_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (log_socket < 0)
-		return;
+    log_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (log_socket < 0)
+        return;
 
     setsockopt(log_socket, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
 
-	memset(&connect_addr, 0, sizeof(struct sockaddr_in));
-	connect_addr.sin_family = AF_INET;
-	connect_addr.sin_port = 4405;
+    memset(&connect_addr, 0, sizeof(struct sockaddr_in));
+    connect_addr.sin_family = AF_INET;
+    connect_addr.sin_port = 4405;
     connect_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 }
 
-void log_print_(const char *str){
+void log_print_(const char *str) {
     // socket is always 0 initially as it is in the BSS
     if(log_socket < 0) {
         return;
@@ -53,34 +53,32 @@ void log_print_(const char *str){
     log_lock = 0;
 }
 
-void OSFatal_printf(const char *format, ...){
-	char * tmp = NULL;
-	va_list va;
-	va_start(va, format);
-	if((vasprintf(&tmp, format, va) >= 0) && tmp){
+void OSFatal_printf(const char *format, ...) {
+    char * tmp = NULL;
+    va_list va;
+    va_start(va, format);
+    if((vasprintf(&tmp, format, va) >= 0) && tmp) {
         OSFatal(tmp);
-	}
-	va_end(va);
+    }
+    va_end(va);
 }
 
-void log_printf_(const char *format, ...)
-{
+void log_printf_(const char *format, ...) {
     if(log_socket < 0) {
         return;
     }
 
 
-	char * tmp = NULL;
+    char * tmp = NULL;
 
-	va_list va;
-	va_start(va, format);
-	if((vasprintf(&tmp, format, va) >= 0) && tmp)
-	{
+    va_list va;
+    va_start(va, format);
+    if((vasprintf(&tmp, format, va) >= 0) && tmp) {
         log_print_(tmp);
-	}
-	va_end(va);
+    }
+    va_end(va);
 
-	if(tmp)
-		free(tmp);
+    if(tmp)
+        free(tmp);
 }
 

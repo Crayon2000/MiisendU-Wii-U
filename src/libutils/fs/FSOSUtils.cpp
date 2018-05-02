@@ -8,7 +8,7 @@
 #include <dynamic_libs/os_functions.h>
 #include <dynamic_libs/fs_functions.h>
 
-s32 FSOSUtils::MountFS(void *pClient, void *pCmd, char **mount_path){
+s32 FSOSUtils::MountFS(void *pClient, void *pCmd, char **mount_path) {
     InitOSFunctionPointers();
     InitFSFunctionPointers();
     s32 result = -1;
@@ -28,8 +28,7 @@ s32 FSOSUtils::MountFS(void *pClient, void *pCmd, char **mount_path){
     memset(mountPath, 0, FS_MAX_MOUNTPATH_SIZE);
 
     // Mount sdcard
-    if (FSGetMountSource(pClient, pCmd, FS_SOURCETYPE_EXTERNAL, mountSrc, -1) == 0)
-    {
+    if (FSGetMountSource(pClient, pCmd, FS_SOURCETYPE_EXTERNAL, mountSrc, -1) == 0) {
         result = FSMount(pClient, pCmd, mountSrc, mountPath, FS_MAX_MOUNTPATH_SIZE, -1);
         if((result == 0) && mount_path) {
             *mount_path = (char*)malloc(strlen(mountPath) + 1);
@@ -47,7 +46,7 @@ s32 FSOSUtils::MountFS(void *pClient, void *pCmd, char **mount_path){
     return result;
 }
 
-s32 FSOSUtils::UmountFS(void *pClient, void *pCmd, const char *mountPath){
+s32 FSOSUtils::UmountFS(void *pClient, void *pCmd, const char *mountPath) {
     s32 result = -1;
     result = FSUnmount(pClient, pCmd, mountPath, -1);
 

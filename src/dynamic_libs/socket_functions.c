@@ -48,16 +48,24 @@ EXPORT_DECL(const char *, inet_ntop, s32 af, const void *src, char *dst, s32 siz
 EXPORT_DECL(s32, inet_pton, s32 af, const char *src, void *dst);
 EXPORT_DECL(s32, socketlasterr, void);
 
+EXPORT_DECL(s32, NSSLInit, void);
+EXPORT_DECL(s32, NSSLFinish, void);
+EXPORT_DECL(s32, NSSLCreateContext, s32 unkwn);
+EXPORT_DECL(s32, NSSLDestroyContext, s32 context);
+EXPORT_DECL(s32, NSSLAddServerPKI, s32 context, s32 pki);
+EXPORT_DECL(s32, NSSLAddServerPKIExternal, s32 context, const u8* cert, s32 length, s32 unkwn);
 EXPORT_DECL(s32, NSSLWrite, s32 connection, const void* buf, s32 len,s32 * written);
 EXPORT_DECL(s32, NSSLRead, s32 connection, const void* buf, s32 len,s32 * read);
 EXPORT_DECL(s32, NSSLCreateConnection, s32 context, const char* host, s32 hotlen,s32 options,s32 sock,s32 block);
 
-void InitAcquireSocket(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitAcquireSocket(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     OSDynLoad_Acquire("nsysnet.rpl", &nsysnet_handle);
 }
 
-void InitSocketFunctionPointers(void){
+void InitSocketFunctionPointers(void) {
     u32 *funcPointer = 0;
 
     InitAcquireSocket();
@@ -93,6 +101,12 @@ void InitSocketFunctionPointers(void){
     OS_FIND_EXPORT(nsysnet_handle, inet_ntop);
     OS_FIND_EXPORT(nsysnet_handle, inet_pton);
 
+    OS_FIND_EXPORT(nsysnet_handle, NSSLInit);
+    OS_FIND_EXPORT(nsysnet_handle, NSSLFinish);
+    OS_FIND_EXPORT(nsysnet_handle, NSSLCreateContext);
+    OS_FIND_EXPORT(nsysnet_handle, NSSLDestroyContext);
+    OS_FIND_EXPORT(nsysnet_handle, NSSLAddServerPKI);
+    OS_FIND_EXPORT(nsysnet_handle, NSSLAddServerPKIExternal);
     OS_FIND_EXPORT(nsysnet_handle, NSSLWrite);
     OS_FIND_EXPORT(nsysnet_handle, NSSLRead);
     OS_FIND_EXPORT(nsysnet_handle, NSSLCreateConnection);

@@ -46,15 +46,17 @@ EXPORT_DECL(s32, HIDSetIdle,u32 handle, u8 s32erface_index,u8 duration, HIDCallb
 EXPORT_DECL(s32, HIDRead,u32 handle, unsigned char *p_buffer, u32 buffer_length, HIDCallback hc, void *p_user);
 EXPORT_DECL(s32, HIDWrite,u32 handle, unsigned char *p_buffer, u32 buffer_length, HIDCallback hc, void *p_user);
 
-void InitAcquireSysHID(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
-     OSDynLoad_Acquire("nsyshid.rpl", &syshid_handle);
+void InitAcquireSysHID(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
+    OSDynLoad_Acquire("nsyshid.rpl", &syshid_handle);
 }
 
-void InitSysHIDFunctionPointers(void){
+void InitSysHIDFunctionPointers(void) {
     InitAcquireSysHID();
 
-    if(syshid_handle == 0){
+    if(syshid_handle == 0) {
         return;
     }
 

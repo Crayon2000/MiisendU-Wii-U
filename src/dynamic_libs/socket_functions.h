@@ -77,10 +77,9 @@ struct sockaddr_in {
     char sin_zero[8];
 };
 
-struct sockaddr
-{
-   unsigned short sa_family;
-   char sa_data[14];
+struct sockaddr {
+    unsigned short sa_family;
+    char sa_data[14];
 };
 
 
@@ -104,6 +103,12 @@ extern s32 (*socketlasterr)(void);
 extern s32 (*sendto)(s32 s, const void *buffer, s32 size, s32 flags, const struct sockaddr *dest, s32 dest_len);
 extern s32 (*setsockopt)(s32 s, s32 level, s32 optname, void *optval, s32 optlen);
 
+extern s32 (* NSSLInit)(void);
+extern s32 (* NSSLFinish)(void);
+extern s32 (* NSSLCreateContext)(s32 unkwn);
+extern s32 (* NSSLDestroyContext)(s32 context);
+extern s32 (* NSSLAddServerPKIExternal)(s32 context, const u8* cert, s32 length, s32 unkwn);
+extern s32 (* NSSLAddServerPKI)(s32 context, s32 pki);
 extern s32 (* NSSLWrite)(s32 connection, const void* buf, s32 len,s32 * written);
 extern s32 (* NSSLRead)(s32 connection, const void* buf, s32 len,s32 * read);
 extern s32 (* NSSLCreateConnection)(s32 context, const char* host, s32 hotlen,s32 options,s32 sock,s32 block);

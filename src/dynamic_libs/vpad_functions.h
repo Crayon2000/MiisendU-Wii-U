@@ -68,52 +68,44 @@ extern u32 vpadbase_handle;
 #define VPAD_MASK_EMULATED_STICKS       0x7F800000
 #define VPAD_MASK_BUTTONS               ~VPAD_MASK_EMULATED_STICKS
 
-typedef enum VPADTPResolution
-{
+typedef enum VPADTPResolution {
     VPAD_TP_1920x1080,
     VPAD_TP_1280x720,
     VPAD_TP_854x480
 } VPADTPResolution;
 
-typedef enum VPADGyroZeroDriftMode
-{
+typedef enum VPADGyroZeroDriftMode {
     VPAD_GYRO_ZERODRIFT_LOOSE,
     VPAD_GYRO_ZERODRIFT_STANDARD,
     VPAD_GYRO_ZERODRIFT_TIGHT
 } VPADGyroZeroDriftMode;
 
-typedef struct
-{
+typedef struct {
     f32 x,y;
 } Vec2D;
 
-typedef struct
-{
+typedef struct {
     f32 x,y,z;
 } Vec3D;
 
-typedef struct
-{
+typedef struct {
     Vec3D X,Y,Z;
 } VPADDir;
 
-typedef struct
-{
+typedef struct {
     u16 x, y;               /* Touch coordinates */
     u16 touched;            /* 1 = Touched, 0 = Not touched */
     u16 invalid;            /* 0 = All valid, 1 = X invalid, 2 = Y invalid, 3 = Both invalid? */
 } VPADTPData;
 
-typedef struct
-{
+typedef struct {
     s16 offsetX;
     s16 offsetY;
     f32 scaleX;
     f32 scaleY;
 } VPADTPCalibrationParam;
 
-typedef struct
-{
+typedef struct {
     u32 btns_h;                  /* Held buttons */
     u32 btns_d;                  /* Buttons that are pressed at that instant */
     u32 btns_r;                  /* Released buttons */

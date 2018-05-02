@@ -103,8 +103,7 @@ extern u32 padscore_handle;
 #define WPAD_PRO_STICK_R_EMULATION_LEFT      0x00400000
 #define WPAD_PRO_STICK_R_EMULATION_RIGHT     0x00800000
 
-typedef struct _KPADData
-{
+typedef struct _KPADData {
     u32 btns_h;
     u32 btns_d;
     u32 btns_r;
@@ -133,16 +132,13 @@ typedef struct _KPADData
     s8 pos_valid;
     u8 format;
 
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             f32 stick_x;
             f32 stick_y;
         } nunchuck;
 
-        struct
-        {
+        struct {
             u32 btns_h;
             u32 btns_d;
             u32 btns_r;
@@ -154,8 +150,7 @@ typedef struct _KPADData
             f32 rtrigger;
         } classic;
 
-        struct
-        {
+        struct {
             u32 btns_h;
             u32 btns_d;
             u32 btns_r;
@@ -184,7 +179,7 @@ typedef struct WPADReadData_ {
     s16 r_stick_y;
     u8 unknown2[8];
     u8 fmt;
-}WPADReadData;
+} WPADReadData;
 
 typedef WPADReadData KPADUnifiedWpadData;
 

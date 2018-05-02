@@ -32,8 +32,7 @@ extern "C" {
 
 extern u32 syshid_handle;
 
-typedef struct
-{
+typedef struct {
     u32 handle;
     u32 physical_device_inst;
     u16 vid;
@@ -54,8 +53,7 @@ typedef struct _HIDClient HIDClient;
 
 typedef s32 (*HIDAttachCallback)(HIDClient *p_hc,HIDDevice *p_hd,u32 attach);
 
-struct _HIDClient
-{
+struct _HIDClient {
     HIDClient *next;
     HIDAttachCallback attach_cb;
 };

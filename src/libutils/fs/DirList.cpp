@@ -35,76 +35,68 @@
 #include "DirList.h"
 #include "utils/StringTools.h"
 
-DirList::DirList()
-{
-	Flags = 0;
-	Filter = 0;
-	Depth = 0;
+DirList::DirList() {
+    Flags = 0;
+    Filter = 0;
+    Depth = 0;
 }
 
-DirList::DirList(const std::string & path, const char *filter, u32 flags, u32 maxDepth)
-{
-	this->LoadPath(path, filter, flags, maxDepth);
-	this->SortList();
+DirList::DirList(const std::string & path, const char *filter, u32 flags, u32 maxDepth) {
+    this->LoadPath(path, filter, flags, maxDepth);
+    this->SortList();
 }
 
-DirList::~DirList()
-{
-	ClearList();
+DirList::~DirList() {
+    ClearList();
 }
 
-bool DirList::LoadPath(const std::string & folder, const char *filter, u32 flags, u32 maxDepth)
-{
-	if(folder.empty()) return false;
+bool DirList::LoadPath(const std::string & folder, const char *filter, u32 flags, u32 maxDepth) {
+    if(folder.empty()) return false;
 
-	Flags = flags;
-	Filter = filter;
-	Depth = maxDepth;
+    Flags = flags;
+    Filter = filter;
+    Depth = maxDepth;
 
-	std::string folderpath(folder);
-	u32 length = folderpath.size();
+    std::string folderpath(folder);
+    u32 length = folderpath.size();
 
-	//! clear path of double slashes
-	StringTools::RemoveDoubleSlashs(folderpath);
+    //! clear path of double slashes
+    StringTools::RemoveDoubleSlashs(folderpath);
 
-	//! remove last slash if exists
-	if(length > 0 && folderpath[length-1] == '/')
-		folderpath.erase(length-1);
+    //! remove last slash if exists
+    if(length > 0 && folderpath[length-1] == '/')
+        folderpath.erase(length-1);
 
     //! add root slash if missing
-    if(folderpath.find('/') == std::string::npos){
+    if(folderpath.find('/') == std::string::npos) {
         folderpath += '/';
     }
 
-	return InternalLoadPath(folderpath);
+    return InternalLoadPath(folderpath);
 }
 
-bool DirList::InternalLoadPath(std::string &folderpath)
-{
-	if(folderpath.size() < 3)
-		return false;
+bool DirList::InternalLoadPath(std::string &folderpath) {
+    if(folderpath.size() < 3)
+        return false;
 
-	struct dirent *dirent = NULL;
-	DIR *dir = NULL;
+    struct dirent *dirent = NULL;
+    DIR *dir = NULL;
 
-	dir = opendir(folderpath.c_str());
-	if (dir == NULL)
-		return false;
+    dir = opendir(folderpath.c_str());
+    if (dir == NULL)
+        return false;
 
-	while ((dirent = readdir(dir)) != 0)
-	{
-		bool isDir = dirent->d_type & DT_DIR;
-		const char *filename = dirent->d_name;
+    while ((dirent = readdir(dir)) != 0) {
+        bool isDir = dirent->d_type & DT_DIR;
+        const char *filename = dirent->d_name;
 
-		if(isDir)
-		{
-			if(strcmp(filename,".") == 0 || strcmp(filename,"..") == 0)
-				continue;
+        if(isDir) {
+            if(strcmp(filename,".") == 0 || strcmp(filename,"..") == 0)
+                continue;
 
-			if((Flags & CheckSubfolders) && (Depth > 0))
-			{
+            if((Flags & CheckSubfolders) && (Depth > 0)) {
                 s32 length = folderpath.size();
-                if(length > 2 && folderpath[length-1] != '/'){
+                if(length > 2 && folderpath[length-1] != '/') {
                     folderpath += '/';
                 }
                 folderpath += filename;
@@ -115,122 +107,106 @@ bool DirList::InternalLoadPath(std::string &folderpath)
                 Depth++;
             }
 
-			if(!(Flags & Dirs))
-				continue;
-		}
-		else if(!(Flags & Files))
-		{
-			continue;
-		}
+            if(!(Flags & Dirs))
+                continue;
+        } else if(!(Flags & Files)) {
+            continue;
+        }
 
-		if(Filter)
-		{
-			char * fileext = strrchr(filename, '.');
-			if(!fileext)
-				continue;
+        if(Filter) {
+            char * fileext = strrchr(filename, '.');
+            if(!fileext)
+                continue;
 
-			if(StringTools::strtokcmp(fileext, Filter, ",") == 0)
-				AddEntrie(folderpath, filename, isDir);
-		}
-		else
-		{
-			AddEntrie(folderpath, filename, isDir);
-		}
-	}
-	closedir(dir);
+            if(StringTools::strtokcmp(fileext, Filter, ",") == 0)
+                AddEntrie(folderpath, filename, isDir);
+        } else {
+            AddEntrie(folderpath, filename, isDir);
+        }
+    }
+    closedir(dir);
 
-	return true;
+    return true;
 }
 
-void DirList::AddEntrie(const std::string &filepath, const char * filename, bool isDir)
-{
-	if(!filename)
-		return;
+void DirList::AddEntrie(const std::string &filepath, const char * filename, bool isDir) {
+    if(!filename)
+        return;
 
-	s32 pos = FileInfo.size();
+    s32 pos = FileInfo.size();
 
-	FileInfo.resize(pos+1);
+    FileInfo.resize(pos+1);
 
-	FileInfo[pos].FilePath = (char *) malloc(filepath.size()+strlen(filename)+2);
-	if(!FileInfo[pos].FilePath)
-	{
-		FileInfo.resize(pos);
-		return;
-	}
+    FileInfo[pos].FilePath = (char *) malloc(filepath.size()+strlen(filename)+2);
+    if(!FileInfo[pos].FilePath) {
+        FileInfo.resize(pos);
+        return;
+    }
 
-	sprintf(FileInfo[pos].FilePath, "%s/%s", filepath.c_str(), filename);
-	FileInfo[pos].isDir = isDir;
+    sprintf(FileInfo[pos].FilePath, "%s/%s", filepath.c_str(), filename);
+    FileInfo[pos].isDir = isDir;
 }
 
-void DirList::ClearList()
-{
-	for(u32 i = 0; i < FileInfo.size(); ++i)
-	{
-		if(FileInfo[i].FilePath){
-			free(FileInfo[i].FilePath);
-			FileInfo[i].FilePath = NULL;
-		}
-	}
+void DirList::ClearList() {
+    for(u32 i = 0; i < FileInfo.size(); ++i) {
+        if(FileInfo[i].FilePath) {
+            free(FileInfo[i].FilePath);
+            FileInfo[i].FilePath = NULL;
+        }
+    }
 
-	FileInfo.clear();
-	std::vector<DirEntry>().swap(FileInfo);
+    FileInfo.clear();
+    std::vector<DirEntry>().swap(FileInfo);
 }
 
-const char * DirList::GetFilename(s32 ind) const
-{
-	if (!valid(ind))
-		return "";
+const char * DirList::GetFilename(s32 ind) const {
+    if (!valid(ind))
+        return "";
 
-	return StringTools::FullpathToFilename(FileInfo[ind].FilePath);
+    return StringTools::FullpathToFilename(FileInfo[ind].FilePath);
 }
 
-static bool SortCallback(const DirEntry & f1, const DirEntry & f2)
-{
-	if(f1.isDir && !(f2.isDir)) return true;
-	if(!(f1.isDir) && f2.isDir) return false;
+static bool SortCallback(const DirEntry & f1, const DirEntry & f2) {
+    if(f1.isDir && !(f2.isDir)) return true;
+    if(!(f1.isDir) && f2.isDir) return false;
 
-	if(f1.FilePath && !f2.FilePath) return true;
-	if(!f1.FilePath) return false;
+    if(f1.FilePath && !f2.FilePath) return true;
+    if(!f1.FilePath) return false;
 
-	if(strcasecmp(f1.FilePath, f2.FilePath) > 0)
-		return false;
+    if(strcasecmp(f1.FilePath, f2.FilePath) > 0)
+        return false;
 
-	return true;
+    return true;
 }
 
-void DirList::SortList()
-{
-	if(FileInfo.size() > 1)
-		std::sort(FileInfo.begin(), FileInfo.end(), SortCallback);
+void DirList::SortList() {
+    if(FileInfo.size() > 1)
+        std::sort(FileInfo.begin(), FileInfo.end(), SortCallback);
 }
 
-void DirList::SortList(bool (*SortFunc)(const DirEntry &a, const DirEntry &b))
-{
-	if(FileInfo.size() > 1)
-		std::sort(FileInfo.begin(), FileInfo.end(), SortFunc);
+void DirList::SortList(bool (*SortFunc)(const DirEntry &a, const DirEntry &b)) {
+    if(FileInfo.size() > 1)
+        std::sort(FileInfo.begin(), FileInfo.end(), SortFunc);
 }
 
-u64 DirList::GetFilesize(s32 index) const
-{
-	struct stat st;
-	const char *path = GetFilepath(index);
+u64 DirList::GetFilesize(s32 index) const {
+    struct stat st;
+    const char *path = GetFilepath(index);
 
-	if(!path || stat(path, &st) != 0)
-		return 0;
+    if(!path || stat(path, &st) != 0)
+        return 0;
 
-	return st.st_size;
+    return st.st_size;
 }
 
-s32 DirList::GetFileIndex(const char *filename) const
-{
-	if(!filename)
-		return -1;
+s32 DirList::GetFileIndex(const char *filename) const {
+    if(!filename)
+        return -1;
 
-	for (u32 i = 0; i < FileInfo.size(); ++i)
-	{
-		if (strcasecmp(GetFilename(i), filename) == 0)
-			return i;
-	}
+    for (u32 i = 0; i < FileInfo.size(); ++i) {
+        if (strcasecmp(GetFilename(i), filename) == 0)
+            return i;
+    }
 
-	return -1;
+    return -1;
 }

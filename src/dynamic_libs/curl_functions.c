@@ -38,12 +38,14 @@ EXPORT_DECL(void, n_curl_formfree, struct curl_httppost *form);
 EXPORT_DECL(struct curl_slist *, n_curl_slist_append, struct curl_slist *list, const char *string);
 EXPORT_DECL(void, n_curl_slist_free_all, struct curl_slist *list);
 
-void InitAcquireCurl(void){
-    if(coreinit_handle == 0){ InitAcquireOS(); };
+void InitAcquireCurl(void) {
+    if(coreinit_handle == 0) {
+        InitAcquireOS();
+    };
     OSDynLoad_Acquire("nlibcurl", &libcurl_handle);
 }
 
-void InitCurlFunctionPointers(void){
+void InitCurlFunctionPointers(void) {
     InitAcquireCurl();
     u32 *funcPointer = 0;
 
