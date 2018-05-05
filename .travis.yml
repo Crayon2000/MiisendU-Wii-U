@@ -1,5 +1,4 @@
 language: c
-dist: trusty
 sudo: false
 
 os:
@@ -7,7 +6,7 @@ os:
 
 env:
   global:
-    - DEVKITPRO=$HOME/devkitPro
+    - DEVKITPRO=/opt/devkitpro
     - DEVKITPPC=${DEVKITPRO}/devkitPPC
 
 cache:
