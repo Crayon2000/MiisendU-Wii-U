@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <dynamic_libs/fs_functions.h>
 #include <dynamic_libs/os_functions.h>
+#include <sys/iosupport.h>
 
 #include "disc_io.h"
 #include "FSOSUtils.h"
