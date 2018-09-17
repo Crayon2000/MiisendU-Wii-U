@@ -48,6 +48,7 @@ LDFLAGS	:= -nostartfiles -Wl,-Map,$(notdir $@).map,-wrap,malloc,-wrap,free,-wrap
 #---------------------------------------------------------------------------------
 Q := @
 MAKEFLAGS += --no-print-directory
+
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
@@ -58,10 +59,7 @@ LIBS	:= -lgcc -ljansson
 # include and lib
 #---------------------------------------------------------------------------------
 LIBDIRS	:=	$(CURDIR)	\
-			$(CURDIR)/src/vendor/jansson	\
-			$(DEVKITPPC)/lib  \
-			$(DEVKITPPC)/lib/gcc/powerpc-eabi/4.8.2
-
+			$(CURDIR)/src/vendor/jansson
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -132,7 +130,7 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).elf:  $(OFILES)
+$(OUTPUT).elf: $(OFILES)
 
 #---------------------------------------------------------------------------------
 %.elf: link.ld $(OFILES)
