@@ -9,18 +9,11 @@ endif
 ifeq ($(strip $(DEVKITPRO)),)
 $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPRO")
 endif
-export PATH			:=	$(DEVKITPPC)/bin:$(PATH)
+
+include $(DEVKITPPC)/base_tools
+
 export LIBOGC_INC	:=	$(DEVKITPRO)/libogc/include
 export LIBOGC_LIB	:=	$(DEVKITPRO)/libogc/lib/wii
-export PORTLIBS		:=	$(DEVKITPRO)/portlibs/ppc
-
-PREFIX	:=	powerpc-eabi-
-
-export AS	:=	$(PREFIX)as
-export CC	:=	$(PREFIX)gcc
-export CXX	:=	$(PREFIX)g++
-export AR	:=	$(PREFIX)ar
-export OBJCOPY	:=	$(PREFIX)objcopy
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -90,8 +83,6 @@ CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
-TTFFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.ttf)))
-PNGFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.png)))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -185,11 +176,6 @@ $(OUTPUT).elf:  $(OFILES)
 
 #---------------------------------------------------------------------------------
 %.ttf.o : %.ttf
-	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
-
-#---------------------------------------------------------------------------------
-%.bin.o : %.bin
 	@echo $(notdir $<)
 	@bin2s -a 32 $< | $(AS) -o $(@)
 
