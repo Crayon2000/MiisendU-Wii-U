@@ -10,7 +10,7 @@ ifeq ($(strip $(DEVKITPRO)),)
 $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPRO")
 endif
 
-include $(DEVKITPPC)/base_tools
+include $(DEVKITPPC)/base_rules
 
 export LIBOGC_INC	:=	$(DEVKITPRO)/libogc/include
 export LIBOGC_LIB	:=	$(DEVKITPRO)/libogc/lib/wii
@@ -135,49 +135,24 @@ DEPENDS	:=	$(OFILES:.o=.d)
 $(OUTPUT).elf:  $(OFILES)
 
 #---------------------------------------------------------------------------------
-# This rule links in binary data with the .jpg extension
-#---------------------------------------------------------------------------------
 %.elf: link.ld $(OFILES)
 	@echo "linking ... $(TARGET).elf"
 	$(Q)$(LD) -n -T $^ $(LDFLAGS) -o ../$(BUILD_DBG).elf  $(LIBPATHS) $(LIBS)
 	$(Q)$(OBJCOPY) -S -R .comment -R .gnu.attributes ../$(BUILD_DBG).elf $@
 
 #---------------------------------------------------------------------------------
-%.a:
-#---------------------------------------------------------------------------------
-	@echo $(notdir $@)
-	@rm -f $@
-	@$(AR) -rc $@ $^
-
-#---------------------------------------------------------------------------------
-%.o: %.cpp
-	@echo $(notdir $<)
-	@$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@ $(ERROR_FILTER)
-
-#---------------------------------------------------------------------------------
-%.o: %.c
-	@echo $(notdir $<)
-	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@ $(ERROR_FILTER)
-
-#---------------------------------------------------------------------------------
-%.o: %.S
-	@echo $(notdir $<)
-	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d -x assembler-with-cpp $(ASFLAGS) -c $< -o $@ $(ERROR_FILTER)
-
-#---------------------------------------------------------------------------------
-%.o: %.s
-	@echo $(notdir $<)
-	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d -x assembler-with-cpp $(ASFLAGS) -c $< -o $@ $(ERROR_FILTER)
-
+# This rule links in binary data with the .png extension
 #---------------------------------------------------------------------------------
 %.png.o : %.png
 	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
+	$(bin2o)
 
+#---------------------------------------------------------------------------------
+# This rule links in binary data with the .ttf extension
 #---------------------------------------------------------------------------------
 %.ttf.o : %.ttf
 	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
+	$(bin2o)
 
 -include $(DEPENDS)
 
