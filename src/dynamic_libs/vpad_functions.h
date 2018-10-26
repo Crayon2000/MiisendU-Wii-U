@@ -196,6 +196,10 @@ extern void (* VPADBASESetSensorBarSetting)(s32 chan, s8 setting);
 extern void (* VPADBASEGetSensorBarSetting)(s32 chan, s8 *setting);
 extern s32 (*VPADSetSensorBar)(s32 chan, bool on);
 
+typedef void(*samplingCallback)(s32  chan);
+extern samplingCallback ( *VPADSetSamplingCallback)(s32 chan, samplingCallback callback);
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -13,6 +13,6 @@ Prerequisites:
 * portlibs
 
 To compile:
-```
+```bash
 > make
 ```

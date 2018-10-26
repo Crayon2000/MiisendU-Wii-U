@@ -32,6 +32,7 @@ EXPORT_DECL(s32, _SYSLaunchMenuWithCheckingAccount, unsigned char slot);
 EXPORT_DECL(s32, SYSCheckTitleExists, u64 titleId);
 EXPORT_DECL(s32, SYSLaunchTitle, u64 titleId);
 EXPORT_DECL(s32, SYSLaunchSettings, s32 unk);
+EXPORT_DECL(u64, _SYSGetSystemApplicationTitleId, s32);
 
 void InitAcquireSys(void) {
     if(coreinit_handle == 0) {
@@ -51,4 +52,5 @@ void InitSysFunctionPointers(void) {
     OS_FIND_EXPORT(sysapp_handle, SYSCheckTitleExists);
     OS_FIND_EXPORT(sysapp_handle, SYSLaunchTitle);
     OS_FIND_EXPORT(sysapp_handle, SYSLaunchSettings);
+	OS_FIND_EXPORT(sysapp_handle, _SYSGetSystemApplicationTitleId);
 }

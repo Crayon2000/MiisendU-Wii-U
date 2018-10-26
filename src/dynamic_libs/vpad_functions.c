@@ -89,6 +89,7 @@ EXPORT_DECL(s32, VPADBASESetMotorOnRemainingCount, s32 lcdmode, s32 counter);
 EXPORT_DECL(void, VPADBASESetSensorBarSetting, s32 chan, s8 setting);
 EXPORT_DECL(void, VPADBASEGetSensorBarSetting, s32 chan, s8 *setting);
 EXPORT_DECL(s32, VPADSetSensorBar, s32 chan, bool on);
+EXPORT_DECL(samplingCallback, VPADSetSamplingCallback, s32 chan, samplingCallback callbackn);
 
 void InitAcquireVPad(void) {
     if(coreinit_handle == 0) {
@@ -161,6 +162,7 @@ void InitVPadFunctionPointers(void) {
     OS_FIND_EXPORT(vpad_handle, VPADSetLcdMode);
     OS_FIND_EXPORT(vpad_handle, VPADGetLcdMode);
     OS_FIND_EXPORT(vpad_handle, VPADSetSensorBar);
+    OS_FIND_EXPORT(vpad_handle, VPADSetSamplingCallback);
     OS_FIND_EXPORT(vpadbase_handle, VPADBASEGetMotorOnRemainingCount);
     OS_FIND_EXPORT(vpadbase_handle, VPADBASESetMotorOnRemainingCount);
     OS_FIND_EXPORT(vpadbase_handle, VPADBASESetSensorBarSetting);

@@ -31,6 +31,8 @@ u32 coreinit_handle __attribute__((section(".data"))) = 0;
 EXPORT_DECL(s32, OSDynLoad_Acquire, const char* rpl, u32 *handle);
 EXPORT_DECL(s32, OSDynLoad_FindExport, u32 handle, s32 isdata, const char *symbol, void *address);
 
+EXPORT_DECL(void, OSDynLoad_Release, u32 handle);
+
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Security functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -67,6 +69,7 @@ EXPORT_DECL(s32, OSGetCoreId, void);
 EXPORT_DECL(void, OSSleepTicks, u64 ticks);
 EXPORT_DECL(u64, OSGetTick, void);
 EXPORT_DECL(u64, OSGetTime, void);
+EXPORT_DECL(u64, OSGetSystemTime, void);
 EXPORT_DECL(void, OSTicksToCalendarTime, u64 time, OSCalendarTime * calendarTime);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -116,6 +119,7 @@ EXPORT_DECL(u32, OSScreenPutPixelEx, u32 bufferNum, u32 posX, u32 posY, u32 colo
 EXPORT_DECL(void, DisassemblePPCRange, void *, void *, DisasmReport, DisasmGetSym, u32);
 EXPORT_DECL(bool, DisassemblePPCOpcode, u32 *, char *, u32, DisasmGetSym, u32);
 EXPORT_DECL(void*, OSGetSymbolName, u32, u8 *, u32);
+EXPORT_DECL(void*, OSGetSymbolNameEx, u32, u8 *, u32);
 EXPORT_DECL(int, OSIsDebuggerInitialized, void);
 
 EXPORT_DECL(bool, OSGetSharedData, u32 type, u32 unk_r4, u8 *addr, u32 *size);
@@ -178,6 +182,7 @@ EXPORT_DECL(void, addr_PrepareTitle_hook, void);
 EXPORT_DECL(void, DCInvalidateRange, void *buffer, u32 length);
 EXPORT_DECL(s32, OSDynLoad_GetModuleName, s32 handle, char *name_buffer, s32 *name_buffer_size);
 EXPORT_DECL(s32, OSIsHomeButtonMenuEnabled, void);
+EXPORT_DECL(void, OSEnableHomeButtonMenu, s32);
 EXPORT_DECL(s32, OSSetScreenCapturePermissionEx, s32 tvEnabled, s32 drcEnabled);
 
 
@@ -249,10 +254,13 @@ void InitOSFunctionPointers(void) {
     u32 *funcPointer = 0;
 
     InitAcquireOS();
+    
+    OS_FIND_EXPORT(coreinit_handle, OSDynLoad_Release);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //! Security functions
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     OS_FIND_EXPORT(coreinit_handle, OSGetSecurityLevel);
     OS_FIND_EXPORT(coreinit_handle, OSForceFullRelaunch);
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -288,6 +296,7 @@ void InitOSFunctionPointers(void) {
     OS_FIND_EXPORT(coreinit_handle, DisassemblePPCRange);
     OS_FIND_EXPORT(coreinit_handle, DisassemblePPCOpcode);
     OS_FIND_EXPORT(coreinit_handle, OSGetSymbolName);
+    OS_FIND_EXPORT(coreinit_handle, OSGetSymbolNameEx);
     OS_FIND_EXPORT(coreinit_handle, OSIsDebuggerInitialized);
 
     OS_FIND_EXPORT(coreinit_handle, OSGetSharedData);
@@ -321,6 +330,7 @@ void InitOSFunctionPointers(void) {
     OS_FIND_EXPORT(coreinit_handle, OSSleepTicks);
     OS_FIND_EXPORT(coreinit_handle, OSGetTick);
     OS_FIND_EXPORT(coreinit_handle, OSGetTime);
+    OS_FIND_EXPORT(coreinit_handle, OSGetSystemTime);
     OS_FIND_EXPORT(coreinit_handle, OSTicksToCalendarTime);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -379,6 +389,7 @@ void InitOSFunctionPointers(void) {
     OS_FIND_EXPORT(coreinit_handle, DCInvalidateRange);
     OS_FIND_EXPORT(coreinit_handle, OSDynLoad_GetModuleName);
     OS_FIND_EXPORT(coreinit_handle, OSIsHomeButtonMenuEnabled);
+    OS_FIND_EXPORT(coreinit_handle, OSEnableHomeButtonMenu);
     OS_FIND_EXPORT(coreinit_handle, OSSetScreenCapturePermissionEx);
 
     //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -108,6 +108,7 @@ extern void InitOSFunctionPointers(void);
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 extern s32 (* OSDynLoad_Acquire)(const char* rpl, u32 *handle);
 extern s32 (* OSDynLoad_FindExport)(u32 handle, s32 isdata, const char *symbol, void *address);
+extern void (* OSDynLoad_Release)(u32 handle);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! Security functions
@@ -148,6 +149,7 @@ extern s32 (* OSGetCoreId)(void);
 extern void (* OSSleepTicks)(u64 ticks);
 extern u64 (* OSGetTick)(void);
 extern u64 (* OSGetTime)(void);
+extern u64 (* OSGetSystemTime)(void);
 extern void (*OSTicksToCalendarTime)(u64 time, OSCalendarTime *calendarTime);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -199,6 +201,7 @@ extern void (* OSLoadContext)(OSContext * context);
 extern void (*DisassemblePPCRange)(void *rangeStart, void *rangeEnd, DisasmReport disasmReport, DisasmGetSym disasmGetSym, u32 disasmOptions);
 extern bool (*DisassemblePPCOpcode)(u32 *opcode, char *outputBuffer, u32 bufferSize, DisasmGetSym disasmGetSym, u32 disasmOptions);
 extern void *(*OSGetSymbolName)(u32 addr, u8 *symbolName, u32 nameBufSize);
+extern void *(*OSGetSymbolNameEx)(u32 addr, u8 *symbolName, u32 nameBufSize);
 extern int (*OSIsDebuggerInitialized)(void);
 
 extern bool (*OSGetSharedData)(u32 type, u32 unk_r4, u8 *addr, u32 *size);
@@ -259,6 +262,7 @@ extern void (* addr_PrepareTitle_hook)(void);
 extern void (*DCInvalidateRange)(void *buffer, u32 length);
 extern s32 (*OSDynLoad_GetModuleName)(s32 handle, char *name_buffer, s32 *name_buffer_size);
 extern s32 (*OSIsHomeButtonMenuEnabled) (void);
+extern void (*OSEnableHomeButtonMenu) (s32);
 extern s32 (*OSSetScreenCapturePermissionEx) (s32 tvEnabled, s32 drcEnabled);
 
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
