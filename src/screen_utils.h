@@ -1,20 +1,20 @@
 #ifndef _SCREEN_UTILS_H_
 #define _SCREEN_UTILS_H_
 
-#include <gctypes.h>
+#include <wut_types.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void DrawPixel(u32 bufferNum, u32 x, u32 y, u32 color);
-void DrawLine(u32 bufferNum, u32 x0, u32 y0, u32 x1, u32 y1, u32 color);
-void DrawCircle(u32 bufferNum, u32 x, u32 y, f32 radius, u32 color);
-void DrawRect(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, u32 color);
-void DrawFillRect(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, u32 color);
-void DrawTriangle(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, f32 x2, f32 y2, u32 color);
-void DrawFillTriangle(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, f32 x2, f32 y2, u32 color);
-void DrawArrow(u32 bufferNum, f32 x0, f32 y0, f32 x1, f32 y1, u32 color, f32 width);
+void DrawPixel(uint32_t bufferNum, uint32_t x, uint32_t y, uint32_t color);
+void DrawLine(uint32_t bufferNum, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, uint32_t color);
+void DrawCircle(uint32_t bufferNum, uint32_t x, uint32_t y, float radius, uint32_t color);
+void DrawRect(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32_t color);
+void DrawFillRect(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32_t color);
+void DrawTriangle(uint32_t bufferNum, float x0, float y0, float x1, float y1, float x2, float y2, uint32_t color);
+void DrawFillTriangle(uint32_t bufferNum, float x0, float y0, float x1, float y1, float x2, float y2, uint32_t color);
+void DrawArrow(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32_t color, float width);
 
 #ifdef __cplusplus
 }
