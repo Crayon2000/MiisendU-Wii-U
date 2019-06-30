@@ -21,12 +21,12 @@
 /**
  * Print the header.
  */
-static void PrintHeader(uint32_t bufferNum)
+static void PrintHeader(OSScreenID bufferNum)
 {
     OSScreenPutFontEx(bufferNum, -4, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
     OSScreenPutFontEx(bufferNum, -4, 1, "| | | |___ ___ _ _  __| |  \\/  (_|_)  / __| (_)___ _ _| |");
     OSScreenPutFontEx(bufferNum, -4, 2, "| |_| (_-</ -_) ' \\/ _` | |\\/| | | | | (__| | / -_) ' \\  _|");
-    OSScreenPutFontEx(bufferNum, -4, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.1.0");
+    OSScreenPutFontEx(bufferNum, -4, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.2.0");
 }
 
 int main(int argc, char **argv)
@@ -120,8 +120,6 @@ int main(int argc, char **argv)
         if (vpad_data.trigger & VPAD_BUTTON_HOME) {
             free(IP_str);
             WHBUnmountSdCard();
-            //MEM1_free(ScreenBuffer0);
-            //MEM1_free(ScreenBuffer1);
             WHBDeinitializeSocketLibrary();
             OSScreenShutdown();
             MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
@@ -248,8 +246,6 @@ int main(int argc, char **argv)
 
     free(IP_ADDRESS);
     WHBUnmountSdCard();
-    //MEM1_free(ScreenBuffer0);
-    //MEM1_free(ScreenBuffer1);
     WHBDeinitializeSocketLibrary();
     OSScreenShutdown();
     MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
