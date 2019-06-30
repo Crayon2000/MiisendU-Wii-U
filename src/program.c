@@ -1,5 +1,6 @@
 #include "program.h"
 #include <wut_types.h>
+#include <whb/proc.h>
 #include <coreinit/screen.h>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
@@ -22,10 +23,10 @@
  */
 static void PrintHeader(uint32_t bufferNum)
 {
-    OSScreenPutFontEx(bufferNum, 0, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
-    OSScreenPutFontEx(bufferNum, 0, 1, "| | | |___ ___ _ _  __| |  \\/  (_|_)  / __| (_)___ _ _| |");
-    OSScreenPutFontEx(bufferNum, 0, 2, "| |_| (_-</ -_) ' \\/ _` | |\\/| | | | | (__| | / -_) ' \\  _|");
-    OSScreenPutFontEx(bufferNum, 0, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.1.0");
+    OSScreenPutFontEx(bufferNum, -4, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
+    OSScreenPutFontEx(bufferNum, -4, 1, "| | | |___ ___ _ _  __| |  \\/  (_|_)  / __| (_)___ _ _| |");
+    OSScreenPutFontEx(bufferNum, -4, 2, "| |_| (_-</ -_) ' \\/ _` | |\\/| | | | | (__| | / -_) ' \\  _|");
+    OSScreenPutFontEx(bufferNum, -4, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.1.0");
 }
 
 int main(int argc, char **argv)
@@ -33,12 +34,7 @@ int main(int argc, char **argv)
     uint8_t IP[4] = {192, 168, 1, 100};
     unsigned short Port = 4242;
 
-    //InitOSFunctionPointers();
-    //InitFSFunctionPointers();
-    //InitSocketFunctionPointers();
-    //InitVPadFunctionPointers();
-    //InitPadScoreFunctionPointers();
-
+    WHBProcInit();
     WHBInitializeSocketLibrary();
     VPADInit();
     KPADInit();
@@ -49,13 +45,12 @@ int main(int argc, char **argv)
     char *sdRootPath = WHBGetSdCardMountPath();
     snprintf(path, sizeof(path), "%s/wiiu/apps/UsendMii_Client/settings.ini", sdRootPath);
 
+    // Init screen and screen buffers
     MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
     MEMRecordStateForFrmHeap(heap, FRAME_HEAP_TAG);
-
-    // Init screen and screen buffers
+    OSScreenInit();
     const uint32_t sBufferSizeTV = OSScreenGetBufferSizeEx(SCREEN_TV);
     const uint32_t sBufferSizeDRC = OSScreenGetBufferSizeEx(SCREEN_DRC);
-    OSScreenInit();
     void *ScreenBuffer0 = MEMAllocFromFrmHeapEx(heap, sBufferSizeTV, 4);
     void *ScreenBuffer1 = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
     OSScreenSetBufferEx(SCREEN_TV, ScreenBuffer0);
@@ -64,8 +59,8 @@ int main(int argc, char **argv)
     OSScreenEnableEx(SCREEN_DRC, 1);
 
     // Clear screens
-    OSScreenClearBufferEx(SCREEN_TV, 0x993333FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x993333FF);
+    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
+    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
 
     // Gamepad key state data
     int32_t error;
@@ -102,10 +97,10 @@ int main(int argc, char **argv)
         }
 
         // Clear the screen
-        OSScreenClearBufferEx(SCREEN_TV, 0x993333FF);
-        OSScreenClearBufferEx(SCREEN_DRC, 0x993333FF);
+        OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
+        OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
         // print to DRC
-        PrintHeader(1);
+        PrintHeader(SCREEN_DRC);
         OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
         OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
         OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
@@ -127,11 +122,10 @@ int main(int argc, char **argv)
             WHBUnmountSdCard();
             //MEM1_free(ScreenBuffer0);
             //MEM1_free(ScreenBuffer1);
-            //ScreenBuffer0 = NULL;
-            //ScreenBuffer1 = NULL;
             WHBDeinitializeSocketLibrary();
             OSScreenShutdown();
             MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
+            WHBProcShutdown();
             return 0;
         }
     }
@@ -149,8 +143,8 @@ int main(int argc, char **argv)
     snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
     // Clear the screen
-    OSScreenClearBufferEx(SCREEN_TV, 0x993333FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x993333FF);
+    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
+    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
 
     // print to TV
     PrintHeader(SCREEN_TV);
@@ -256,11 +250,10 @@ int main(int argc, char **argv)
     WHBUnmountSdCard();
     //MEM1_free(ScreenBuffer0);
     //MEM1_free(ScreenBuffer1);
-    //ScreenBuffer0 = NULL;
-    //ScreenBuffer1 = NULL;
     WHBDeinitializeSocketLibrary();
     OSScreenShutdown();
     MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
+    WHBProcShutdown();
 
     return 0;
 }
