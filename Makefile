@@ -19,9 +19,9 @@ include $(DEVKITPRO)/wut/share/wut_rules
 #-------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	src src/vendor/iniparser
+SOURCES		:=	source source/vendor/iniparser
 DATA		:=	data
-INCLUDES	:=	src
+INCLUDES	:=	source
 
 #-------------------------------------------------------------------------------
 # options for code generation
@@ -43,7 +43,7 @@ LIBS	:= -lwut -ljansson
 # containing include and lib
 #-------------------------------------------------------------------------------
 LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT)	\
-			$(CURDIR)/src/vendor/jansson
+			$(CURDIR)/source/vendor/jansson
 
 
 #-------------------------------------------------------------------------------
