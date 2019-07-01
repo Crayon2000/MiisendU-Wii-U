@@ -3,12 +3,16 @@
 
 # Executable file
 *.elf
+*.rpx
 
 # Archive
 *.zip
 
 # Programmer's Notepad state file
 *.pnps
+
+# Visual Studio Code
+.vscode/*
 
 # Windows thumbnail cache
 Thumbs.db

@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-*
+* Use Wii U Toolchain (wut) from devkitPro.
 
 ## [0.1.0] - 2018-01-04
 * Compatible with UsendMii 0.6.0.

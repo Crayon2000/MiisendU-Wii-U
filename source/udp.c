@@ -1,10 +1,11 @@
+#include <coreinit/memdefaultheap.h>
+#include <nsysnet/socket.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include "dynamic_libs/os_functions.h"
-#include "dynamic_libs/socket_functions.h"
+#include <unistd.h>
 #include "udp.h"
 
 /* A ripoff of logger.c */
@@ -48,8 +49,9 @@ void udp_print(const char *str)
         return;
     }
 
-    while(udp_lock)
-        os_usleep(1000);
+    while(udp_lock) {
+        usleep(1000);
+    }
     udp_lock = 1;
 
     int len = strlen(str);
@@ -72,16 +74,19 @@ void udp_printf(const char *format, ...)
         return;
     }
 
-    char * tmp = NULL;
+    char * tmp = MEMAllocFromDefaultHeapEx(2048, 4);
+
+    if(tmp == NULL) {
+        return;
+    }
 
     va_list va;
     va_start(va, format);
-    if((vasprintf(&tmp, format, va) >= 0) && tmp)
+    if((vsnprintf(tmp, 2048, format, va) >= 0) && tmp)
     {
         udp_print(tmp);
     }
     va_end(va);
 
-    if(tmp)
-        free(tmp);
+    MEMFreeToDefaultHeap(tmp);
 }

@@ -2,8 +2,8 @@
 <app version="1">
   <name>UsendMii Client</name>
   <coder>Crayon</coder>
-  <version>0.1.0</version>
-  <release_date>20170623000000</release_date>
+  <version>0.2.0</version>
+  <release_date>20190629000000</release_date>
   <short_description>A UsendMii client</short_description>
   <long_description>UsendMii client for Wii U.
 
