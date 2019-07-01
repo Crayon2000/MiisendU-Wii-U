@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
 
     // Gamepad key state data
-    int32_t error;
+    VPADReadError error;
     VPADStatus vpad_data;
 
     char * IP_str = (char*)malloc(32);
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
     for (;;) {
-        VPADRead(0, &vpad_data, 1, &error);
+        VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
         if (vpad_data.trigger & VPAD_BUTTON_LEFT  && selected_digit > 0) {
             selected_digit--;
         }
@@ -196,13 +196,13 @@ int main(int argc, char **argv)
         KPADStatus kpad_data4;
 
         // Read the VPAD
-        VPADRead(0, &vpad_data, 1, &error);
+        VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
 
         // Read the KPADs
-        KPADReadEx(0, &kpad_data1, 1, &kpad_error1);
-        KPADReadEx(1, &kpad_data2, 1, &kpad_error2);
-        KPADReadEx(2, &kpad_data3, 1, &kpad_error3);
-        KPADReadEx(3, &kpad_data4, 1, &kpad_error4);
+        KPADReadEx(WPAD_CHAN_0, &kpad_data1, 1, &kpad_error1);
+        KPADReadEx(WPAD_CHAN_1, &kpad_data2, 1, &kpad_error2);
+        KPADReadEx(WPAD_CHAN_2, &kpad_data3, 1, &kpad_error3);
+        KPADReadEx(WPAD_CHAN_3, &kpad_data4, 1, &kpad_error4);
 
         // Flush the cache (may be needed due to continuous refresh of the data ?)
         DCFlushRange(&vpad_data, sizeof(VPADStatus));

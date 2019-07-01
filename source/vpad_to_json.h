@@ -1,5 +1,5 @@
 #ifndef _VPADTOJSON_H_
-#define	_VPADTOJSON_H_
+#define _VPADTOJSON_H_
 
 #include <wut_types.h>
 #include <padscore/kpad.h>
