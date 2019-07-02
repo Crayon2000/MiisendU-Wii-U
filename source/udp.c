@@ -74,7 +74,7 @@ void udp_printf(const char *format, ...)
         return;
     }
 
-    char * tmp = MEMAllocFromDefaultHeapEx(2048, 4);
+    char * tmp = (char *)MEMAllocFromDefaultHeapEx(2048, 4);
 
     if(tmp == NULL) {
         return;

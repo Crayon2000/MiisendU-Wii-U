@@ -17,7 +17,7 @@
  * @param y The y coordinate where to draw the pixel.
  * @param color The pixel color in RGBA.
  */
-void DrawPixel(uint32_t bufferNum, uint32_t x, uint32_t y, uint32_t color)
+void DrawPixel(OSScreenID bufferNum, uint32_t x, uint32_t y, uint32_t color)
 {
     OSScreenPutPixelEx(bufferNum, x, y, color);
 }
@@ -31,7 +31,7 @@ void DrawPixel(uint32_t bufferNum, uint32_t x, uint32_t y, uint32_t color)
  * @param y1 The y coordinate where the line end.
  * @param color The line color in RGBA.
  */
-void DrawLine(uint32_t bufferNum, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, uint32_t color)
+void DrawLine(OSScreenID bufferNum, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, uint32_t color)
 {
     const int32_t dx = x1 - x0;
     const int32_t dy = y1 - y0;
@@ -128,7 +128,7 @@ void DrawLine(uint32_t bufferNum, uint32_t x0, uint32_t y0, uint32_t x1, uint32_
  * @param radius The radius of the circle.
  * @param color The circle color in RGBA.
  */
-void DrawCircle(uint32_t bufferNum, uint32_t x, uint32_t y, float radius, uint32_t color)
+void DrawCircle(OSScreenID bufferNum, uint32_t x, uint32_t y, float radius, uint32_t color)
 {
     for(float angle = 0.0f; angle < 360.0f; angle += 0.1f)
     {
@@ -147,7 +147,7 @@ void DrawCircle(uint32_t bufferNum, uint32_t x, uint32_t y, float radius, uint32
  * @param y1 The y coordinate where the rectangle end.
  * @param color The rectangle color in RGBA.
  */
-void DrawRect(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32_t color)
+void DrawRect(OSScreenID bufferNum, float x0, float y0, float x1, float y1, uint32_t color)
 {
     DrawLine(bufferNum, x0, y0, x1, y0, color);
     DrawLine(bufferNum, x1, y0, x1, y1, color);
@@ -164,7 +164,7 @@ void DrawRect(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32
  * @param y1 The y coordinate where the rectangle end.
  * @param color The filled rectangle color in RGBA.
  */
-void DrawFillRect(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32_t color)
+void DrawFillRect(OSScreenID bufferNum, float x0, float y0, float x1, float y1, uint32_t color)
 {
     float X0, X1, Y0, Y1;
 
@@ -210,7 +210,7 @@ void DrawFillRect(uint32_t bufferNum, float x0, float y0, float x1, float y1, ui
  * @param y2 The y2 coordinate.
  * @param color The triangle color in RGBA.
  */
-void DrawTriangle(uint32_t bufferNum, float x0, float y0, float x1, float y1, float x2, float y2, uint32_t color)
+void DrawTriangle(OSScreenID bufferNum, float x0, float y0, float x1, float y1, float x2, float y2, uint32_t color)
 {
     DrawLine(bufferNum, x0, y0, x1, y1, color);
     DrawLine(bufferNum, x1, y1, x2, y2, color);
@@ -228,7 +228,7 @@ void DrawTriangle(uint32_t bufferNum, float x0, float y0, float x1, float y1, fl
  * @param y2 The y2 coordinate.
  * @param color The filled triangle color in RGBA.
  */
-void DrawFillTriangle(uint32_t bufferNum, float x0, float y0, float x1, float y1, float x2, float y2, uint32_t color)
+void DrawFillTriangle(OSScreenID bufferNum, float x0, float y0, float x1, float y1, float x2, float y2, uint32_t color)
 {
     // Sort the points vertically
     if(y1 > y2)
@@ -283,7 +283,7 @@ void DrawFillTriangle(uint32_t bufferNum, float x0, float y0, float x1, float y1
  * @param width The width of the arrow head.
  * @param color The arrow color in RGBA.
  */
-void DrawArrow(uint32_t bufferNum, float x0, float y0, float x1, float y1, uint32_t color, float width)
+void DrawArrow(OSScreenID bufferNum, float x0, float y0, float x1, float y1, uint32_t color, float width)
 {
     float vx = x1 - x0;
     float vy = y1 - y0;
