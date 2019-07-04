@@ -47,6 +47,15 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
     json_object_set_new_nocheck(wiiugamepad, "dirZy", json_real(pad_data.vpad->direction.z.y));
     json_object_set_new_nocheck(wiiugamepad, "dirZz", json_real(pad_data.vpad->direction.z.z));
 
+    // Wii Remotes
+    if(pad_data.kpad[0] != NULL ||
+       pad_data.kpad[1] != NULL ||
+       pad_data.kpad[2] != NULL ||
+       pad_data.kpad[3] != NULL)
+    {
+        // TODO
+    }
+
     // Convert to string
     char* s = json_dumps(root, JSON_COMPACT | JSON_REAL_PRECISION(10));
     strncpy(out, s, out_size);
