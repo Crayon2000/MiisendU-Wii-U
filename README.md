@@ -8,7 +8,7 @@ The button states from the Wii U GamePad will be sent to the server.
 
 ## Build
 Prerequisites:
-* Packages in the wiiu-dev group from devkitpro
+* Packages in the wiiu-dev group and ppc-jansson from devkitpro
 
 To compile:
 ```bash

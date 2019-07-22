@@ -42,8 +42,7 @@ LIBS	:= -lwut -ljansson
 # list of directories containing libraries, this must be the top level
 # containing include and lib
 #-------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT)	\
-			$(CURDIR)/source/vendor/jansson
+LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT)
 
 
 #-------------------------------------------------------------------------------

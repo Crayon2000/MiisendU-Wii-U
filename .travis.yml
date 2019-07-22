@@ -19,7 +19,7 @@ before_install:
 
 install:
   - sudo dpkg --install devkitpro-pacman.deb
-  - sudo dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev
+  - sudo dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev ppc-jansson
 
 script:
   - make
