@@ -1,10 +1,11 @@
-#include "program.h"
+#include "main.h"
 #include <wut_types.h>
 #include <whb/proc.h>
 #include <coreinit/screen.h>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
 #include <nsysnet/socket.h>
+#include <nn/ac/ac_c.h>
 #include <whb/libmanager.h>
 #include <whb/sdcard.h>
 #include <coreinit/memheap.h>
@@ -70,14 +71,25 @@ int main(int argc, char **argv)
     int8_t selected_digit = 0;
 
     // Read default settings from file
+    BOOL ip_loaded = FALSE;
     dictionary * ini = iniparser_load(path);
     if (ini != NULL) {
         const char * temp = iniparser_getstring(ini, "server:ipaddress", NULL);
-        if (temp != NULL) {
-            inet_pton(AF_INET, temp, &IP);
+        if (temp != NULL && inet_pton(AF_INET, temp, &IP) > 0) {
+            ip_loaded = TRUE;
         }
         Port = iniparser_getint(ini, "server:port", Port);
         iniparser_freedict(ini);
+    }
+    if (ip_loaded == FALSE && NNResult_IsSuccess(ACInitialize())) {
+        uint32_t ac_ip = 0;
+        if (NNResult_IsSuccess(ACGetAssignedAddress(&ac_ip))) {
+            IP[0] = (ac_ip >> 24) & 0xFF;
+            IP[1] = (ac_ip >> 16) & 0xFF;
+            IP[2] = (ac_ip >>  8) & 0xFF;
+            IP[3] = (ac_ip >>  0) & 0xFF;
+        }
+        ACFinalize();
     }
 
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)

@@ -1,7 +1,11 @@
-#ifndef PROGRAM_H
-#define PROGRAM_H
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <nsysnet/socket.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Should be in socket.h
 char *
@@ -13,4 +17,8 @@ inet_ntop(int af, const void *src, char *dst, socklen_t size);
 int
 inet_pton(int af, const char *src, void *dst);
 
-#endif /* PROGRAM_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MAIN_H */
