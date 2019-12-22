@@ -53,7 +53,44 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
        pad_data.kpad[2] != NULL ||
        pad_data.kpad[3] != NULL)
     {
-        // TODO
+        json_t *wiiremotes = json_array();
+        json_object_set_new_nocheck(root, "wiiRemotes", wiiremotes);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(pad_data.kpad[i] != NULL)
+            {
+                json_t *wiiremote = json_object();
+                json_object_set_new_nocheck(wiiremote, "order", json_integer(i + 1));
+                json_object_set_new_nocheck(wiiremote, "hold", json_integer(pad_data.kpad[i]->hold));
+                json_object_set_new_nocheck(wiiremote, "posX", json_integer(pad_data.kpad[i]->pos.x));
+                json_object_set_new_nocheck(wiiremote, "posY", json_integer(pad_data.kpad[i]->pos.y));
+                json_object_set_new_nocheck(wiiremote, "angleX", json_real(pad_data.kpad[i]->angle.x));
+                json_object_set_new_nocheck(wiiremote, "angleY", json_real(pad_data.kpad[i]->angle.y));
+                switch(pad_data.kpad[i]->extensionType)
+                {
+                    case 1: // Nunchuk Style: WPAD_DEV_FREESTYLE
+                        {
+                            //f32 x = pad_data.kpad[i]->nunchuck.stick.x;
+                            //f32 y = pad_data.kpad[i]->nunchuck.stick.y;
+                        }
+                        break;
+                    case 2: // Classic Controller Style: WPAD_DEV_CLASSIC
+                        {
+                            //u32 h = pad_data.kpad[i]->classic.hold;
+                            //f32 lx = pad_data.kpad[i]->classic.leftStick.x;
+                            //f32 ly = pad_data.kpad[i]->classic.leftStick.y;
+                            //f32 rx = pad_data.kpad[i]->classic.rightStick.x;
+                            //f32 ry = pad_data.kpad[i]->classic.rightStick.y;
+                            //f32 lt = pad_data.kpad[i]->classic.leftTrigger;
+                            //f32 rt = pad_data.kpad[i]->classic.rightTrigger;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                json_array_append(wiiremotes, wiiremote);
+            }
+        }
     }
 
     // Convert to string
