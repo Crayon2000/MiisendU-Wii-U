@@ -66,24 +66,35 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                 json_object_set_new_nocheck(wiiremote, "posY", json_integer(pad_data.kpad[i]->pos.y));
                 json_object_set_new_nocheck(wiiremote, "angleX", json_real(pad_data.kpad[i]->angle.x));
                 json_object_set_new_nocheck(wiiremote, "angleY", json_real(pad_data.kpad[i]->angle.y));
+                json_t *extension = json_object();
+                json_object_set_new_nocheck(wiiremote, "extension", extension);
                 switch(pad_data.kpad[i]->extensionType)
                 {
-                    case 1: // Nunchuk Style: WPAD_DEV_FREESTYLE
-                        {
-                            //f32 x = pad_data.kpad[i]->nunchuck.stick.x;
-                            //f32 y = pad_data.kpad[i]->nunchuck.stick.y;
+                    case WPAD_EXT_NUNCHUK:
+                    case WPAD_EXT_MPLUS_NUNCHUK:
+                        { // Nunchuk
+                            json_object_set_new_nocheck(extension, "type", json_string("nunchuk"));
+                            json_object_set_new_nocheck(extension, "stickX", json_real(pad_data.kpad[i]->nunchuck.stick.x));
+                            json_object_set_new_nocheck(extension, "stickY", json_real(pad_data.kpad[i]->nunchuck.stick.y));
                         }
                         break;
-                    case 2: // Classic Controller Style: WPAD_DEV_CLASSIC
-                        {
-                            //u32 h = pad_data.kpad[i]->classic.hold;
-                            //f32 lx = pad_data.kpad[i]->classic.leftStick.x;
-                            //f32 ly = pad_data.kpad[i]->classic.leftStick.y;
-                            //f32 rx = pad_data.kpad[i]->classic.rightStick.x;
-                            //f32 ry = pad_data.kpad[i]->classic.rightStick.y;
-                            //f32 lt = pad_data.kpad[i]->classic.leftTrigger;
-                            //f32 rt = pad_data.kpad[i]->classic.rightTrigger;
+                    case WPAD_EXT_CLASSIC:
+                    case WPAD_EXT_MPLUS_CLASSIC:
+                        { // Classic Controller
+                            json_object_set_new_nocheck(extension, "type", json_string("classic"));
+                            json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->classic.hold));
+                            json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->classic.leftStick.x));
+                            json_object_set_new_nocheck(extension, "lStickY", json_real(pad_data.kpad[i]->classic.leftStick.y));
+                            json_object_set_new_nocheck(extension, "rStickX", json_real(pad_data.kpad[i]->classic.rightStick.x));
+                            json_object_set_new_nocheck(extension, "rStickY", json_real(pad_data.kpad[i]->classic.rightStick.y));
+                            json_object_set_new_nocheck(extension, "lTrigger", json_real(pad_data.kpad[i]->classic.leftTrigger));
+                            json_object_set_new_nocheck(extension, "rTrigger", json_real(pad_data.kpad[i]->classic.rightTrigger));
                         }
+                        break;
+                    case WPAD_EXT_PRO_CONTROLLER:
+                        // Classic Controller Pro
+                        json_object_set_new_nocheck(extension, "type", json_string("pro"));
+                        json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->pro.hold));
                         break;
                     default:
                         break;
