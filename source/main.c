@@ -1,4 +1,3 @@
-#include "main.h"
 #include <wut_types.h>
 #include <whb/proc.h>
 #include <coreinit/screen.h>
