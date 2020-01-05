@@ -66,14 +66,15 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                 json_object_set_new_nocheck(wiiremote, "posY", json_integer(pad_data.kpad[i]->pos.y));
                 json_object_set_new_nocheck(wiiremote, "angleX", json_real(pad_data.kpad[i]->angle.x));
                 json_object_set_new_nocheck(wiiremote, "angleY", json_real(pad_data.kpad[i]->angle.y));
-                json_t *extension = json_object();
-                json_object_set_new_nocheck(wiiremote, "extension", extension);
                 switch(pad_data.kpad[i]->extensionType)
                 {
                     case WPAD_EXT_NUNCHUK:
                     case WPAD_EXT_MPLUS_NUNCHUK:
                         { // Nunchuk
+                            json_t *extension = json_object();
+                            json_object_set_new_nocheck(wiiremote, "extension", extension);
                             json_object_set_new_nocheck(extension, "type", json_string("nunchuk"));
+                            //json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->nunchuck.hold));
                             json_object_set_new_nocheck(extension, "stickX", json_real(pad_data.kpad[i]->nunchuck.stick.x));
                             json_object_set_new_nocheck(extension, "stickY", json_real(pad_data.kpad[i]->nunchuck.stick.y));
                         }
@@ -81,6 +82,8 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                     case WPAD_EXT_CLASSIC:
                     case WPAD_EXT_MPLUS_CLASSIC:
                         { // Classic Controller
+                            json_t *extension = json_object();
+                            json_object_set_new_nocheck(wiiremote, "extension", extension);
                             json_object_set_new_nocheck(extension, "type", json_string("classic"));
                             json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->classic.hold));
                             json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->classic.leftStick.x));
@@ -92,9 +95,16 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                         }
                         break;
                     case WPAD_EXT_PRO_CONTROLLER:
-                        // Classic Controller Pro
-                        json_object_set_new_nocheck(extension, "type", json_string("pro"));
-                        json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->pro.hold));
+                        {   // Classic Controller Pro
+                            json_t *extension = json_object();
+                            json_object_set_new_nocheck(wiiremote, "extension", extension);
+                            json_object_set_new_nocheck(extension, "type", json_string("pro"));
+                            json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->pro.hold));
+                            json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->pro.leftStick.x));
+                            json_object_set_new_nocheck(extension, "lStickY", json_real(pad_data.kpad[i]->pro.leftStick.y));
+                            json_object_set_new_nocheck(extension, "rStickX", json_real(pad_data.kpad[i]->pro.rightStick.x));
+                            json_object_set_new_nocheck(extension, "rStickY", json_real(pad_data.kpad[i]->pro.rightStick.y));
+                        }
                         break;
                     default:
                         break;
