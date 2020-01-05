@@ -74,7 +74,7 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                             json_t *extension = json_object();
                             json_object_set_new_nocheck(wiiremote, "extension", extension);
                             json_object_set_new_nocheck(extension, "type", json_string("nunchuk"));
-                            //json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->nunchuck.hold));
+                            json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->nunchuck.hold));
                             json_object_set_new_nocheck(extension, "stickX", json_real(pad_data.kpad[i]->nunchuck.stick.x));
                             json_object_set_new_nocheck(extension, "stickY", json_real(pad_data.kpad[i]->nunchuck.stick.y));
                         }

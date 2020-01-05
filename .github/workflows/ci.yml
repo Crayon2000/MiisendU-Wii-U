@@ -15,17 +15,24 @@ jobs:
 
     - name: Download and install devkitPro
       run: |
-        wget -nv https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb
+        wget --no-verbose https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb
         sudo dpkg --install devkitpro-pacman.deb
 
     - name: Install required packages
       run: sudo dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev ppc-jansson
 
+    - name: Download modified version of wut
+      run: |
+        wget --no-verbose https://github.com/Crayon2000/wut/archive/feature-kpad.tar.gz
+        tar xzf feature-kpad.tar.gz
+
     - name: Build application
       env:
         DEVKITPRO: /opt/devkitpro
         DEVKITPPC: ${DEVKITPRO}/devkitPPC
-      run: make
+      run: |
+        (cd wut-feature-kpad && sudo -E make install)
+        make
 
     - name: Move file
       run: mv UsendMii-Client.rpx meta/UsendMii_Client.rpx
