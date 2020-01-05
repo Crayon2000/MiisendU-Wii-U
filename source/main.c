@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     PrintHeader(SCREEN_TV);
     OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
     OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii 0.6.0 running on your computer.");
+    OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii 0.7.0 running on your computer.");
     OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
 
@@ -167,7 +167,7 @@ int main(int argc, char **argv)
     PrintHeader(SCREEN_DRC);
     OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
     OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii 0.6.0 running on your computer.");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii 0.7.0 running on your computer.");
     OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
 

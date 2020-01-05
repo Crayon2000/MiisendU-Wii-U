@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.2.0] - 2020-01-05
 * Send Wii Remote button states to UsendMii.
 * Use a better default IP address.
 * Use Wii U Toolchain (wut) from devkitPro.
@@ -19,7 +19,7 @@ All notable changes to this project will be documented in this file.
 ## 0.0.1 - 2017-04-16
 * Initial release.
 
-[Unreleased]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.1...v0.0.2
