@@ -7,6 +7,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      DEVKITPRO: /opt/devkitpro
+      DEVKITPPC: ${DEVKITPRO}/devkitPPC
 
     steps:
 
@@ -21,17 +24,14 @@ jobs:
     - name: Install required packages
       run: sudo dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev ppc-jansson
 
-    - name: Download modified version of wut
+    - name: Download master version of wut
       run: |
-        wget --no-verbose https://github.com/Crayon2000/wut/archive/feature-kpad.tar.gz
-        tar xzf feature-kpad.tar.gz
+        wget --no-verbose https://github.com/devkitPro/wut/archive/master.tar.gz
+        tar xzf master.tar.gz
 
     - name: Build application
-      env:
-        DEVKITPRO: /opt/devkitpro
-        DEVKITPPC: ${DEVKITPRO}/devkitPPC
       run: |
-        (cd wut-feature-kpad && sudo -E make install)
+        (cd wut-master && sudo -E make install)
         make
 
     - name: Move file
