@@ -14,11 +14,11 @@ jobs:
     steps:
 
     - name: Checkout the Git repository
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Download and install devkitPro
       run: |
-        wget --no-verbose https://github.com/devkitPro/pacman/releases/download/devkitpro-pacman-1.0.1/devkitpro-pacman.deb
+        wget --no-verbose https://github.com/devkitPro/pacman/releases/latest/download/devkitpro-pacman.deb
         sudo dpkg --install devkitpro-pacman.deb
 
     - name: Install required packages
