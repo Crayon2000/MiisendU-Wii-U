@@ -7,32 +7,19 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    env:
-      DEVKITPRO: /opt/devkitpro
-      DEVKITPPC: ${DEVKITPRO}/devkitPPC
+    container:
+      image: devkitpro/devkitppc:latest
 
     steps:
 
     - name: Checkout the Git repository
       uses: actions/checkout@v2
 
-    - name: Download and install devkitPro
-      run: |
-        wget --no-verbose https://github.com/devkitPro/pacman/releases/latest/download/devkitpro-pacman.deb
-        sudo dpkg --install devkitpro-pacman.deb
-
-    - name: Install required packages
-      run: sudo dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev ppc-jansson
-
-    - name: Download master version of wut
-      run: |
-        wget --no-verbose https://github.com/devkitPro/wut/archive/master.tar.gz
-        tar xzf master.tar.gz
+    - name: Update packages
+      run: bash ./.github/workflows/update.sh
 
     - name: Build application
-      run: |
-        (cd wut-master && sudo -E make install)
-        make
+      run: make
 
     - name: Move file
       run: mv UsendMii-Client.rpx meta/UsendMii_Client.rpx
