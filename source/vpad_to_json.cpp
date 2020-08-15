@@ -15,7 +15,7 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
 
     json_t *root = json_object();
 
-    // Wii U Gamepad
+    // Wii U GamePad
     json_t *wiiugamepad = json_object();
     json_object_set_new_nocheck(root, "wiiUGamePad", wiiugamepad);
     json_object_set_new_nocheck(wiiugamepad, "hold", json_integer(pad_data.vpad->hold));

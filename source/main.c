@@ -29,6 +29,9 @@ static void PrintHeader(OSScreenID bufferNum)
     OSScreenPutFontEx(bufferNum, -4, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.2.0");
 }
 
+/**
+ * Entry point.
+ */
 int main(int argc, char **argv)
 {
     uint8_t IP[4] = {192, 168, 1, 100};
@@ -110,7 +113,7 @@ int main(int argc, char **argv)
         // Clear the screen
         OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
         OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
-        // print to DRC
+        // Print to DRC
         PrintHeader(SCREEN_DRC);
         OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
         OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
@@ -155,19 +158,19 @@ int main(int argc, char **argv)
     OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
     OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
 
-    // print to TV
+    // Print to TV
     PrintHeader(SCREEN_TV);
     OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
     OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii 0.7.0 running on your computer.");
+    OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
     OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
 
-    // print to DRC
+    // Print to DRC
     PrintHeader(SCREEN_DRC);
     OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
     OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii 0.7.0 running on your computer.");
+    OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
     OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
     OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
 
