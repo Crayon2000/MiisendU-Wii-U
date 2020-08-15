@@ -30,6 +30,23 @@ static void PrintHeader(OSScreenID bufferNum)
 }
 
 /**
+ * Reset orientation.
+ */
+static void ResetOrientation()
+{
+    // Posture with the gamepad up and straight in front of user
+    static VPADDirection dir_base = {
+        {1.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f}
+    };
+
+    VPADSetGyroAngle(VPAD_CHAN_0, 0.0f, 0.0f, 0.0f);
+    VPADSetGyroDirection(VPAD_CHAN_0, &dir_base);
+    VPADSetGyroDirReviseBase(VPAD_CHAN_0, &dir_base);
+}
+
+/**
  * Entry point.
  */
 int main(int argc, char **argv)
@@ -142,6 +159,9 @@ int main(int argc, char **argv)
         }
     }
     free(IP_str);
+
+    // Reset orientation
+    ResetOrientation();
 
     // Get IP Address (without spaces)
     char * IP_ADDRESS = (char*)malloc(32);
