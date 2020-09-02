@@ -19,9 +19,9 @@ include $(DEVKITPRO)/wut/share/wut_rules
 #-------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source source/vendor/iniparser
+SOURCES		:=	source source/vendor/inih
 DATA		:=	data
-INCLUDES	:=	source
+INCLUDES	:=	source source/vendor/inih
 
 #-------------------------------------------------------------------------------
 # options for code generation

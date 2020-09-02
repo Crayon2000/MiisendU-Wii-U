@@ -10,13 +10,48 @@
 #include <coreinit/memheap.h>
 #include <coreinit/cache.h>
 #include <coreinit/memfrmheap.h>
-#include "vendor/iniparser/iniparser.h"
+#include <ini.h>
 #include "vpad_to_json.h"
 #include "udp.h"
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define FRAME_HEAP_TAG (0x000DECAF)
+
+/**
+ * Application configuration.
+ */
+typedef struct {
+    const char* ipaddress;
+    int port;
+} configuration;
+
+/**
+ * Handler for ini parser.
+ * @return Returns nonzero on success, zero on error.
+ */
+static int handler(void* user, const char* section, const char* name, const char* value)
+{
+    configuration* pconfig = (configuration*)user;
+    if(strcmp(section, "server") == 0) {
+        if(strcmp(name, "ipaddress") == 0) {
+            pconfig->ipaddress = strdup(value);
+        }
+        else if(strcmp(name, "port") == 0) {
+            pconfig->port = atoi(value);
+        }
+        else {
+            return 0; // Unknown name
+        }
+    }
+    else {
+        return 0; // Unknown section
+    }
+    return 1;
+}
 
 /**
  * Print the header.
@@ -52,7 +87,6 @@ static void ResetOrientation()
 int main(int argc, char **argv)
 {
     uint8_t IP[4] = {192, 168, 1, 100};
-    unsigned short Port = 4242;
 
     WHBProcInit();
     WHBInitializeSocketLibrary();
@@ -91,14 +125,14 @@ int main(int argc, char **argv)
 
     // Read default settings from file
     BOOL ip_loaded = FALSE;
-    dictionary * ini = iniparser_load(path);
-    if (ini != NULL) {
-        const char * temp = iniparser_getstring(ini, "server:ipaddress", NULL);
-        if (temp != NULL && inet_pton(AF_INET, temp, &IP) > 0) {
+    configuration config = {NULL, 4242};
+    ini_parse(path, handler, &config);
+    unsigned short Port = config.port;
+    if(config.ipaddress != NULL) {
+        if(inet_pton(AF_INET, config.ipaddress, &IP) > 0) {
             ip_loaded = TRUE;
         }
-        Port = iniparser_getint(ini, "server:port", Port);
-        iniparser_freedict(ini);
+        free((void*)config.ipaddress);
     }
     if (ip_loaded == FALSE && NNResult_IsSuccess(ACInitialize())) {
         uint32_t ac_ip = 0;
