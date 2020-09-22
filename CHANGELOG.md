@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- TBD
+- The TV button will not open the TV Remote screen anymore.
 
 ## [0.2.0] - 2020-01-05
 

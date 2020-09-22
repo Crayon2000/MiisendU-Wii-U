@@ -92,7 +92,8 @@ int main(int argc, char **argv)
     WHBInitializeSocketLibrary();
     VPADInit();
     KPADInit();
-    WPADEnableURCC(1);
+    WPADEnableURCC(TRUE);
+    VPADSetTVMenuInvalid(VPAD_CHAN_0, TRUE);
 
     WHBMountSdCard();
     char path[256];
