@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.3.0] - 2020-11-16
 
 - The TV button will not open the TV Remote screen anymore.
 
@@ -29,7 +29,7 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[unreleased]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.2.0...HEAD
+[0.3.0]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/Crayon2000/UsendMii-Client/compare/v0.0.2...v0.0.3
