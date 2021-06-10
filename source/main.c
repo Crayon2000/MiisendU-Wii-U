@@ -1,15 +1,16 @@
-#include <wut_types.h>
 #include <whb/proc.h>
 #include <coreinit/screen.h>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
-#include <nsysnet/socket.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 #include <nn/ac/ac_c.h>
 #include <whb/libmanager.h>
 #include <whb/sdcard.h>
 #include <coreinit/memheap.h>
 #include <coreinit/cache.h>
 #include <coreinit/memfrmheap.h>
+#include <wut_types.h>
 #include <ini.h>
 #include "vpad_to_json.h"
 #include "udp.h"
@@ -89,7 +90,6 @@ int main(int argc, char **argv)
     uint8_t IP[4] = {192, 168, 1, 100};
 
     WHBProcInit();
-    WHBInitializeSocketLibrary();
     VPADInit();
     KPADInit();
     WPADEnableURCC(TRUE);
@@ -186,7 +186,6 @@ int main(int argc, char **argv)
         if (vpad_data.trigger & VPAD_BUTTON_HOME) {
             free(IP_str);
             WHBUnmountSdCard();
-            WHBDeinitializeSocketLibrary();
             OSScreenShutdown();
             MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
             WHBProcShutdown();
@@ -324,7 +323,6 @@ int main(int argc, char **argv)
 
     free(IP_ADDRESS);
     WHBUnmountSdCard();
-    WHBDeinitializeSocketLibrary();
     OSScreenShutdown();
     MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
     WHBProcShutdown();

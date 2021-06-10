@@ -1,5 +1,7 @@
 #include <coreinit/memdefaultheap.h>
-#include <nsysnet/socket.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,7 +30,7 @@ void udp_init(const char * ipString, unsigned short ipport)
 
     if(connect(udp_socket, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) < 0)
     {
-        socketclose(udp_socket);
+        close(udp_socket);
         udp_socket = -1;
     }
 }
@@ -37,7 +39,7 @@ void udp_deinit(void)
 {
     if(udp_socket >= 0)
     {
-        socketclose(udp_socket);
+        close(udp_socket);
         udp_socket = -1;
     }
 }
