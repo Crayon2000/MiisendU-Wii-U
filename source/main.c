@@ -110,8 +110,8 @@ int main(int argc, char **argv)
     void *ScreenBuffer1 = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
     OSScreenSetBufferEx(SCREEN_TV, ScreenBuffer0);
     OSScreenSetBufferEx(SCREEN_DRC, ScreenBuffer1);
-    OSScreenEnableEx(SCREEN_TV, 1);
-    OSScreenEnableEx(SCREEN_DRC, 1);
+    OSScreenEnableEx(SCREEN_TV, TRUE);
+    OSScreenEnableEx(SCREEN_DRC, TRUE);
 
     // Clear screens
     OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
