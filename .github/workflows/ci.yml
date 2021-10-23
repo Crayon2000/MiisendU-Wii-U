@@ -22,9 +22,9 @@ jobs:
       run: make
 
     - name: Move file
-      run: mv UsendMii-Client.rpx meta/UsendMii_Client.rpx
+      run: mv MiisendU-Wii-U.rpx meta/MiisendU-Wii-U.rpx
 
     - uses: actions/upload-artifact@master
       with:
-        name: UsendMii_Client
+        name: MiisendU-Wii-U
         path: meta/
