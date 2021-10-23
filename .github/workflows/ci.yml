@@ -21,10 +21,13 @@ jobs:
     - name: Build application
       run: make
 
-    - name: Move file
-      run: mv MiisendU-Wii-U.rpx meta/MiisendU-Wii-U.rpx
+    - name: Prepare artifact
+      run: |
+        mkdir --parents artifact/MiisendU-Wii-U
+        mv --verbose MiisendU-Wii-U.rpx artifact/MiisendU-Wii-U/MiisendU-Wii-U.rpx
+        cp --verbose meta/* artifact/MiisendU-Wii-U
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v2
       with:
         name: MiisendU-Wii-U
-        path: meta/
+        path: artifact/

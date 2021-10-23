@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- Renamed application to MiisendU Wii U.
+- Change application name from UsendMii Client to MiisendU Wii U.
 - Prevent dead zones with emulated buttons.
 
 ## [0.3.0] - 2020-11-16
@@ -28,7 +28,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.0.2] - 2017-05-14
 
-- Gyroscope, angle, accelerometer and direction data are sent to UsendMii.
+- Send Gyroscope, angle, accelerometer and direction data to UsendMii.
 
 ## 0.0.1 - 2017-04-16
 
