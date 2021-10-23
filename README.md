@@ -1,4 +1,4 @@
-# UsendMii Client
+# MiisendU Wii U
 
 [![GitHub Badge](https://github.com/Crayon2000/UsendMii-Client/workflows/Continuous%20Integration/badge.svg)](https://github.com/Crayon2000/UsendMii-Client/actions)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/35c5a21659da4701bce75bf6015632fb)](https://www.codacy.com/app/Crayon2000/UsendMii-Client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Crayon2000/UsendMii-Client&amp;utm_campaign=Badge_Grade)

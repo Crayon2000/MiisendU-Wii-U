@@ -59,10 +59,10 @@ static int handler(void* user, const char* section, const char* name, const char
  */
 static void PrintHeader(OSScreenID bufferNum)
 {
-    OSScreenPutFontEx(bufferNum, -4, 0, " _   _                 _ __  __ _ _    ___ _ _         _");
-    OSScreenPutFontEx(bufferNum, -4, 1, "| | | |___ ___ _ _  __| |  \\/  (_|_)  / __| (_)___ _ _| |");
-    OSScreenPutFontEx(bufferNum, -4, 2, "| |_| (_-</ -_) ' \\/ _` | |\\/| | | | | (__| | / -_) ' \\  _|");
-    OSScreenPutFontEx(bufferNum, -4, 3, " \\___//__/\\___|_||_\\__,_|_|  |_|_|_|  \\___|_|_\\___|_||_\\__| v0.3.0");
+    OSScreenPutFontEx(bufferNum, -4, 0, " __  __ _ _                 _ _   _  __      ___ _   _   _ ");
+    OSScreenPutFontEx(bufferNum, -4, 1, "|  \\/  (_|_)___ ___ _ _  __| | | | | \\ \\    / (_|_) | | | |");
+    OSScreenPutFontEx(bufferNum, -4, 2, "| |\\/| | | (_-</ -_) ' \\/ _` | |_| |  \\ \\/\\/ /| | | | |_| |");
+    OSScreenPutFontEx(bufferNum, -4, 3, "|_|  |_|_|_/__/\\___|_||_\\__,_|\\___/    \\_/\\_/ |_|_|  \\___/  v0.3.0");
 }
 
 /**
@@ -84,6 +84,8 @@ static void ResetOrientation()
 
 /**
  * Entry point.
+ * @param argc An integer that contains the count of arguments.
+ * @param argv An array of null-terminated strings representing command-line arguments.
  */
 int main(int argc, char **argv)
 {
@@ -98,7 +100,7 @@ int main(int argc, char **argv)
     WHBMountSdCard();
     char path[256];
     char *sdRootPath = WHBGetSdCardMountPath();
-    snprintf(path, sizeof(path), "%s/wiiu/apps/UsendMii_Client/settings.ini", sdRootPath);
+    snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
 
     // Init screen and screen buffers
     MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);

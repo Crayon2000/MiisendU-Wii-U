@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Renamed application to MiisendU Wii U.
 - Prevent dead zones with emulated buttons.
 
 ## [0.3.0] - 2020-11-16
