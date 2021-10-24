@@ -309,7 +309,7 @@ int main(int argc, char **argv)
         pad_to_json(pad_data, msg_data, sizeof(msg_data));
 
         // Send the message
-        udp_printf(msg_data);
+        udp_print(msg_data);
 
         // Make a small delay to prevent filling up the computer receive buffer
         usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing

@@ -9,7 +9,6 @@ extern "C" {
 void udp_init(const char * ip, unsigned short ipport);
 void udp_deinit(void);
 void udp_print(const char *str);
-void udp_printf(const char *format, ...);
 
 #ifdef __cplusplus
 }

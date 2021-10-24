@@ -1,3 +1,4 @@
+#include "udp.h"
 #include <coreinit/memdefaultheap.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -8,7 +9,6 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
-#include "udp.h"
 
 /* A ripoff of logger.c */
 
@@ -68,27 +68,4 @@ void udp_print(const char *str)
     }
 
     udp_lock = 0;
-}
-
-void udp_printf(const char *format, ...)
-{
-    if(udp_socket < 0) {
-        return;
-    }
-
-    char * tmp = (char *)MEMAllocFromDefaultHeapEx(2048, 4);
-
-    if(tmp == NULL) {
-        return;
-    }
-
-    va_list va;
-    va_start(va, format);
-    if((vsnprintf(tmp, 2048, format, va) >= 0) && tmp)
-    {
-        udp_print(tmp);
-    }
-    va_end(va);
-
-    MEMFreeToDefaultHeap(tmp);
 }
