@@ -2,12 +2,12 @@
 <app version="1">
   <name>MiisendU Wii U</name>
   <coder>Crayon</coder>
-  <version>0.3.0</version>
-  <release_date>20201116000000</release_date>
+  <version>1.0.0</version>
+  <release_date>20211113000000</release_date>
   <short_description>A UsendMii client</short_description>
   <long_description>A UsendMii client for Wii U.
 
-    Based on RemotePad from rw-r-r-0644
+    Originally based on RemotePad from rw-r-r-0644
   </long_description>
 
 </app>
