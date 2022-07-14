@@ -13,7 +13,7 @@ jobs:
     steps:
 
     - name: Checkout the Git repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Update packages
       run: bash ./.github/workflows/update.sh
@@ -27,7 +27,7 @@ jobs:
         mv --verbose MiisendU-Wii-U.rpx artifact/MiisendU-Wii-U/MiisendU-Wii-U.rpx
         cp --verbose meta/* artifact/MiisendU-Wii-U
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: MiisendU-Wii-U
         path: artifact/
