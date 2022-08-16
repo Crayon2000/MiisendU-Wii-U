@@ -4,9 +4,10 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "make",
+            "command": "cmake",
             "args": [
-                "build"
+                "--build",
+                "${workspaceRoot}/build"
             ],
             "group": {
                 "kind": "build",
@@ -20,11 +21,13 @@
         {
             "label": "Clean",
             "type": "shell",
-            "command": "make",
+            "command": "cmake",
             "args": [
+                "--build",
+                "${workspaceRoot}/build",
+                "--target",
                 "clean"
-            ],
-            "problemMatcher": []
+            ]
         }
     ]
 }
