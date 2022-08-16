@@ -19,13 +19,16 @@ jobs:
       run: bash ./.github/workflows/update.sh
 
     - name: Build application
-      run: make
+      run: |
+        mkdir --parents build
+        /opt/devkitpro/portlibs/wiiu/bin/powerpc-eabi-cmake -B build
+        cmake --build build -j $(nproc)
 
     - name: Prepare artifact
       run: |
         mkdir --parents artifact/MiisendU-Wii-U
-        mv --verbose MiisendU-Wii-U.rpx artifact/MiisendU-Wii-U/MiisendU-Wii-U.rpx
-        mv --verbose MiisendU-Wii-U.wuhb artifact/MiisendU-Wii-U/MiisendU-Wii-U.wuhb
+        mv --verbose build/MiisendU-Wii-U.rpx artifact/MiisendU-Wii-U/MiisendU-Wii-U.rpx
+        mv --verbose build/MiisendU-Wii-U.wuhb artifact/MiisendU-Wii-U/MiisendU-Wii-U.wuhb
         cp --verbose meta/* artifact/MiisendU-Wii-U
 
     - uses: actions/upload-artifact@v3
