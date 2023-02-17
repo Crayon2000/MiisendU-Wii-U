@@ -47,7 +47,7 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
     json_object_set_new_nocheck(wiiugamepad, "dirZy", json_real(pad_data.vpad->direction.z.y));
     json_object_set_new_nocheck(wiiugamepad, "dirZz", json_real(pad_data.vpad->direction.z.z));
 
-    // Wii Remotes
+    // Wii Remotes / Wii U Pro Controllers
     if(pad_data.kpad[0] != NULL ||
        pad_data.kpad[1] != NULL ||
        pad_data.kpad[2] != NULL ||
@@ -55,61 +55,65 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
     {
         json_t *wiiremotes = json_array();
         json_object_set_new_nocheck(root, "wiiRemotes", wiiremotes);
+        json_t *wiiuprocontrollers = json_array();
+        json_object_set_new_nocheck(root, "wiiUProControllers", wiiuprocontrollers);
         for(int i = 0; i < 4; ++i)
         {
             if(pad_data.kpad[i] != NULL)
             {
-                json_t *wiiremote = json_object();
-                json_object_set_new_nocheck(wiiremote, "order", json_integer(i + 1));
-                json_object_set_new_nocheck(wiiremote, "hold", json_integer(pad_data.kpad[i]->hold));
-                json_object_set_new_nocheck(wiiremote, "posX", json_integer(pad_data.kpad[i]->pos.x));
-                json_object_set_new_nocheck(wiiremote, "posY", json_integer(pad_data.kpad[i]->pos.y));
-                json_object_set_new_nocheck(wiiremote, "angleX", json_real(pad_data.kpad[i]->angle.x));
-                json_object_set_new_nocheck(wiiremote, "angleY", json_real(pad_data.kpad[i]->angle.y));
-                switch(pad_data.kpad[i]->extensionType)
-                {
-                    case WPAD_EXT_NUNCHUK:
-                    case WPAD_EXT_MPLUS_NUNCHUK:
-                        { // Nunchuk
-                            json_t *extension = json_object();
-                            json_object_set_new_nocheck(wiiremote, "extension", extension);
-                            json_object_set_new_nocheck(extension, "type", json_string("nunchuk"));
-                            json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->nunchuck.hold));
-                            json_object_set_new_nocheck(extension, "stickX", json_real(pad_data.kpad[i]->nunchuck.stick.x));
-                            json_object_set_new_nocheck(extension, "stickY", json_real(pad_data.kpad[i]->nunchuck.stick.y));
-                        }
-                        break;
-                    case WPAD_EXT_CLASSIC:
-                    case WPAD_EXT_MPLUS_CLASSIC:
-                        { // Classic Controller
-                            json_t *extension = json_object();
-                            json_object_set_new_nocheck(wiiremote, "extension", extension);
-                            json_object_set_new_nocheck(extension, "type", json_string("classic"));
-                            json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->classic.hold));
-                            json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->classic.leftStick.x));
-                            json_object_set_new_nocheck(extension, "lStickY", json_real(pad_data.kpad[i]->classic.leftStick.y));
-                            json_object_set_new_nocheck(extension, "rStickX", json_real(pad_data.kpad[i]->classic.rightStick.x));
-                            json_object_set_new_nocheck(extension, "rStickY", json_real(pad_data.kpad[i]->classic.rightStick.y));
-                            json_object_set_new_nocheck(extension, "lTrigger", json_real(pad_data.kpad[i]->classic.leftTrigger));
-                            json_object_set_new_nocheck(extension, "rTrigger", json_real(pad_data.kpad[i]->classic.rightTrigger));
-                        }
-                        break;
-                    case WPAD_EXT_PRO_CONTROLLER:
-                        {   // Classic Controller Pro
-                            json_t *extension = json_object();
-                            json_object_set_new_nocheck(wiiremote, "extension", extension);
-                            json_object_set_new_nocheck(extension, "type", json_string("pro"));
-                            json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->pro.hold));
-                            json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->pro.leftStick.x));
-                            json_object_set_new_nocheck(extension, "lStickY", json_real(pad_data.kpad[i]->pro.leftStick.y));
-                            json_object_set_new_nocheck(extension, "rStickX", json_real(pad_data.kpad[i]->pro.rightStick.x));
-                            json_object_set_new_nocheck(extension, "rStickY", json_real(pad_data.kpad[i]->pro.rightStick.y));
-                        }
-                        break;
-                    default:
-                        break;
+                if(pad_data.kpad[i]->extensionType != WPAD_EXT_PRO_CONTROLLER)
+                {   // Wii Remote with or without an extension
+                    json_t *wiiremote = json_object();
+                    json_object_set_new_nocheck(wiiremote, "order", json_integer(i + 1));
+                    json_object_set_new_nocheck(wiiremote, "hold", json_integer(pad_data.kpad[i]->hold));
+                    json_object_set_new_nocheck(wiiremote, "posX", json_integer(pad_data.kpad[i]->pos.x));
+                    json_object_set_new_nocheck(wiiremote, "posY", json_integer(pad_data.kpad[i]->pos.y));
+                    json_object_set_new_nocheck(wiiremote, "angleX", json_real(pad_data.kpad[i]->angle.x));
+                    json_object_set_new_nocheck(wiiremote, "angleY", json_real(pad_data.kpad[i]->angle.y));
+                    switch(pad_data.kpad[i]->extensionType)
+                    {
+                        case WPAD_EXT_NUNCHUK:
+                        case WPAD_EXT_MPLUS_NUNCHUK:
+                            { // Nunchuk
+                                json_t *extension = json_object();
+                                json_object_set_new_nocheck(wiiremote, "extension", extension);
+                                json_object_set_new_nocheck(extension, "type", json_string("nunchuk"));
+                                json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->nunchuck.hold));
+                                json_object_set_new_nocheck(extension, "stickX", json_real(pad_data.kpad[i]->nunchuck.stick.x));
+                                json_object_set_new_nocheck(extension, "stickY", json_real(pad_data.kpad[i]->nunchuck.stick.y));
+                            }
+                            break;
+                        case WPAD_EXT_CLASSIC:
+                        case WPAD_EXT_MPLUS_CLASSIC:
+                            { // Classic Controller
+                                json_t *extension = json_object();
+                                json_object_set_new_nocheck(wiiremote, "extension", extension);
+                                json_object_set_new_nocheck(extension, "type", json_string("classic"));
+                                json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->classic.hold));
+                                json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->classic.leftStick.x));
+                                json_object_set_new_nocheck(extension, "lStickY", json_real(pad_data.kpad[i]->classic.leftStick.y));
+                                json_object_set_new_nocheck(extension, "rStickX", json_real(pad_data.kpad[i]->classic.rightStick.x));
+                                json_object_set_new_nocheck(extension, "rStickY", json_real(pad_data.kpad[i]->classic.rightStick.y));
+                                json_object_set_new_nocheck(extension, "lTrigger", json_real(pad_data.kpad[i]->classic.leftTrigger));
+                                json_object_set_new_nocheck(extension, "rTrigger", json_real(pad_data.kpad[i]->classic.rightTrigger));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    json_array_append(wiiremotes, wiiremote);
                 }
-                json_array_append(wiiremotes, wiiremote);
+                else
+                {   // Wii U Pro Controller
+                    json_t *wiiuprocontroller = json_object();
+                    json_object_set_new_nocheck(wiiuprocontroller, "order", json_integer(i + 1));
+                    json_object_set_new_nocheck(wiiuprocontroller, "hold", json_integer(pad_data.kpad[i]->pro.hold));
+                    json_object_set_new_nocheck(wiiuprocontroller, "lStickX", json_real(pad_data.kpad[i]->pro.leftStick.x));
+                    json_object_set_new_nocheck(wiiuprocontroller, "lStickY", json_real(pad_data.kpad[i]->pro.leftStick.y));
+                    json_object_set_new_nocheck(wiiuprocontroller, "rStickX", json_real(pad_data.kpad[i]->pro.rightStick.x));
+                    json_object_set_new_nocheck(wiiuprocontroller, "rStickY", json_real(pad_data.kpad[i]->pro.rightStick.y));
+                    json_array_append(wiiuprocontrollers, wiiuprocontroller);
+                }
             }
         }
     }

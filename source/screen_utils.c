@@ -35,8 +35,8 @@ void DrawLine(OSScreenID bufferNum, uint32_t x0, uint32_t y0, uint32_t x1, uint3
 {
     const int32_t dx = x1 - x0;
     const int32_t dy = y1 - y0;
-    const int32_t dx0 = fabs(dx);
-    const int32_t dy0 = fabs(dy);
+    const int32_t dx0 = abs(dx);
+    const int32_t dy0 = abs(dy);
     int32_t px = 2 * dy0 - dx0;
     int32_t py = 2 * dx0 - dy0;
 
