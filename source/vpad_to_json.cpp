@@ -54,9 +54,7 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
        pad_data.kpad[3] != NULL)
     {
         json_t *wiiremotes = json_array();
-        json_object_set_new_nocheck(root, "wiiRemotes", wiiremotes);
         json_t *wiiuprocontrollers = json_array();
-        json_object_set_new_nocheck(root, "wiiUProControllers", wiiuprocontrollers);
         for(int i = 0; i < 4; ++i)
         {
             if(pad_data.kpad[i] != NULL)
@@ -115,6 +113,22 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                     json_array_append(wiiuprocontrollers, wiiuprocontroller);
                 }
             }
+        }
+        if(json_array_size(wiiremotes) > 0)
+        {
+            json_object_set_new_nocheck(root, "wiiRemotes", wiiremotes);
+        }
+        else
+        {
+            json_delete(wiiremotes);
+        }
+        if(json_array_size(wiiuprocontrollers) > 0)
+        {
+            json_object_set_new_nocheck(root, "wiiUProControllers", wiiuprocontrollers);
+        }
+        else
+        {
+            json_delete(wiiuprocontrollers);
         }
     }
 
