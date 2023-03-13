@@ -21,12 +21,6 @@ jobs:
     - name: Build application
       run: make
 
-    - name: Create wuhb file
-      run: |
-        wuhbtool MiisendU-Wii-U.rpx MiisendU-Wii-U.wuhb \
-          --name="MiisendU Wii U" --short-name="MiisendU" --author=Crayon \
-          --icon=./wuhb/icon.png --tv-image=./wuhb/tv-image.png --drc-image=./wuhb/drc-image.png
-
     - name: Prepare artifact
       run: |
         mkdir --parents artifact/MiisendU-Wii-U
@@ -41,4 +35,4 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: MiisendU-Wii-U-WUHB
-        path: MiisendU-Wii-U.wuhb
+        path: "*.wuhb"
