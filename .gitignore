@@ -4,6 +4,7 @@
 # Executable file
 *.elf
 *.rpx
+*.wuhb
 
 # Archive
 *.zip
