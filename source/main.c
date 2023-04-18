@@ -10,6 +10,7 @@
 #include <coreinit/memheap.h>
 #include <coreinit/cache.h>
 #include <coreinit/memfrmheap.h>
+#include <proc_ui/procui.h>
 #include <wut_types.h>
 #include <ini.h>
 #include "vpad_to_json.h"
@@ -20,7 +21,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define FRAME_HEAP_TAG (0x000DECAF)
+#define CONSOLE_FRAME_HEAP_TAG (0x000DECAF)
+
+static void *sBufferTV = NULL;
+static void *sBufferDRC = NULL;
+static uint32_t sBufferSizeTV = 0;
+static uint32_t sBufferSizeDRC = 0;
+static BOOL sConsoleHasForeground = TRUE;
 
 /**
  * Application configuration.
@@ -29,6 +36,69 @@ typedef struct {
     const char* ipaddress;
     int port;
 } configuration;
+
+/**
+ * Callback called when the application acquires the foreground.
+ * @return Returns 0.
+ */
+static uint32_t ConsoleProcCallbackAcquired(void *context)
+{
+   MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
+   MEMRecordStateForFrmHeap(heap, CONSOLE_FRAME_HEAP_TAG);
+
+   if (sBufferSizeTV > 0) {
+      sBufferTV = MEMAllocFromFrmHeapEx(heap, sBufferSizeTV, 4);
+   }
+
+   if (sBufferSizeDRC > 0) {
+      sBufferDRC = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
+   }
+
+   sConsoleHasForeground = TRUE;
+   OSScreenSetBufferEx(SCREEN_TV, sBufferTV);
+   OSScreenSetBufferEx(SCREEN_DRC, sBufferDRC);
+   return 0;
+}
+
+/**
+ * Callback called when the application must release the foreground.
+ * @return Returns 0.
+ */
+static uint32_t ConsoleProcCallbackReleased(void *context)
+{
+   MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
+   MEMFreeByStateToFrmHeap(heap, CONSOLE_FRAME_HEAP_TAG);
+   sConsoleHasForeground = FALSE;
+   return 0;
+}
+
+/**
+ * Initialize console.
+ */
+static void LogConsoleInit()
+{
+   OSScreenInit();
+   sBufferSizeTV = OSScreenGetBufferSizeEx(SCREEN_TV);
+   sBufferSizeDRC = OSScreenGetBufferSizeEx(SCREEN_DRC);
+
+   ConsoleProcCallbackAcquired(NULL);
+   OSScreenEnableEx(SCREEN_TV, 1);
+   OSScreenEnableEx(SCREEN_DRC, 1);
+
+   ProcUIRegisterCallback(PROCUI_CALLBACK_ACQUIRE, ConsoleProcCallbackAcquired, NULL, 100);
+   ProcUIRegisterCallback(PROCUI_CALLBACK_RELEASE, ConsoleProcCallbackReleased, NULL, 100);
+}
+
+/**
+ * Free console.
+ */
+static void LogConsoleFree()
+{
+   if (sConsoleHasForeground == TRUE) {
+      OSScreenShutdown();
+      ConsoleProcCallbackReleased(NULL);
+   }
+}
 
 /**
  * Handler for ini parser.
@@ -103,17 +173,7 @@ int main(int argc, char **argv)
     snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
 
     // Init screen and screen buffers
-    MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
-    MEMRecordStateForFrmHeap(heap, FRAME_HEAP_TAG);
-    OSScreenInit();
-    const uint32_t sBufferSizeTV = OSScreenGetBufferSizeEx(SCREEN_TV);
-    const uint32_t sBufferSizeDRC = OSScreenGetBufferSizeEx(SCREEN_DRC);
-    void *ScreenBuffer0 = MEMAllocFromFrmHeapEx(heap, sBufferSizeTV, 4);
-    void *ScreenBuffer1 = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
-    OSScreenSetBufferEx(SCREEN_TV, ScreenBuffer0);
-    OSScreenSetBufferEx(SCREEN_DRC, ScreenBuffer1);
-    OSScreenEnableEx(SCREEN_TV, TRUE);
-    OSScreenEnableEx(SCREEN_DRC, TRUE);
+    LogConsoleInit();
 
     // Clear screens
     OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
@@ -149,7 +209,7 @@ int main(int argc, char **argv)
     }
 
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
-    for (;;) {
+    while(TRUE) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
         if (vpad_data.trigger & VPAD_BUTTON_LEFT  && selected_digit > 0) {
             selected_digit--;
@@ -177,8 +237,8 @@ int main(int argc, char **argv)
         OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
         OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
         // Flip buffers
-        DCFlushRange(ScreenBuffer0, sBufferSizeTV);
-        DCFlushRange(ScreenBuffer1, sBufferSizeDRC);
+        DCFlushRange(sBufferTV, sBufferSizeTV);
+        DCFlushRange(sBufferDRC, sBufferSizeDRC);
         OSScreenFlipBuffersEx(SCREEN_TV);
         OSScreenFlipBuffersEx(SCREEN_DRC);
 
@@ -188,8 +248,7 @@ int main(int argc, char **argv)
         if (vpad_data.trigger & VPAD_BUTTON_HOME) {
             free(IP_str);
             WHBUnmountSdCard();
-            OSScreenShutdown();
-            MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
+            LogConsoleFree();
             WHBProcShutdown();
             return 0;
         }
@@ -231,8 +290,8 @@ int main(int argc, char **argv)
     OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
 
     // Flip buffers
-    DCFlushRange(ScreenBuffer0, sBufferSizeTV);
-    DCFlushRange(ScreenBuffer1, sBufferSizeDRC);
+    DCFlushRange(sBufferTV, sBufferSizeTV);
+    DCFlushRange(sBufferDRC, sBufferSizeDRC);
     OSScreenFlipBuffersEx(SCREEN_TV);
     OSScreenFlipBuffersEx(SCREEN_DRC);
 
@@ -260,7 +319,7 @@ int main(int argc, char **argv)
     float radius;
     VPADGetCrossStickEmulationParamsL(VPAD_CHAN_0, &rot_deg, &xy_deg, &radius);
 
-    for(;;) {
+    while(TRUE) {
         int32_t kpad_error1 = -6;
         int32_t kpad_error2 = -6;
         int32_t kpad_error3 = -6;
@@ -325,8 +384,7 @@ int main(int argc, char **argv)
 
     free(IP_ADDRESS);
     WHBUnmountSdCard();
-    OSScreenShutdown();
-    MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
+    LogConsoleFree();
     WHBProcShutdown();
 
     return 0;
