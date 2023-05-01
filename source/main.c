@@ -75,7 +75,7 @@ static uint32_t ConsoleProcCallbackReleased(void *context)
 /**
  * Initialize console.
  */
-static void LogConsoleInit()
+static void ConsoleInit()
 {
    OSScreenInit();
    sBufferSizeTV = OSScreenGetBufferSizeEx(SCREEN_TV);
@@ -92,7 +92,7 @@ static void LogConsoleInit()
 /**
  * Free console.
  */
-static void LogConsoleFree()
+static void ConsoleFree()
 {
    if (sConsoleHasForeground == TRUE) {
       OSScreenShutdown();
@@ -165,7 +165,6 @@ int main(int argc, char **argv)
     VPADInit();
     KPADInit();
     WPADEnableURCC(TRUE);
-    VPADSetTVMenuInvalid(VPAD_CHAN_0, TRUE);
 
     WHBMountSdCard();
     char path[256];
@@ -173,7 +172,7 @@ int main(int argc, char **argv)
     snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
 
     // Init screen and screen buffers
-    LogConsoleInit();
+    ConsoleInit();
 
     // Clear screens
     OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
@@ -208,8 +207,10 @@ int main(int argc, char **argv)
         ACFinalize();
     }
 
+    BOOL running = TRUE;
+
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
-    while(TRUE) {
+    while(running == TRUE) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
         if (vpad_data.trigger & VPAD_BUTTON_LEFT  && selected_digit > 0) {
             selected_digit--;
@@ -245,15 +246,19 @@ int main(int argc, char **argv)
         if (vpad_data.trigger & VPAD_BUTTON_A) {
             break;
         }
-        if (vpad_data.trigger & VPAD_BUTTON_HOME) {
-            free(IP_str);
-            WHBUnmountSdCard();
-            LogConsoleFree();
-            WHBProcShutdown();
-            return 0;
-        }
+
+        running = WHBProcIsRunning();
     }
     free(IP_str);
+    if(running == FALSE) {
+        WHBUnmountSdCard();
+        ConsoleFree();
+        WHBProcShutdown();
+        return 0;
+    }
+
+    // Disallow TV Menu
+    VPADSetTVMenuInvalid(VPAD_CHAN_0, TRUE);
 
     // Reset orientation
     ResetOrientation();
@@ -319,7 +324,7 @@ int main(int argc, char **argv)
     float radius;
     VPADGetCrossStickEmulationParamsL(VPAD_CHAN_0, &rot_deg, &xy_deg, &radius);
 
-    while(TRUE) {
+    while(running == TRUE) {
         int32_t kpad_error1 = -6;
         int32_t kpad_error2 = -6;
         int32_t kpad_error3 = -6;
@@ -375,7 +380,7 @@ int main(int argc, char **argv)
 
         // Check for exit signal
         if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 500) {
-            break;
+            running = FALSE;
         }
         if (vpad_data.release & VPAD_BUTTON_HOME) {
             holdTime = 0;
@@ -384,7 +389,7 @@ int main(int argc, char **argv)
 
     free(IP_ADDRESS);
     WHBUnmountSdCard();
-    LogConsoleFree();
+    ConsoleFree();
     WHBProcShutdown();
 
     return 0;
