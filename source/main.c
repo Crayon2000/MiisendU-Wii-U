@@ -94,10 +94,39 @@ static void ConsoleInit()
  */
 static void ConsoleFree()
 {
-   if (sConsoleHasForeground == TRUE) {
+   if(sConsoleHasForeground == TRUE) {
       OSScreenShutdown();
       ConsoleProcCallbackReleased(NULL);
    }
+}
+
+/**
+ * Start console draw.
+ * @return Returns TRUE if drawing started.
+ */
+static bool ConsoleDrawStart()
+{
+   if (sConsoleHasForeground == FALSE) {
+      return FALSE;
+   }
+
+    // Clear the screen
+    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
+    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
+
+    return TRUE;
+}
+
+/**
+ * End console draw.
+ */
+static void ConsoleDrawEnd()
+{
+    // Clear the screen
+    DCFlushRange(sBufferTV, sBufferSizeTV);
+    DCFlushRange(sBufferDRC, sBufferSizeDRC);
+    OSScreenFlipBuffersEx(SCREEN_TV);
+    OSScreenFlipBuffersEx(SCREEN_DRC);
 }
 
 /**
@@ -225,23 +254,19 @@ int main(int argc, char **argv)
             IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
         }
 
-        // Clear the screen
-        OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-        OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
-        // Print to DRC
-        PrintHeader(SCREEN_DRC);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
-        OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
-        snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 9, IP_str);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
-        // Flip buffers
-        DCFlushRange(sBufferTV, sBufferSizeTV);
-        DCFlushRange(sBufferDRC, sBufferSizeDRC);
-        OSScreenFlipBuffersEx(SCREEN_TV);
-        OSScreenFlipBuffersEx(SCREEN_DRC);
+        if(ConsoleDrawStart() == TRUE) {
+            // Print to DRC
+            PrintHeader(SCREEN_DRC);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
+            OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
+            snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 9, IP_str);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
+
+            ConsoleDrawEnd();
+        }
 
         if (vpad_data.trigger & VPAD_BUTTON_A) {
             break;
@@ -270,37 +295,31 @@ int main(int argc, char **argv)
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
-    // Output the IP address
-    char * msg_connected = (char*)malloc(255);
-    snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
+    if(ConsoleDrawStart() == TRUE) {
+        // Output the IP address
+        char * msg_connected = (char*)malloc(255);
+        snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
-    // Clear the screen
-    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
+        // Print to TV
+        PrintHeader(SCREEN_TV);
+        OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
+        OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
+        OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
+        OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+        OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
 
-    // Print to TV
-    PrintHeader(SCREEN_TV);
-    OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
-    OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
-    OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-    OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
+        // Print to DRC
+        PrintHeader(SCREEN_DRC);
+        OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
+        OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
+        OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
+        OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+        OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
 
-    // Print to DRC
-    PrintHeader(SCREEN_DRC);
-    OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
-    OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
+        ConsoleDrawEnd();
 
-    // Flip buffers
-    DCFlushRange(sBufferTV, sBufferSizeTV);
-    DCFlushRange(sBufferDRC, sBufferSizeDRC);
-    OSScreenFlipBuffersEx(SCREEN_TV);
-    OSScreenFlipBuffersEx(SCREEN_DRC);
-
-    free(msg_connected);
+        free(msg_connected);
+    }
 
     // Save settings to file
     FILE * IP_file = fopen(path, "w");
