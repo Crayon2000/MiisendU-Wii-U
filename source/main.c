@@ -1,3 +1,6 @@
+#include "console.h"
+#include "vpad_to_json.h"
+#include "udp.h"
 #include <whb/proc.h>
 #include <coreinit/screen.h>
 #include <padscore/kpad.h>
@@ -5,29 +8,16 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <nn/ac/ac_c.h>
-#include <whb/libmanager.h>
 #include <whb/sdcard.h>
-#include <coreinit/memheap.h>
 #include <coreinit/cache.h>
-#include <coreinit/memfrmheap.h>
 #include <proc_ui/procui.h>
 #include <wut_types.h>
 #include <ini.h>
-#include "vpad_to_json.h"
-#include "udp.h"
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#define CONSOLE_FRAME_HEAP_TAG (0x000DECAF)
-
-static void *sBufferTV = NULL;
-static void *sBufferDRC = NULL;
-static uint32_t sBufferSizeTV = 0;
-static uint32_t sBufferSizeDRC = 0;
-static BOOL sConsoleHasForeground = TRUE;
 
 /**
  * Application configuration.
@@ -36,98 +26,6 @@ typedef struct {
     const char* ipaddress;
     int port;
 } configuration;
-
-/**
- * Callback called when the application acquires the foreground.
- * @return Returns 0.
- */
-static uint32_t ConsoleProcCallbackAcquired(void *context)
-{
-   MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
-   MEMRecordStateForFrmHeap(heap, CONSOLE_FRAME_HEAP_TAG);
-
-   if (sBufferSizeTV > 0) {
-      sBufferTV = MEMAllocFromFrmHeapEx(heap, sBufferSizeTV, 4);
-   }
-
-   if (sBufferSizeDRC > 0) {
-      sBufferDRC = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
-   }
-
-   sConsoleHasForeground = TRUE;
-   OSScreenSetBufferEx(SCREEN_TV, sBufferTV);
-   OSScreenSetBufferEx(SCREEN_DRC, sBufferDRC);
-   return 0;
-}
-
-/**
- * Callback called when the application must release the foreground.
- * @return Returns 0.
- */
-static uint32_t ConsoleProcCallbackReleased(void *context)
-{
-   MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
-   MEMFreeByStateToFrmHeap(heap, CONSOLE_FRAME_HEAP_TAG);
-   sConsoleHasForeground = FALSE;
-   return 0;
-}
-
-/**
- * Initialize console.
- */
-static void ConsoleInit()
-{
-   OSScreenInit();
-   sBufferSizeTV = OSScreenGetBufferSizeEx(SCREEN_TV);
-   sBufferSizeDRC = OSScreenGetBufferSizeEx(SCREEN_DRC);
-
-   ConsoleProcCallbackAcquired(NULL);
-   OSScreenEnableEx(SCREEN_TV, 1);
-   OSScreenEnableEx(SCREEN_DRC, 1);
-
-   ProcUIRegisterCallback(PROCUI_CALLBACK_ACQUIRE, ConsoleProcCallbackAcquired, NULL, 100);
-   ProcUIRegisterCallback(PROCUI_CALLBACK_RELEASE, ConsoleProcCallbackReleased, NULL, 100);
-}
-
-/**
- * Free console.
- */
-static void ConsoleFree()
-{
-   if(sConsoleHasForeground == TRUE) {
-      OSScreenShutdown();
-      ConsoleProcCallbackReleased(NULL);
-   }
-}
-
-/**
- * Start console draw.
- * @return Returns TRUE if drawing started.
- */
-static bool ConsoleDrawStart()
-{
-   if (sConsoleHasForeground == FALSE) {
-      return FALSE;
-   }
-
-    // Clear the screen
-    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
-
-    return TRUE;
-}
-
-/**
- * End console draw.
- */
-static void ConsoleDrawEnd()
-{
-    // Clear the screen
-    DCFlushRange(sBufferTV, sBufferSizeTV);
-    DCFlushRange(sBufferDRC, sBufferSizeDRC);
-    OSScreenFlipBuffersEx(SCREEN_TV);
-    OSScreenFlipBuffersEx(SCREEN_DRC);
-}
 
 /**
  * Handler for ini parser.
@@ -204,8 +102,7 @@ int main(int argc, char **argv)
     ConsoleInit();
 
     // Clear screens
-    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
+    ConsoleDrawStart();
 
     // Gamepad key state data
     VPADReadError error;
