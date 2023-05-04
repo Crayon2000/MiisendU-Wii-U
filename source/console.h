@@ -7,7 +7,8 @@ extern "C" {
 
 void ConsoleInit();
 void ConsoleFree();
-BOOL ConsoleDrawStart();
+void ConsoleSetColor(uint32_t color);
+bool ConsoleDrawStart();
 void ConsoleDrawEnd();
 
 #ifdef __cplusplus

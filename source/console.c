@@ -13,7 +13,8 @@ static void *sBufferTV = NULL;
 static void *sBufferDRC = NULL;
 static uint32_t sBufferSizeTV = 0;
 static uint32_t sBufferSizeDRC = 0;
-static BOOL sConsoleHasForeground = TRUE;
+static bool sConsoleHasForeground = true;
+static uint32_t consoleColor = 0x000000FF;
 
 /**
  * Callback called when the application acquires the foreground.
@@ -33,7 +34,7 @@ static uint32_t ConsoleProcCallbackAcquired(void *context)
       sBufferDRC = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
    }
 
-   sConsoleHasForeground = TRUE;
+   sConsoleHasForeground = true;
    OSScreenSetBufferEx(SCREEN_TV, sBufferTV);
    OSScreenSetBufferEx(SCREEN_DRC, sBufferDRC);
    return 0;
@@ -48,7 +49,7 @@ static uint32_t ConsoleProcCallbackReleased(void *context)
 {
    MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
    MEMFreeByStateToFrmHeap(heap, CONSOLE_FRAME_HEAP_TAG);
-   sConsoleHasForeground = FALSE;
+   sConsoleHasForeground = false;
    return 0;
 }
 
@@ -62,8 +63,8 @@ void ConsoleInit()
    sBufferSizeDRC = OSScreenGetBufferSizeEx(SCREEN_DRC);
 
    ConsoleProcCallbackAcquired(NULL);
-   OSScreenEnableEx(SCREEN_TV, TRUE);
-   OSScreenEnableEx(SCREEN_DRC, TRUE);
+   OSScreenEnableEx(SCREEN_TV, true);
+   OSScreenEnableEx(SCREEN_DRC, true);
 
    ProcUIRegisterCallback(PROCUI_CALLBACK_ACQUIRE, ConsoleProcCallbackAcquired, NULL, 100);
    ProcUIRegisterCallback(PROCUI_CALLBACK_RELEASE, ConsoleProcCallbackReleased, NULL, 100);
@@ -74,27 +75,37 @@ void ConsoleInit()
  */
 void ConsoleFree()
 {
-   if(sConsoleHasForeground == TRUE) {
+   if(sConsoleHasForeground == true) {
       OSScreenShutdown();
       ConsoleProcCallbackReleased(NULL);
    }
 }
 
 /**
- * Start console draw.
- * @return Returns TRUE if drawing started.
+ * Set console color.
+ * @param color The color to use, in big-endian RGBX8 format - 0xRRGGBBXX,
+ *    where X bits are ignored.
  */
-BOOL ConsoleDrawStart()
+void ConsoleSetColor(uint32_t color)
 {
-   if(sConsoleHasForeground == FALSE) {
-      return FALSE;
+   consoleColor = color;
+}
+
+/**
+ * Start console draw.
+ * @return Returns true if drawing started, false otherwise.
+ */
+bool ConsoleDrawStart()
+{
+   if(sConsoleHasForeground == false) {
+      return false;
    }
 
     // Clear the screen
-    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
+    OSScreenClearBufferEx(SCREEN_TV, consoleColor);
+    OSScreenClearBufferEx(SCREEN_DRC, consoleColor);
 
-    return TRUE;
+    return true;
 }
 
 /**

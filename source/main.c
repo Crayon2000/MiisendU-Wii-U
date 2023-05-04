@@ -91,7 +91,7 @@ int main(int argc, char **argv)
     WHBProcInit();
     VPADInit();
     KPADInit();
-    WPADEnableURCC(TRUE);
+    WPADEnableURCC(true);
 
     WHBMountSdCard();
     char path[256];
@@ -112,17 +112,17 @@ int main(int argc, char **argv)
     int8_t selected_digit = 0;
 
     // Read default settings from file
-    BOOL ip_loaded = FALSE;
+    bool ip_loaded = false;
     configuration config = {NULL, 4242};
     ini_parse(path, handler, &config);
     unsigned short Port = config.port;
     if(config.ipaddress != NULL) {
         if(inet_pton(AF_INET, config.ipaddress, &IP) > 0) {
-            ip_loaded = TRUE;
+            ip_loaded = true;
         }
         free((void*)config.ipaddress);
     }
-    if (ip_loaded == FALSE && NNResult_IsSuccess(ACInitialize())) {
+    if (ip_loaded == false && NNResult_IsSuccess(ACInitialize())) {
         uint32_t ac_ip = 0;
         if (NNResult_IsSuccess(ACGetAssignedAddress(&ac_ip))) {
             IP[0] = (ac_ip >> 24) & 0xFF;
@@ -133,10 +133,10 @@ int main(int argc, char **argv)
         ACFinalize();
     }
 
-    BOOL running = TRUE;
+    bool running = true;
 
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
-    while(running == TRUE) {
+    while(running == true) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
         if (vpad_data.trigger & VPAD_BUTTON_LEFT  && selected_digit > 0) {
             selected_digit--;
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
             IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
         }
 
-        if(ConsoleDrawStart() == TRUE) {
+        if(ConsoleDrawStart() == true) {
             // Print to DRC
             PrintHeader(SCREEN_DRC);
             OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
         running = WHBProcIsRunning();
     }
     free(IP_str);
-    if(running == FALSE) {
+    if(running == false) {
         WHBUnmountSdCard();
         ConsoleFree();
         WHBProcShutdown();
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
     }
 
     // Disallow TV Menu
-    VPADSetTVMenuInvalid(VPAD_CHAN_0, TRUE);
+    VPADSetTVMenuInvalid(VPAD_CHAN_0, true);
 
     // Reset orientation
     ResetOrientation();
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
-    if(ConsoleDrawStart() == TRUE) {
+    if(ConsoleDrawStart() == true) {
         // Output the IP address
         char * msg_connected = (char*)malloc(255);
         snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
     float radius;
     VPADGetCrossStickEmulationParamsL(VPAD_CHAN_0, &rot_deg, &xy_deg, &radius);
 
-    while(running == TRUE) {
+    while(running == true) {
         int32_t kpad_error1 = -6;
         int32_t kpad_error2 = -6;
         int32_t kpad_error3 = -6;
@@ -296,7 +296,7 @@ int main(int argc, char **argv)
 
         // Check for exit signal
         if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 500) {
-            running = FALSE;
+            running = false;
         }
         if (vpad_data.release & VPAD_BUTTON_HOME) {
             holdTime = 0;
