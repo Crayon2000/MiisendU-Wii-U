@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <coreinit/screen.h>
 
-// Exchanges the values of x and y.
+static const double kPi = 3.14159265358979323846;
+
+/**
+ * Exchanges the values of x and y.
+ */
 #define SWAP(x, y) do {  \
     typeof(x) _x = x;    \
     typeof(y) _y = y;    \
@@ -132,8 +136,8 @@ void DrawCircle(OSScreenID bufferNum, uint32_t x, uint32_t y, float radius, uint
 {
     for(float angle = 0.0f; angle < 360.0f; angle += 0.1f)
     {
-        const float x1 = x + radius * cos(angle * M_PI / 180.0f);
-        const float y1 = y + radius * sin(angle * M_PI / 180.0f);
+        const float x1 = x + radius * cos(angle * kPi / 180.0f);
+        const float y1 = y + radius * sin(angle * kPi / 180.0f);
         DrawPixel(bufferNum, round(x1), round(y1), color);
     }
 }

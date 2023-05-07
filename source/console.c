@@ -7,7 +7,7 @@
 #include <coreinit/screen.h>
 #include <proc_ui/procui.h>
 
-#define CONSOLE_FRAME_HEAP_TAG (0x000DECAF)
+static const uint32_t CONSOLE_FRAME_HEAP_TAG = 0x000DECAF;
 
 static void *sBufferTV = NULL;
 static void *sBufferDRC = NULL;

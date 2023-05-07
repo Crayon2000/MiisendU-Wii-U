@@ -10,6 +10,7 @@
 #include <nn/ac/ac_c.h>
 #include <whb/sdcard.h>
 #include <coreinit/cache.h>
+#include <coreinit/thread.h>
 #include <proc_ui/procui.h>
 #include <wut_types.h>
 #include <ini.h>
@@ -292,7 +293,7 @@ int main(int argc, char **argv)
         udp_print(msg_data);
 
         // Make a small delay to prevent filling up the computer receive buffer
-        usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing
+        OSSleepTicks(OSMillisecondsToTicks(10)); // Make this value smaller for faster refreshing
 
         // Check for exit signal
         if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 500) {
