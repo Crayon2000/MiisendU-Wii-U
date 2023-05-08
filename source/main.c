@@ -12,6 +12,7 @@
 #include <coreinit/cache.h>
 #include <coreinit/thread.h>
 #include <proc_ui/procui.h>
+#include <sysapp/launch.h>
 #include <wut_types.h>
 #include <ini.h>
 #include <stdio.h>
@@ -183,6 +184,17 @@ int main(int argc, char **argv)
     // Disallow TV Menu
     VPADSetTVMenuInvalid(VPAD_CHAN_0, true);
 
+    bool fromHBL;
+    if(OSIsHomeButtonMenuEnabled() == false) {
+        fromHBL = true;
+    }
+    else {
+        fromHBL = false;
+
+        // Disable HOME button menu
+        OSEnableHomeButtonMenu(false);
+    }
+
     // Reset orientation
     ResetOrientation();
 
@@ -297,7 +309,13 @@ int main(int argc, char **argv)
 
         // Check for exit signal
         if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 500) {
-            running = false;
+            if(fromHBL == true) {
+                running = false;
+            }
+            else {
+                SYSLaunchMenu();
+                running = WHBProcIsRunning();
+            }
         }
         if (vpad_data.release & VPAD_BUTTON_HOME) {
             holdTime = 0;
