@@ -1,3 +1,6 @@
+#include "console.h"
+#include "vpad_to_json.h"
+#include "udp.h"
 #include <whb/proc.h>
 #include <coreinit/screen.h>
 #include <padscore/kpad.h>
@@ -5,22 +8,18 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <nn/ac/ac_c.h>
-#include <whb/libmanager.h>
 #include <whb/sdcard.h>
-#include <coreinit/memheap.h>
 #include <coreinit/cache.h>
-#include <coreinit/memfrmheap.h>
+#include <coreinit/thread.h>
+#include <proc_ui/procui.h>
+#include <sysapp/launch.h>
 #include <wut_types.h>
 #include <ini.h>
-#include "vpad_to_json.h"
-#include "udp.h"
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#define FRAME_HEAP_TAG (0x000DECAF)
 
 /**
  * Application configuration.
@@ -94,8 +93,7 @@ int main(int argc, char **argv)
     WHBProcInit();
     VPADInit();
     KPADInit();
-    WPADEnableURCC(TRUE);
-    VPADSetTVMenuInvalid(VPAD_CHAN_0, TRUE);
+    WPADEnableURCC(true);
 
     WHBMountSdCard();
     char path[256];
@@ -103,21 +101,10 @@ int main(int argc, char **argv)
     snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
 
     // Init screen and screen buffers
-    MEMHeapHandle heap = MEMGetBaseHeapHandle(MEM_BASE_HEAP_MEM1);
-    MEMRecordStateForFrmHeap(heap, FRAME_HEAP_TAG);
-    OSScreenInit();
-    const uint32_t sBufferSizeTV = OSScreenGetBufferSizeEx(SCREEN_TV);
-    const uint32_t sBufferSizeDRC = OSScreenGetBufferSizeEx(SCREEN_DRC);
-    void *ScreenBuffer0 = MEMAllocFromFrmHeapEx(heap, sBufferSizeTV, 4);
-    void *ScreenBuffer1 = MEMAllocFromFrmHeapEx(heap, sBufferSizeDRC, 4);
-    OSScreenSetBufferEx(SCREEN_TV, ScreenBuffer0);
-    OSScreenSetBufferEx(SCREEN_DRC, ScreenBuffer1);
-    OSScreenEnableEx(SCREEN_TV, TRUE);
-    OSScreenEnableEx(SCREEN_DRC, TRUE);
+    ConsoleInit();
 
     // Clear screens
-    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
+    ConsoleDrawStart();
 
     // Gamepad key state data
     VPADReadError error;
@@ -127,17 +114,17 @@ int main(int argc, char **argv)
     int8_t selected_digit = 0;
 
     // Read default settings from file
-    BOOL ip_loaded = FALSE;
+    bool ip_loaded = false;
     configuration config = {NULL, 4242};
     ini_parse(path, handler, &config);
     unsigned short Port = config.port;
     if(config.ipaddress != NULL) {
         if(inet_pton(AF_INET, config.ipaddress, &IP) > 0) {
-            ip_loaded = TRUE;
+            ip_loaded = true;
         }
         free((void*)config.ipaddress);
     }
-    if (ip_loaded == FALSE && NNResult_IsSuccess(ACInitialize())) {
+    if (ip_loaded == false && NNResult_IsSuccess(ACInitialize())) {
         uint32_t ac_ip = 0;
         if (NNResult_IsSuccess(ACGetAssignedAddress(&ac_ip))) {
             IP[0] = (ac_ip >> 24) & 0xFF;
@@ -148,8 +135,10 @@ int main(int argc, char **argv)
         ACFinalize();
     }
 
+    bool running = true;
+
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
-    for (;;) {
+    while(running == true) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
         if (vpad_data.trigger & VPAD_BUTTON_LEFT  && selected_digit > 0) {
             selected_digit--;
@@ -164,37 +153,47 @@ int main(int argc, char **argv)
             IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
         }
 
-        // Clear the screen
-        OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-        OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
-        // Print to DRC
-        PrintHeader(SCREEN_DRC);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
-        OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
-        snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 9, IP_str);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
-        // Flip buffers
-        DCFlushRange(ScreenBuffer0, sBufferSizeTV);
-        DCFlushRange(ScreenBuffer1, sBufferSizeDRC);
-        OSScreenFlipBuffersEx(SCREEN_TV);
-        OSScreenFlipBuffersEx(SCREEN_DRC);
+        if(ConsoleDrawStart() == true) {
+            // Print to DRC
+            PrintHeader(SCREEN_DRC);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
+            OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
+            snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 9, IP_str);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
+
+            ConsoleDrawEnd();
+        }
 
         if (vpad_data.trigger & VPAD_BUTTON_A) {
             break;
         }
-        if (vpad_data.trigger & VPAD_BUTTON_HOME) {
-            free(IP_str);
-            WHBUnmountSdCard();
-            OSScreenShutdown();
-            MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
-            WHBProcShutdown();
-            return 0;
-        }
+
+        running = WHBProcIsRunning();
     }
     free(IP_str);
+    if(running == false) {
+        WHBUnmountSdCard();
+        ConsoleFree();
+        WHBProcShutdown();
+        return 0;
+    }
+
+    // Disallow TV Menu
+    VPADSetTVMenuInvalid(VPAD_CHAN_0, true);
+
+    bool fromHBL;
+    if(OSIsHomeButtonMenuEnabled() == false) {
+        fromHBL = true;
+    }
+    else {
+        fromHBL = false;
+
+        // Disable HOME button menu
+        OSEnableHomeButtonMenu(false);
+    }
 
     // Reset orientation
     ResetOrientation();
@@ -206,37 +205,31 @@ int main(int argc, char **argv)
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
-    // Output the IP address
-    char * msg_connected = (char*)malloc(255);
-    snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
+    if(ConsoleDrawStart() == true) {
+        // Output the IP address
+        char * msg_connected = (char*)malloc(255);
+        snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
-    // Clear the screen
-    OSScreenClearBufferEx(SCREEN_TV, 0x000000FF);
-    OSScreenClearBufferEx(SCREEN_DRC, 0x000000FF);
+        // Print to TV
+        PrintHeader(SCREEN_TV);
+        OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
+        OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
+        OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
+        OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+        OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
 
-    // Print to TV
-    PrintHeader(SCREEN_TV);
-    OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
-    OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
-    OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-    OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
+        // Print to DRC
+        PrintHeader(SCREEN_DRC);
+        OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
+        OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
+        OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
+        OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+        OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
 
-    // Print to DRC
-    PrintHeader(SCREEN_DRC);
-    OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
-    OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-    OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
+        ConsoleDrawEnd();
 
-    // Flip buffers
-    DCFlushRange(ScreenBuffer0, sBufferSizeTV);
-    DCFlushRange(ScreenBuffer1, sBufferSizeDRC);
-    OSScreenFlipBuffersEx(SCREEN_TV);
-    OSScreenFlipBuffersEx(SCREEN_DRC);
-
-    free(msg_connected);
+        free(msg_connected);
+    }
 
     // Save settings to file
     FILE * IP_file = fopen(path, "w");
@@ -260,7 +253,7 @@ int main(int argc, char **argv)
     float radius;
     VPADGetCrossStickEmulationParamsL(VPAD_CHAN_0, &rot_deg, &xy_deg, &radius);
 
-    for(;;) {
+    while(running == true) {
         int32_t kpad_error1 = -6;
         int32_t kpad_error2 = -6;
         int32_t kpad_error3 = -6;
@@ -312,11 +305,17 @@ int main(int argc, char **argv)
         udp_print(msg_data);
 
         // Make a small delay to prevent filling up the computer receive buffer
-        usleep(10000); // I guess it should be enough? Make this value smaller for faster refreshing
+        OSSleepTicks(OSMillisecondsToTicks(10)); // Make this value smaller for faster refreshing
 
         // Check for exit signal
         if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 500) {
-            break;
+            if(fromHBL == true) {
+                running = false;
+            }
+            else {
+                SYSLaunchMenu();
+                running = WHBProcIsRunning();
+            }
         }
         if (vpad_data.release & VPAD_BUTTON_HOME) {
             holdTime = 0;
@@ -325,8 +324,7 @@ int main(int argc, char **argv)
 
     free(IP_ADDRESS);
     WHBUnmountSdCard();
-    OSScreenShutdown();
-    MEMFreeByStateToFrmHeap(heap, FRAME_HEAP_TAG);
+    ConsoleFree();
     WHBProcShutdown();
 
     return 0;
