@@ -25,14 +25,10 @@ jobs:
       run: |
         mkdir --parents artifact/MiisendU-Wii-U
         mv --verbose MiisendU-Wii-U.rpx artifact/MiisendU-Wii-U/MiisendU-Wii-U.rpx
+        mv --verbose MiisendU-Wii-U.wuhb artifact/MiisendU-Wii-U/MiisendU-Wii-U.wuhb
         cp --verbose meta/* artifact/MiisendU-Wii-U
 
     - uses: actions/upload-artifact@v3
       with:
         name: MiisendU-Wii-U
         path: artifact/
-
-    - uses: actions/upload-artifact@v3
-      with:
-        name: MiisendU-Wii-U-WUHB
-        path: "*.wuhb"
