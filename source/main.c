@@ -55,6 +55,7 @@ static int handler(void* user, const char* section, const char* name, const char
 
 /**
  * Print the header.
+ * @param bufferNum The ID of the screen to place the pixel in.
  */
 static void PrintHeader(OSScreenID bufferNum)
 {
