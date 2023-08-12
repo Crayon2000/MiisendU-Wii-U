@@ -249,11 +249,6 @@ int main(int argc, char **argv)
 
     uint16_t holdTime = 0;
 
-    float rot_deg;
-    float xy_deg;
-    float radius;
-    VPADGetCrossStickEmulationParamsL(VPAD_CHAN_0, &rot_deg, &xy_deg, &radius);
-
     while(running == true) {
         int32_t kpad_error1 = -6;
         int32_t kpad_error2 = -6;
@@ -263,10 +258,6 @@ int main(int argc, char **argv)
         KPADStatus kpad_data2;
         KPADStatus kpad_data3;
         KPADStatus kpad_data4;
-
-        // Prevent dead zones with emulated buttons
-        VPADSetCrossStickEmulationParamsL(VPAD_CHAN_0, -1.0f, xy_deg, radius);
-        VPADSetCrossStickEmulationParamsR(VPAD_CHAN_0, 1.0f, xy_deg, radius);
 
         // Read the VPAD
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);

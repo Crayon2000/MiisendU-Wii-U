@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+- Remove code for emulated buttons.
+
 ## [1.2.0] - 2023-05-12
 
 - Add Aroma .wuhb file to artefact.
