@@ -1,6 +1,25 @@
 #include <string.h>
 #include <jansson.h>
+#include <map>
 #include "vpad_to_json.h"
+
+/**
+ * Mask for the Gamecube Controller.
+ */
+static const std::map gcmask = {
+    std::pair{HPAD_BUTTON_LEFT, 0x0001},
+    {HPAD_BUTTON_RIGHT, 0x0002},
+    {HPAD_BUTTON_DOWN, 0x0004},
+    {HPAD_BUTTON_UP, 0x0008},
+    {HPAD_TRIGGER_Z, 0x0010},
+    {HPAD_TRIGGER_R, 0x0020},
+    {HPAD_TRIGGER_L, 0x0040},
+    {HPAD_BUTTON_A, 0x0100},
+    {HPAD_BUTTON_B, 0x0200},
+    {HPAD_BUTTON_X, 0x0400},
+    {HPAD_BUTTON_Y, 0x0800},
+    {HPAD_BUTTON_START, 0x1000},
+};
 
 /**
  * Convert GamePad data to JSON string used by UsendMii.
@@ -129,6 +148,49 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
         else
         {
             json_delete(wiiuprocontrollers);
+        }
+    }
+
+    // USB Gamecube Controller Adapter
+    if(pad_data.hpad[0] != NULL ||
+       pad_data.hpad[1] != NULL ||
+       pad_data.hpad[2] != NULL ||
+       pad_data.hpad[3] != NULL)
+    {
+        json_t *gccontrollers = json_array();
+        for(int i = 0; i < 4; ++i)
+        {
+            if(pad_data.hpad[i] == NULL)
+            {
+                continue;
+            }
+            int32_t holdgc = 0;
+            const int32_t badgc = pad_data.hpad[i]->hold;
+            for (auto const& [oldid, newid] : gcmask)
+            {
+                if(badgc & oldid) {
+                    holdgc |= newid;
+                }
+            }
+
+            json_t *gccontroller = json_object();
+            json_object_set_new_nocheck(gccontroller, "order", json_integer(i + 1));
+            json_object_set_new_nocheck(gccontroller, "hold", json_integer(holdgc));
+            json_object_set_new_nocheck(gccontroller, "ctrlStickX", json_integer(pad_data.hpad[i]->stickX));
+            json_object_set_new_nocheck(gccontroller, "ctrlStickY", json_integer(pad_data.hpad[i]->stickY));
+            json_object_set_new_nocheck(gccontroller, "cStickX", json_integer(pad_data.hpad[i]->substickX));
+            json_object_set_new_nocheck(gccontroller, "cStickY", json_integer(pad_data.hpad[i]->substickY));
+            json_object_set_new_nocheck(gccontroller, "lTrigger", json_integer(pad_data.hpad[i]->triggerL));
+            json_object_set_new_nocheck(gccontroller, "rTrigger", json_integer(pad_data.hpad[i]->triggerR));
+            json_array_append(gccontrollers, gccontroller);
+        }
+        if(json_array_size(gccontrollers) > 0)
+        {
+            json_object_set_new_nocheck(root, "gameCubeControllers", gccontrollers);
+        }
+        else
+        {
+            json_delete(gccontrollers);
         }
     }
 

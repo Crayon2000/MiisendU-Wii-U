@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Send USB Gamecube Controller Adapter button states to UsendMii.
 - Remove code for emulated buttons.
 
 ## [1.2.0] - 2023-05-12

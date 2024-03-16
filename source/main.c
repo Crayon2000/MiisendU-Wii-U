@@ -94,6 +94,7 @@ int main(int argc, char **argv)
     WHBProcInit();
     VPADInit();
     KPADInit();
+    HPADInit();
     WPADEnableURCC(true);
 
     WHBMountSdCard();
@@ -258,6 +259,10 @@ int main(int argc, char **argv)
         KPADStatus kpad_data2;
         KPADStatus kpad_data3;
         KPADStatus kpad_data4;
+        HPADStatus hpad_data1[16];
+        HPADStatus hpad_data2[16];
+        HPADStatus hpad_data3[16];
+        HPADStatus hpad_data4[16];
 
         // Read the VPAD
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
@@ -267,6 +272,12 @@ int main(int argc, char **argv)
         KPADReadEx(WPAD_CHAN_1, &kpad_data2, 1, &kpad_error2);
         KPADReadEx(WPAD_CHAN_2, &kpad_data3, 1, &kpad_error3);
         KPADReadEx(WPAD_CHAN_3, &kpad_data4, 1, &kpad_error4);
+
+        // Read the HPADs
+        int32_t hpad_error1 = HPADRead(HPAD_CHAN_0, &hpad_data1[0], 16);
+        int32_t hpad_error2 = HPADRead(HPAD_CHAN_1, &hpad_data2[0], 16);
+        int32_t hpad_error3 = HPADRead(HPAD_CHAN_2, &hpad_data3[0], 16);
+        int32_t hpad_error4 = HPADRead(HPAD_CHAN_3, &hpad_data4[0], 16);
 
         // Flush the cache (may be needed due to continuous refresh of the data ?)
         DCFlushRange(&vpad_data, sizeof(VPADStatus));
@@ -290,6 +301,22 @@ int main(int argc, char **argv)
         if(kpad_error4 == 0)
         {
             pad_data.kpad[3] = &kpad_data4;
+        }
+        if(hpad_error1 >= 0)
+        {
+            pad_data.hpad[0] = &hpad_data1[0];
+        }
+        if(hpad_error2 >= 0)
+        {
+            pad_data.hpad[1] = &hpad_data2[0];
+        }
+        if(hpad_error3 >= 0)
+        {
+            pad_data.hpad[2] = &hpad_data3[0];
+        }
+        if(hpad_error4 >= 0)
+        {
+            pad_data.hpad[3] = &hpad_data4[0];
         }
         pad_to_json(pad_data, msg_data, sizeof(msg_data));
 
@@ -315,6 +342,9 @@ int main(int argc, char **argv)
     }
 
     free(IP_ADDRESS);
+    VPADShutdown();
+    KPADShutdown();
+    HPADShutdown();
     WHBUnmountSdCard();
     ConsoleFree();
     WHBProcShutdown();
