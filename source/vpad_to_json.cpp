@@ -67,16 +67,16 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
     json_object_set_new_nocheck(wiiugamepad, "dirZz", json_real(pad_data.vpad->direction.z.z));
 
     // Wii Remotes / Wii U Pro Controllers
-    if(pad_data.kpad[0] != NULL ||
-       pad_data.kpad[1] != NULL ||
-       pad_data.kpad[2] != NULL ||
-       pad_data.kpad[3] != NULL)
+    if(pad_data.kpad[0] != nullptr ||
+       pad_data.kpad[1] != nullptr ||
+       pad_data.kpad[2] != nullptr ||
+       pad_data.kpad[3] != nullptr)
     {
         json_t *wiiremotes = json_array();
         json_t *wiiuprocontrollers = json_array();
         for(int i = 0; i < 4; ++i)
         {
-            if(pad_data.kpad[i] != NULL)
+            if(pad_data.kpad[i] != nullptr)
             {
                 if(pad_data.kpad[i]->extensionType != WPAD_EXT_PRO_CONTROLLER)
                 {   // Wii Remote with or without an extension
@@ -152,15 +152,15 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
     }
 
     // USB Gamecube Controller Adapter
-    if(pad_data.hpad[0] != NULL ||
-       pad_data.hpad[1] != NULL ||
-       pad_data.hpad[2] != NULL ||
-       pad_data.hpad[3] != NULL)
+    if(pad_data.hpad[0] != nullptr ||
+       pad_data.hpad[1] != nullptr ||
+       pad_data.hpad[2] != nullptr ||
+       pad_data.hpad[3] != nullptr)
     {
         json_t *gccontrollers = json_array();
         for(int i = 0; i < 4; ++i)
         {
-            if(pad_data.hpad[i] == NULL)
+            if(pad_data.hpad[i] == nullptr)
             {
                 continue;
             }
