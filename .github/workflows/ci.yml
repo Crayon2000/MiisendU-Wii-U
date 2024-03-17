@@ -13,16 +13,15 @@ jobs:
     steps:
 
     - name: Checkout the Git repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Update packages
       run: bash ./.github/workflows/update.sh
 
     - name: Build application
       run: |
-        mkdir --parents build
-        /opt/devkitpro/portlibs/wiiu/bin/powerpc-eabi-cmake -B build
-        cmake --build build -j $(nproc)
+        /opt/devkitpro/portlibs/wiiu/bin/powerpc-eabi-cmake -B $GITHUB_WORKSPACE/build
+        cmake --build $GITHUB_WORKSPACE/build -j $(nproc)
 
     - name: Prepare artifact
       run: |
@@ -31,7 +30,7 @@ jobs:
         mv --verbose build/MiisendU-Wii-U.wuhb artifact/MiisendU-Wii-U/MiisendU-Wii-U.wuhb
         cp --verbose meta/* artifact/MiisendU-Wii-U
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: MiisendU-Wii-U
         path: artifact/

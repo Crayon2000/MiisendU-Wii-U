@@ -4,6 +4,7 @@
 #include <wut_types.h>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
+#include <nn/hpad/hpad.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,6 +16,7 @@ extern "C" {
 typedef struct {
     VPADStatus* vpad;     /**< Wii U Gamepad. */
     KPADStatus* kpad[4];  /**< Wii Remotes. */
+    HPADStatus* hpad[4];  /**< USB Gamecube Controller Adapter. */
 } PADData;
 
 void pad_to_json(PADData pad_data, char* out, uint32_t out_size);

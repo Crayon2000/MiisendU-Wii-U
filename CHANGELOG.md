@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.3.0] - 2024-03-17
 
+- Send USB Gamecube Controller Adapter button states to UsendMii.
 - Remove code for emulated buttons.
 
 ## [1.2.0] - 2023-05-12
@@ -46,7 +47,7 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[unreleased]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.2.0...HEAD
+[1.3.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v0.3.0...v1.0.0
