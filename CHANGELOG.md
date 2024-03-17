@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.3.0] - TBD
+## [1.3.0] - 2024-03-17
 
 - Send USB Gamecube Controller Adapter button states to UsendMii.
 - Remove code for emulated buttons.

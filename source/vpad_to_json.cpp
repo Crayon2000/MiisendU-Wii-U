@@ -22,6 +22,14 @@ static const std::map gcmask = {
 };
 
 /**
+ * Change the range.
+ */
+[[nodiscard]] static constexpr int change_range(int value, int oldMin, int oldMax, int newMin, int newMax)
+{
+    return static_cast<int>((static_cast<float>(value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin);
+}
+
+/**
  * Convert GamePad data to JSON string used by UsendMii.
  * @param[in] pad_data Controllers data.
  * @param[out] out Buffer where to copy the formatted data.
@@ -176,12 +184,18 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
             json_t *gccontroller = json_object();
             json_object_set_new_nocheck(gccontroller, "order", json_integer(i + 1));
             json_object_set_new_nocheck(gccontroller, "hold", json_integer(holdgc));
-            json_object_set_new_nocheck(gccontroller, "ctrlStickX", json_integer(pad_data.hpad[i]->stickX));
-            json_object_set_new_nocheck(gccontroller, "ctrlStickY", json_integer(pad_data.hpad[i]->stickY));
-            json_object_set_new_nocheck(gccontroller, "cStickX", json_integer(pad_data.hpad[i]->substickX));
-            json_object_set_new_nocheck(gccontroller, "cStickY", json_integer(pad_data.hpad[i]->substickY));
-            json_object_set_new_nocheck(gccontroller, "lTrigger", json_integer(pad_data.hpad[i]->triggerL));
-            json_object_set_new_nocheck(gccontroller, "rTrigger", json_integer(pad_data.hpad[i]->triggerR));
+            json_object_set_new_nocheck(gccontroller, "ctrlStickX", json_integer(
+                change_range(pad_data.hpad[i]->stickX, HPAD_STICK_AXIS_MIN, HPAD_STICK_AXIS_MAX, -128, 127)));
+            json_object_set_new_nocheck(gccontroller, "ctrlStickY", json_integer(
+                change_range(pad_data.hpad[i]->stickY, HPAD_STICK_AXIS_MIN, HPAD_STICK_AXIS_MAX, -128, 127)));
+            json_object_set_new_nocheck(gccontroller, "cStickX", json_integer(
+                change_range(pad_data.hpad[i]->substickX, HPAD_SUBSTICK_AXIS_MIN, HPAD_SUBSTICK_AXIS_MAX, -128, 127)));
+            json_object_set_new_nocheck(gccontroller, "cStickY", json_integer(
+                change_range(pad_data.hpad[i]->substickY, HPAD_SUBSTICK_AXIS_MIN, HPAD_SUBSTICK_AXIS_MAX, -128, 127)));
+            json_object_set_new_nocheck(gccontroller, "lTrigger", json_integer(
+                change_range(pad_data.hpad[i]->triggerL, HPAD_TRIGGER_MIN, HPAD_TRIGGER_MAX, 0, 255)));
+            json_object_set_new_nocheck(gccontroller, "rTrigger", json_integer(
+               change_range(pad_data.hpad[i]->triggerR, HPAD_TRIGGER_MIN, HPAD_TRIGGER_MAX, 0, 255)));
             json_array_append(gccontrollers, gccontroller);
         }
         if(json_array_size(gccontrollers) > 0)
