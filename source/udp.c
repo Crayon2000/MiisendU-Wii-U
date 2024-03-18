@@ -16,7 +16,11 @@
 static int udp_socket = -1;
 static volatile bool udp_lock = false;
 
-
+/**
+ * Initialize the UDP socket.
+ * @param ipString The IP address to connect to.
+ * @param ipport The port to connect to.
+ */
 void udp_init(const char * ipString, unsigned short ipport)
 {
     udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -37,6 +41,9 @@ void udp_init(const char * ipString, unsigned short ipport)
     }
 }
 
+/**
+ * Deinitialize the UDP socket.
+ */
 void udp_deinit(void)
 {
     if(udp_socket >= 0)
@@ -46,6 +53,10 @@ void udp_deinit(void)
     }
 }
 
+/**
+ * Print a string to the UDP socket.
+ * @param str The string to send.
+ */
 void udp_print(const char *str)
 {
     // socket is always 0 initially as it is in the BSS

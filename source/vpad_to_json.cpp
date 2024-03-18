@@ -22,7 +22,13 @@ static const std::map gcmask = {
 };
 
 /**
- * Change the range.
+ * Change a value from one range to another.
+ * @param[in] value Value to change.
+ * @param[in] oldMin Old minimum value.
+ * @param[in] oldMax Old maximum value.
+ * @param[in] newMin New minimum value.
+ * @param[in] newMax New maximum value.
+ * @return Value in the new range.
  */
 [[nodiscard]] static constexpr int change_range(int value, int oldMin, int oldMax, int newMin, int newMax)
 {

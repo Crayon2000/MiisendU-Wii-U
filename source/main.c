@@ -86,6 +86,7 @@ static void ResetOrientation()
  * Entry point.
  * @param argc An integer that contains the count of arguments.
  * @param argv An array of null-terminated strings representing command-line arguments.
+ * @return Returns zero on success, nonzero on error.
  */
 int main(int argc, char **argv)
 {
