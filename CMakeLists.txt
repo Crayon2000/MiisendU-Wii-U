@@ -8,7 +8,7 @@ include(FetchContent)
 FetchContent_Declare(
   inih
   GIT_REPOSITORY https://github.com/benhoyt/inih.git
-  GIT_TAG r57
+  GIT_TAG r58
 )
 FetchContent_MakeAvailable(inih)
 
