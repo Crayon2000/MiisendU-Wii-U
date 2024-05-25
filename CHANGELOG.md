@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- TBD
+- Hold direction buttons to change IP.
 
 ## [1.3.0] - 2024-03-18
 

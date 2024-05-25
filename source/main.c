@@ -140,20 +140,36 @@ int main(int argc, char **argv)
 
     bool running = true;
 
+    uint32_t wait_time_horizontal = 0;
+    uint32_t wait_time_vertical = 0;
+    const uint8_t wait_time = 14;
+
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
     while(running == true) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
-        if (vpad_data.trigger & VPAD_BUTTON_LEFT  && selected_digit > 0) {
-            selected_digit--;
+        if (vpad_data.hold & VPAD_BUTTON_LEFT) {
+            if (vpad_data.trigger & VPAD_BUTTON_LEFT || wait_time_horizontal++ > wait_time) {
+                selected_digit--;
+                wait_time_horizontal = 0;
+            }
         }
-        if (vpad_data.trigger & VPAD_BUTTON_RIGHT && selected_digit < 3) {
-            selected_digit++;
+        if (vpad_data.hold & VPAD_BUTTON_RIGHT) {
+            if (vpad_data.trigger & VPAD_BUTTON_RIGHT || wait_time_horizontal++ > wait_time) {
+                selected_digit++;
+                wait_time_horizontal = 0;
+            }
         }
-        if (vpad_data.trigger & VPAD_BUTTON_UP) {
-            IP[selected_digit] = (IP[selected_digit] < 255) ? (IP[selected_digit] + 1) : 0;
+        if (vpad_data.hold & VPAD_BUTTON_UP) {
+            if (vpad_data.trigger & VPAD_BUTTON_UP || wait_time_vertical++ > wait_time) {
+                IP[selected_digit] = (IP[selected_digit] < 255) ? (IP[selected_digit] + 1) : 0;
+                wait_time_vertical = 0;
+            }
         }
-        if (vpad_data.trigger & VPAD_BUTTON_DOWN) {
-            IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
+        if (vpad_data.hold & VPAD_BUTTON_DOWN) {
+            if (vpad_data.trigger & VPAD_BUTTON_DOWN || wait_time_vertical++ > wait_time) {
+                IP[selected_digit] = (IP[selected_digit] >   0) ? (IP[selected_digit] - 1) : 255;
+                wait_time_vertical = 0;
+            }
         }
 
         if(ConsoleDrawStart() == true) {
