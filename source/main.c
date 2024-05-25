@@ -147,13 +147,13 @@ int main(int argc, char **argv)
     // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
     while(running == true) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
-        if (vpad_data.hold & VPAD_BUTTON_LEFT) {
+        if (vpad_data.hold & VPAD_BUTTON_LEFT && selected_digit > 0) {
             if (vpad_data.trigger & VPAD_BUTTON_LEFT || wait_time_horizontal++ > wait_time) {
                 selected_digit--;
                 wait_time_horizontal = 0;
             }
         }
-        if (vpad_data.hold & VPAD_BUTTON_RIGHT) {
+        if (vpad_data.hold & VPAD_BUTTON_RIGHT && selected_digit < 3) {
             if (vpad_data.trigger & VPAD_BUTTON_RIGHT || wait_time_horizontal++ > wait_time) {
                 selected_digit++;
                 wait_time_horizontal = 0;
