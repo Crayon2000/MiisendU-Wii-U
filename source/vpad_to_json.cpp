@@ -215,9 +215,15 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
     }
 
     // Convert to string
-    char* s = json_dumps(root, JSON_COMPACT | JSON_REAL_PRECISION(10));
-    strncpy(out, s, out_size);
-    free(s);
+    const size_t real_size = json_dumpb(root, out, out_size, JSON_COMPACT | JSON_REAL_PRECISION(10));
+    if(real_size < out_size)
+    {
+        out[real_size] = '\0';
+    }
+    else
+    {
+        out[0] = '\0';
+    }
 
     json_decref(root);
 }
