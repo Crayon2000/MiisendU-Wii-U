@@ -56,12 +56,13 @@ void udp_deinit(void)
 /**
  * Print a string to the UDP socket.
  * @param str The string to send.
+ * @return Returns true on success, false otherwise.
  */
-void udp_print(const char *str)
+bool udp_print(const char *str)
 {
     // socket is always 0 initially as it is in the BSS
     if(udp_socket < 0) {
-        return;
+        return false;
     }
 
     while(udp_lock == true) {
@@ -69,11 +70,14 @@ void udp_print(const char *str)
     }
     udp_lock = true;
 
+    bool result = true;
+
     int len = strlen(str);
     while (len > 0) {
         const int block = len < 1400 ? len : 1400; // take max 1400 bytes per UDP packet
         const int ret = send(udp_socket, str, block, 0);
         if(ret < 0) {
+            result = false;
             break;
         }
 
@@ -82,4 +86,6 @@ void udp_print(const char *str)
     }
 
     udp_lock = false;
+
+    return result;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -8,7 +10,7 @@ extern "C" {
 
 void udp_init(const char * ip, unsigned short ipport);
 void udp_deinit(void);
-void udp_print(const char *str);
+bool udp_print(const char *str);
 
 #ifdef __cplusplus
 }
