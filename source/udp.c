@@ -11,8 +11,6 @@
 #include <errno.h>
 #include <unistd.h>
 
-/* A ripoff of logger.c */
-
 static int udp_socket = -1;
 static volatile bool udp_lock = false;
 
@@ -21,7 +19,7 @@ static volatile bool udp_lock = false;
  * @param ipString The IP address to connect to.
  * @param ipport The port to connect to.
  */
-void udp_init(const char * ipString, unsigned short ipport)
+void udp_init(const char * ipString, uint16_t ipport)
 {
     udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if(udp_socket < 0) {
