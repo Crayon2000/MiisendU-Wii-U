@@ -1,14 +1,15 @@
 #pragma once
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* A ripoff of logger.h */
-
-void udp_init(const char * ip, unsigned short ipport);
+void udp_init(const char * ipString, uint16_t ipport);
 void udp_deinit(void);
-void udp_print(const char *str);
+bool udp_print(const char *str);
 
 #ifdef __cplusplus
 }

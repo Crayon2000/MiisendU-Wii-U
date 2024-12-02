@@ -7,8 +7,7 @@ pkg_check_modules(JANSSON REQUIRED jansson)
 include(FetchContent)
 FetchContent_Declare(
   inih
-  GIT_REPOSITORY https://github.com/benhoyt/inih.git
-  GIT_TAG r58
+  URL https://github.com/benhoyt/inih/archive/refs/tags/r58.tar.gz
 )
 FetchContent_MakeAvailable(inih)
 

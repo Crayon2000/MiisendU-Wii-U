@@ -31,6 +31,10 @@ typedef struct {
 
 /**
  * Handler for ini parser.
+ * @param user User data.
+ * @param section Section name.
+ * @param name Name.
+ * @param value Value.
  * @return Returns nonzero on success, zero on error.
  */
 static int handler(void* user, const char* section, const char* name, const char* value)
@@ -113,7 +117,7 @@ int main(int argc, char **argv)
     VPADReadError error;
     VPADStatus vpad_data;
 
-    char * IP_str = (char*)malloc(32);
+    char IP_str[32];
     int8_t selected_digit = 0;
 
     // Read default settings from file
@@ -192,7 +196,6 @@ int main(int argc, char **argv)
 
         running = WHBProcIsRunning();
     }
-    free(IP_str);
     if(running == false) {
         WHBUnmountSdCard();
         ConsoleFree();
@@ -218,7 +221,7 @@ int main(int argc, char **argv)
     ResetOrientation();
 
     // Get IP Address (without spaces)
-    char * IP_ADDRESS = (char*)malloc(32);
+    char IP_ADDRESS[32];
     snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
 
     // Initialize the UDP connection
@@ -226,7 +229,7 @@ int main(int argc, char **argv)
 
     if(ConsoleDrawStart() == true) {
         // Output the IP address
-        char * msg_connected = (char*)malloc(255);
+        char msg_connected[255];
         snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
         // Print to TV
@@ -246,8 +249,6 @@ int main(int argc, char **argv)
         OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
 
         ConsoleDrawEnd();
-
-        free(msg_connected);
     }
 
     // Save settings to file
@@ -358,7 +359,6 @@ int main(int argc, char **argv)
         }
     }
 
-    free(IP_ADDRESS);
     VPADShutdown();
     KPADShutdown();
     HPADShutdown();
