@@ -39,13 +39,13 @@ typedef struct {
  */
 static int handler(void* user, const char* section, const char* name, const char* value)
 {
-    configuration* pconfig = (configuration*)user;
+    configuration* pconfig = static_cast<configuration*>(user);
     if(strcmp(section, "server") == 0) {
         if(strcmp(name, "ipaddress") == 0) {
             pconfig->ipaddress = strdup(value);
         }
         else if(strcmp(name, "port") == 0) {
-            pconfig->port = atoi(value);
+            pconfig->port = std::atoi(value);
         }
         else {
             return 0; // Unknown name
@@ -92,7 +92,7 @@ static void ResetOrientation()
  * @param argv An array of null-terminated strings representing command-line arguments.
  * @return Returns zero on success, nonzero on error.
  */
-int main(int argc, char **argv)
+int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
     uint8_t IP[4] = {192, 168, 1, 100};
 
@@ -122,10 +122,10 @@ int main(int argc, char **argv)
 
     // Read default settings from file
     bool ip_loaded = false;
-    configuration config = {NULL, 4242};
+    configuration config = {nullptr, 4242};
     ini_parse(path, handler, &config);
     unsigned short Port = config.port;
-    if(config.ipaddress != NULL) {
+    if(config.ipaddress != nullptr) {
         if(inet_pton(AF_INET, config.ipaddress, &IP) > 0) {
             ip_loaded = true;
         }
@@ -253,7 +253,7 @@ int main(int argc, char **argv)
 
     // Save settings to file
     FILE * IP_file = fopen(path, "w");
-    if (IP_file != NULL) {
+    if (IP_file != nullptr) {
         fprintf(IP_file,
             "[server]\n"
             "ipaddress=%s\n"
@@ -269,10 +269,10 @@ int main(int argc, char **argv)
     uint16_t holdTime = 0;
 
     while(running == true) {
-        int32_t kpad_error1 = -6;
-        int32_t kpad_error2 = -6;
-        int32_t kpad_error3 = -6;
-        int32_t kpad_error4 = -6;
+        KPADError kpad_error1 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADError kpad_error2 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADError kpad_error3 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADError kpad_error4 = KPADError::KPAD_ERROR_UNINITIALIZED;
         KPADStatus kpad_data1;
         KPADStatus kpad_data2;
         KPADStatus kpad_data3;
@@ -304,19 +304,19 @@ int main(int argc, char **argv)
         PADData pad_data;
         memset(&pad_data, 0, sizeof(PADData));
         pad_data.vpad = &vpad_data;
-        if(kpad_error1 == 0)
+        if(kpad_error1 == KPADError::KPAD_ERROR_OK)
         {
             pad_data.kpad[0] = &kpad_data1;
         }
-        if(kpad_error2 == 0)
+        if(kpad_error2 == KPADError::KPAD_ERROR_OK)
         {
             pad_data.kpad[1] = &kpad_data2;
         }
-        if(kpad_error3 == 0)
+        if(kpad_error3 == KPADError::KPAD_ERROR_OK)
         {
             pad_data.kpad[2] = &kpad_data3;
         }
-        if(kpad_error4 == 0)
+        if(kpad_error4 == KPADError::KPAD_ERROR_OK)
         {
             pad_data.kpad[3] = &kpad_data4;
         }

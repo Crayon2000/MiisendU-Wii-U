@@ -13,8 +13,20 @@ FetchContent_MakeAvailable(inih)
 
 add_executable(MiisendU-Wii-U)
 
+target_compile_options(MiisendU-Wii-U PRIVATE
+  -Werror
+  -Wall
+  -Wextra
+  -Wshadow
+  -Wpedantic
+  -Wnull-dereference
+  -Wmisleading-indentation
+  -Wduplicated-cond
+  -Wduplicated-branches
+)
+
 target_sources(MiisendU-Wii-U PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/source/main.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/source/console.c
   ${CMAKE_CURRENT_SOURCE_DIR}/source/udp.c
   ${CMAKE_CURRENT_SOURCE_DIR}/source/vpad_to_json.cpp
