@@ -15,7 +15,6 @@ add_executable(MiisendU-Wii-U)
 
 target_compile_options(MiisendU-Wii-U PRIVATE
   -Werror
-  -Wall
   -Wextra
   -Wshadow
   -Wpedantic

@@ -7,7 +7,7 @@
 #include <vpad/input.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <nn/ac/ac_c.h>
+#include <nn/ac.h>
 #include <whb/sdcard.h>
 #include <coreinit/cache.h>
 #include <coreinit/thread.h>
@@ -124,22 +124,22 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     bool ip_loaded = false;
     configuration config = {nullptr, 4242};
     ini_parse(path, handler, &config);
-    unsigned short Port = config.port;
+    const uint16_t Port = config.port;
     if(config.ipaddress != nullptr) {
         if(inet_pton(AF_INET, config.ipaddress, &IP) > 0) {
             ip_loaded = true;
         }
         free((void*)config.ipaddress);
     }
-    if (ip_loaded == false && NNResult_IsSuccess(ACInitialize())) {
+    if (ip_loaded == false && nn::ac::Initialize() == true) {
         uint32_t ac_ip = 0;
-        if (NNResult_IsSuccess(ACGetAssignedAddress(&ac_ip))) {
+        if (nn::ac::GetAssignedAddress(&ac_ip) == true) {
             IP[0] = (ac_ip >> 24) & 0xFF;
             IP[1] = (ac_ip >> 16) & 0xFF;
             IP[2] = (ac_ip >>  8) & 0xFF;
             IP[3] = (ac_ip >>  0) & 0xFF;
         }
-        ACFinalize();
+        nn::ac::Finalize();
     }
 
     bool running = true;
@@ -148,7 +148,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     uint32_t wait_time_vertical = 0;
     const uint8_t wait_time = 14;
 
-    // Insert the IP address (some code was taken from the IP Address selector of geckiine made by brienj)
+    // Insert the IP address
     while(running == true) {
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
         if (vpad_data.hold & VPAD_BUTTON_LEFT && selected_digit > 0) {
