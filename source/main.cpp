@@ -10,7 +10,6 @@
 #include <nn/ac.h>
 #include <whb/sdcard.h>
 #include <coreinit/cache.h>
-#include <coreinit/thread.h>
 #include <proc_ui/procui.h>
 #include <sysapp/launch.h>
 #include <wut_types.h>
@@ -20,6 +19,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <thread>
 
 /**
  * Application configuration.
@@ -28,6 +28,11 @@ typedef struct {
     const char* ipaddress;
     int port;
 } configuration;
+
+/**
+ * Whether pad data are being sent.
+ */
+static std::atomic<bool> thread_running{true};
 
 /**
  * Handler for ini parser.
@@ -87,6 +92,97 @@ static void ResetOrientation()
 }
 
 /**
+ * Send pad data to UDP.
+ * @return Returns 0 when done.
+ */
+static int sendPadData() {
+    while(thread_running == true) {
+        // Gamepad key state data
+        VPADReadError error;
+        VPADStatus vpad_data;
+
+        KPADError kpad_error1 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADError kpad_error2 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADError kpad_error3 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADError kpad_error4 = KPADError::KPAD_ERROR_UNINITIALIZED;
+        KPADStatus kpad_data1;
+        KPADStatus kpad_data2;
+        KPADStatus kpad_data3;
+        KPADStatus kpad_data4;
+        HPADStatus hpad_data1[16];
+        HPADStatus hpad_data2[16];
+        HPADStatus hpad_data3[16];
+        HPADStatus hpad_data4[16];
+
+        // Read the VPAD
+        VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
+
+        // Read the KPADs
+        KPADReadEx(WPAD_CHAN_0, &kpad_data1, 1, &kpad_error1);
+        KPADReadEx(WPAD_CHAN_1, &kpad_data2, 1, &kpad_error2);
+        KPADReadEx(WPAD_CHAN_2, &kpad_data3, 1, &kpad_error3);
+        KPADReadEx(WPAD_CHAN_3, &kpad_data4, 1, &kpad_error4);
+
+        // Read the HPADs
+        int32_t hpad_error1 = HPADRead(HPAD_CHAN_0, &hpad_data1[0], 16);
+        int32_t hpad_error2 = HPADRead(HPAD_CHAN_1, &hpad_data2[0], 16);
+        int32_t hpad_error3 = HPADRead(HPAD_CHAN_2, &hpad_data3[0], 16);
+        int32_t hpad_error4 = HPADRead(HPAD_CHAN_3, &hpad_data4[0], 16);
+
+        // Flush the cache (may be needed due to continuous refresh of the data ?)
+        DCFlushRange(&vpad_data, sizeof(VPADStatus));
+
+        // Transform to JSON
+        PADData pad_data;
+        memset(&pad_data, 0, sizeof(PADData));
+        pad_data.vpad = &vpad_data;
+        if(kpad_error1 == KPADError::KPAD_ERROR_OK)
+        {
+            pad_data.kpad[0] = &kpad_data1;
+        }
+        if(kpad_error2 == KPADError::KPAD_ERROR_OK)
+        {
+            pad_data.kpad[1] = &kpad_data2;
+        }
+        if(kpad_error3 == KPADError::KPAD_ERROR_OK)
+        {
+            pad_data.kpad[2] = &kpad_data3;
+        }
+        if(kpad_error4 == KPADError::KPAD_ERROR_OK)
+        {
+            pad_data.kpad[3] = &kpad_data4;
+        }
+        if(hpad_error1 >= 0)
+        {
+            pad_data.hpad[0] = &hpad_data1[0];
+        }
+        if(hpad_error2 >= 0)
+        {
+            pad_data.hpad[1] = &hpad_data2[0];
+        }
+        if(hpad_error3 >= 0)
+        {
+            pad_data.hpad[2] = &hpad_data3[0];
+        }
+        if(hpad_error4 >= 0)
+        {
+            pad_data.hpad[3] = &hpad_data4[0];
+        }
+
+        // The buffer sent to the computer
+        char msg_data[1024];
+        pad_to_json(pad_data, msg_data, sizeof(msg_data));
+
+        // Send the message
+        udp_print(msg_data);
+
+        // Make a small delay to prevent filling up the computer receive buffer
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    return 0;
+}
+
+/**
  * Entry point.
  * @param argc An integer that contains the count of arguments.
  * @param argv An array of null-terminated strings representing command-line arguments.
@@ -132,8 +228,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         free((void*)config.ipaddress);
     }
     if (ip_loaded == false && nn::ac::Initialize() == true) {
-        uint32_t ac_ip = 0;
-        if (nn::ac::GetAssignedAddress(&ac_ip) == true) {
+        if (uint32_t ac_ip = 0; nn::ac::GetAssignedAddress(&ac_ip) == true) {
             IP[0] = (ac_ip >> 24) & 0xFF;
             IP[1] = (ac_ip >> 16) & 0xFF;
             IP[2] = (ac_ip >>  8) & 0xFF;
@@ -227,30 +322,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
-    if(ConsoleDrawStart() == true) {
-        // Output the IP address
-        char msg_connected[255];
-        snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
-
-        // Print to TV
-        PrintHeader(SCREEN_TV);
-        OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
-        OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
-        OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
-        OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-        OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
-
-        // Print to DRC
-        PrintHeader(SCREEN_DRC);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
-        OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
-        OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
-
-        ConsoleDrawEnd();
-    }
-
     // Save settings to file
     FILE * IP_file = fopen(path, "w");
     if (IP_file != nullptr) {
@@ -263,89 +334,44 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         fclose(IP_file);
     }
 
-    // The buffer sent to the computer
-    char msg_data[1024];
-
     uint16_t holdTime = 0;
 
+    // Start to send pad data
+    std::thread pad_thread(sendPadData);
+
     while(running == true) {
-        KPADError kpad_error1 = KPADError::KPAD_ERROR_UNINITIALIZED;
-        KPADError kpad_error2 = KPADError::KPAD_ERROR_UNINITIALIZED;
-        KPADError kpad_error3 = KPADError::KPAD_ERROR_UNINITIALIZED;
-        KPADError kpad_error4 = KPADError::KPAD_ERROR_UNINITIALIZED;
-        KPADStatus kpad_data1;
-        KPADStatus kpad_data2;
-        KPADStatus kpad_data3;
-        KPADStatus kpad_data4;
-        HPADStatus hpad_data1[16];
-        HPADStatus hpad_data2[16];
-        HPADStatus hpad_data3[16];
-        HPADStatus hpad_data4[16];
+        if(ConsoleDrawStart() == true) {
+            // Output the IP address
+            char msg_connected[255];
+            snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
+
+            // Print to TV
+            PrintHeader(SCREEN_TV);
+            OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
+            OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
+            OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
+            OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+            OSScreenPutFontEx(SCREEN_TV, 0, 16, "Hold the HOME button to exit.");
+
+            // Print to DRC
+            PrintHeader(SCREEN_DRC);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
+            OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Hold the HOME button to exit.");
+
+            ConsoleDrawEnd();
+        }
 
         // Read the VPAD
         VPADRead(VPAD_CHAN_0, &vpad_data, 1, &error);
 
-        // Read the KPADs
-        KPADReadEx(WPAD_CHAN_0, &kpad_data1, 1, &kpad_error1);
-        KPADReadEx(WPAD_CHAN_1, &kpad_data2, 1, &kpad_error2);
-        KPADReadEx(WPAD_CHAN_2, &kpad_data3, 1, &kpad_error3);
-        KPADReadEx(WPAD_CHAN_3, &kpad_data4, 1, &kpad_error4);
-
-        // Read the HPADs
-        int32_t hpad_error1 = HPADRead(HPAD_CHAN_0, &hpad_data1[0], 16);
-        int32_t hpad_error2 = HPADRead(HPAD_CHAN_1, &hpad_data2[0], 16);
-        int32_t hpad_error3 = HPADRead(HPAD_CHAN_2, &hpad_data3[0], 16);
-        int32_t hpad_error4 = HPADRead(HPAD_CHAN_3, &hpad_data4[0], 16);
-
         // Flush the cache (may be needed due to continuous refresh of the data ?)
         DCFlushRange(&vpad_data, sizeof(VPADStatus));
 
-        // Transform to JSON
-        PADData pad_data;
-        memset(&pad_data, 0, sizeof(PADData));
-        pad_data.vpad = &vpad_data;
-        if(kpad_error1 == KPADError::KPAD_ERROR_OK)
-        {
-            pad_data.kpad[0] = &kpad_data1;
-        }
-        if(kpad_error2 == KPADError::KPAD_ERROR_OK)
-        {
-            pad_data.kpad[1] = &kpad_data2;
-        }
-        if(kpad_error3 == KPADError::KPAD_ERROR_OK)
-        {
-            pad_data.kpad[2] = &kpad_data3;
-        }
-        if(kpad_error4 == KPADError::KPAD_ERROR_OK)
-        {
-            pad_data.kpad[3] = &kpad_data4;
-        }
-        if(hpad_error1 >= 0)
-        {
-            pad_data.hpad[0] = &hpad_data1[0];
-        }
-        if(hpad_error2 >= 0)
-        {
-            pad_data.hpad[1] = &hpad_data2[0];
-        }
-        if(hpad_error3 >= 0)
-        {
-            pad_data.hpad[2] = &hpad_data3[0];
-        }
-        if(hpad_error4 >= 0)
-        {
-            pad_data.hpad[3] = &hpad_data4[0];
-        }
-        pad_to_json(pad_data, msg_data, sizeof(msg_data));
-
-        // Send the message
-        udp_print(msg_data);
-
-        // Make a small delay to prevent filling up the computer receive buffer
-        OSSleepTicks(OSMillisecondsToTicks(10)); // Make this value smaller for faster refreshing
-
         // Check for exit signal
-        if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 500) {
+        if (vpad_data.hold & VPAD_BUTTON_HOME && ++holdTime > 400) {
             if(fromHBL == true) {
                 running = false;
             }
@@ -358,6 +384,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
             holdTime = 0;
         }
     }
+
+    thread_running = false;
+    pad_thread.join();
 
     VPADShutdown();
     KPADShutdown();

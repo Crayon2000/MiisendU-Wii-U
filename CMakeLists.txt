@@ -13,6 +13,8 @@ FetchContent_MakeAvailable(inih)
 
 add_executable(MiisendU-Wii-U)
 
+target_compile_features(MiisendU-Wii-U PRIVATE cxx_std_20)
+
 target_compile_options(MiisendU-Wii-U PRIVATE
   -Werror
   -Wextra
