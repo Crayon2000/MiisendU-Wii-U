@@ -25,8 +25,8 @@
  * Application configuration.
  */
 typedef struct {
-    const char* ipaddress;
-    int port;
+    std::string ipaddress;
+    int port{4242};
 } configuration;
 
 /**
@@ -47,7 +47,7 @@ static int handler(void* user, const char* section, const char* name, const char
     configuration* pconfig = static_cast<configuration*>(user);
     if(strcmp(section, "server") == 0) {
         if(strcmp(name, "ipaddress") == 0) {
-            pconfig->ipaddress = strdup(value);
+            pconfig->ipaddress = value;
         }
         else if(strcmp(name, "port") == 0) {
             pconfig->port = std::atoi(value);
@@ -68,10 +68,10 @@ static int handler(void* user, const char* section, const char* name, const char
  */
 static void PrintHeader(OSScreenID bufferNum)
 {
-    OSScreenPutFontEx(bufferNum, -4, 0, " __  __ _ _                 _ _   _  __      ___ _   _   _ ");
-    OSScreenPutFontEx(bufferNum, -4, 1, "|  \\/  (_|_)___ ___ _ _  __| | | | | \\ \\    / (_|_) | | | |");
-    OSScreenPutFontEx(bufferNum, -4, 2, "| |\\/| | | (_-</ -_) ' \\/ _` | |_| |  \\ \\/\\/ /| | | | |_| |");
-    OSScreenPutFontEx(bufferNum, -4, 3, "|_|  |_|_|_/__/\\___|_||_\\__,_|\\___/    \\_/\\_/ |_|_|  \\___/  v1.3.0");
+    OSScreenPutFontEx(bufferNum, -4, 0, R"( __  __ _ _                 _ _   _  __      ___ _   _   _ )");
+    OSScreenPutFontEx(bufferNum, -4, 1, R"(|  \/  (_|_)___ ___ _ _  __| | | | | \ \    / (_|_) | | | |)");
+    OSScreenPutFontEx(bufferNum, -4, 2, R"(| |\/| | | (_-</ -_) ' \/ _` | |_| |  \ \/\/ /| | | | |_| |)");
+    OSScreenPutFontEx(bufferNum, -4, 3, R"(|_|  |_|_|_/__/\___|_||_\__,_|\___/    \_/\_/ |_|_|  \___/  v1.3.0)");
 }
 
 /**
@@ -213,19 +213,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     VPADReadError error;
     VPADStatus vpad_data;
 
-    char IP_str[32];
     int8_t selected_digit = 0;
 
     // Read default settings from file
     bool ip_loaded = false;
-    configuration config = {nullptr, 4242};
+    configuration config;
     ini_parse(path, handler, &config);
     const uint16_t Port = config.port;
-    if(config.ipaddress != nullptr) {
-        if(inet_pton(AF_INET, config.ipaddress, &IP) > 0) {
-            ip_loaded = true;
-        }
-        free((void*)config.ipaddress);
+    if(config.ipaddress.empty() == false && inet_pton(AF_INET, config.ipaddress.c_str(), &IP) > 0) {
+        ip_loaded = true;
     }
     if (ip_loaded == false && nn::ac::Initialize() == true) {
         if (uint32_t ac_ip = 0; nn::ac::GetAssignedAddress(&ac_ip) == true) {
@@ -273,6 +269,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
         if(ConsoleDrawStart() == true) {
             // Print to DRC
+            char IP_str[32];
             PrintHeader(SCREEN_DRC);
             OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
             OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
