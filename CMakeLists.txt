@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 3.18)
 project(MiisendU-Wii-U)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(JANSSON REQUIRED jansson)
 
 include(FetchContent)
 FetchContent_Declare(
   inih
   URL https://github.com/benhoyt/inih/archive/refs/tags/r58.tar.gz
 )
+FetchContent_Declare(
+  rapidjson
+  URL https://github.com/Tencent/rapidjson/archive/refs/heads/master.tar.gz
+)
+FetchContent_Populate(rapidjson)
 FetchContent_MakeAvailable(inih)
 
 add_executable(MiisendU-Wii-U)
@@ -35,8 +39,8 @@ target_sources(MiisendU-Wii-U PRIVATE
 )
 
 target_include_directories(MiisendU-Wii-U SYSTEM PRIVATE
-  ${JANSSON_INCLUDE_DIRS}
   ${inih_SOURCE_DIR}
+  ${rapidjson_SOURCE_DIR}/include
 )
 
 target_include_directories(MiisendU-Wii-U PRIVATE
@@ -44,7 +48,6 @@ target_include_directories(MiisendU-Wii-U PRIVATE
 )
 
 target_link_libraries(MiisendU-Wii-U PRIVATE
-  ${JANSSON_LIBRARIES}
 )
 
 wut_create_rpx(MiisendU-Wii-U)
