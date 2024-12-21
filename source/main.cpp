@@ -130,37 +130,49 @@ static int sendPadData() {
         PADData pad_data;
         memset(&pad_data, 0, sizeof(PADData));
         pad_data.vpad = &vpad_data;
-        if(kpad_error1 == KPADError::KPAD_ERROR_OK)
-        {
+        if(kpad_error1 == KPADError::KPAD_ERROR_OK) {
             pad_data.kpad[0] = &kpad_data1;
         }
-        if(kpad_error2 == KPADError::KPAD_ERROR_OK)
-        {
+        if(kpad_error2 == KPADError::KPAD_ERROR_OK) {
             pad_data.kpad[1] = &kpad_data2;
         }
-        if(kpad_error3 == KPADError::KPAD_ERROR_OK)
-        {
+        if(kpad_error3 == KPADError::KPAD_ERROR_OK) {
             pad_data.kpad[2] = &kpad_data3;
         }
-        if(kpad_error4 == KPADError::KPAD_ERROR_OK)
-        {
+        if(kpad_error4 == KPADError::KPAD_ERROR_OK) {
             pad_data.kpad[3] = &kpad_data4;
         }
-        if(HPADRead(HPAD_CHAN_0, &hpad_data1[0], 16) >= 0)
-        {
-            pad_data.hpad[0] = &hpad_data1[0];
+        if(HPADRead(HPAD_CHAN_0, &hpad_data1[0], 16) >= 0) {
+            for(uint8_t i = 0; i < 16; ++i) {
+                if(hpad_data1[i].error == 0) {
+                    pad_data.hpad[0] = &hpad_data1[i];
+                    break;
+                }
+            }
         }
-        if(HPADRead(HPAD_CHAN_1, &hpad_data2[0], 16) >= 0)
-        {
-            pad_data.hpad[1] = &hpad_data2[0];
+        if(HPADRead(HPAD_CHAN_1, &hpad_data2[0], 16) >= 0) {
+            for(uint8_t i = 0; i < 16; ++i) {
+                if(hpad_data2[i].error == 0) {
+                    pad_data.hpad[1] = &hpad_data2[i];
+                    break;
+                }
+            }
         }
-        if(HPADRead(HPAD_CHAN_2, &hpad_data3[0], 16) >= 0)
-        {
-            pad_data.hpad[2] = &hpad_data3[0];
+        if(HPADRead(HPAD_CHAN_2, &hpad_data3[0], 16) >= 0) {
+            for(uint8_t i = 0; i < 16; ++i) {
+                if(hpad_data3[i].error == 0) {
+                    pad_data.hpad[2] = &hpad_data3[i];
+                    break;
+                }
+            }
         }
-        if(HPADRead(HPAD_CHAN_3, &hpad_data4[0], 16) >= 0)
-        {
-            pad_data.hpad[3] = &hpad_data4[0];
+        if(HPADRead(HPAD_CHAN_3, &hpad_data4[0], 16) >= 0) {
+            for(uint8_t i = 0; i < 16; ++i) {
+                if(hpad_data4[i].error == 0) {
+                    pad_data.hpad[3] = &hpad_data4[i];
+                    break;
+                }
+            }
         }
 
         // The buffer sent to the computer
