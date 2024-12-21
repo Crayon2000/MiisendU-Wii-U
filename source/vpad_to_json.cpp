@@ -123,15 +123,15 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
         {
             if(pad_data.kpad[i]->extensionType != WPAD_EXT_PRO_CONTROLLER)
             {   // Wii Remote with or without an extension
-                wii_remotes_status.emplace(i, pad_data.kpad[i]);
+                wii_remotes_status.emplace(i + 1, pad_data.kpad[i]);
             }
             else
             {   // Wii U Pro Controller
-                wii_u_pro_status.emplace(i, pad_data.kpad[i]);
+                wii_u_pro_status.emplace(i + 1, pad_data.kpad[i]);
             }
         }
     }
-    if (wii_u_pro_status.empty() == false) {
+    if (wii_remotes_status.empty() == false) {
         writer.Key("wiiRemotes");
         writer.StartArray();
         for (const auto& [order, kpad] : wii_remotes_status) {

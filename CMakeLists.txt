@@ -33,7 +33,7 @@ target_compile_options(MiisendU-Wii-U PRIVATE
 target_sources(MiisendU-Wii-U PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/source/console.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/source/udp.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/source/udp.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/source/vpad_to_json.cpp
   ${inih_SOURCE_DIR}/ini.c
 )
