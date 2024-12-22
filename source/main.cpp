@@ -175,12 +175,9 @@ static int sendPadData() {
             }
         }
 
-        // The buffer sent to the computer
-        char msg_data[2048];
-        pad_to_json(pad_data, msg_data, sizeof(msg_data));
-
-        // Send the message
-        udp_print(msg_data);
+        // Convert the data to JSON and send it
+        std::string_view msg = pad_to_json(pad_data);
+        udp_print(msg);
 
         // Make a small delay to prevent filling up the computer receive buffer
         std::this_thread::sleep_for(std::chrono::milliseconds(10));

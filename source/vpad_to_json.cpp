@@ -39,10 +39,9 @@ static const std::map gcmask = {
 /**
  * Convert GamePad data to JSON string used by UsendMii.
  * @param[in] pad_data Controllers data.
- * @param[out] out Buffer where to copy the formatted data.
- * @param[in] out_size Size of the out buffer.
+ * @return Returns the JSON string.
  */
-void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
+std::string_view pad_to_json(PADData pad_data)
 {
     VPADTouchData TPCalibrated;
     VPADGetTPCalibratedPointEx(VPAD_CHAN_0, VPAD_TP_854X480, &TPCalibrated, &pad_data.vpad->tpNormal);
@@ -266,6 +265,6 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
 
     writer.EndObject(); // End root object
 
-    // Convert to string
-    strncpy(out, sb.GetString(), out_size);
+    // Convert to string_view
+    return std::string_view(sb.GetString(), sb.GetSize());
 }

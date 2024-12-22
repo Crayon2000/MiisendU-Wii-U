@@ -19,7 +19,7 @@ static volatile bool udp_lock = false;
  * @param ipString The IP address to connect to.
  * @param ipport The port to connect to.
  */
-void udp_init(const char * ipString, uint16_t ipport)
+void udp_init(std::string_view ipString, uint16_t ipport)
 {
     udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if(udp_socket < 0) {
@@ -30,10 +30,9 @@ void udp_init(const char * ipString, uint16_t ipport)
     memset(&connect_addr, 0, sizeof(connect_addr));
     connect_addr.sin_family = AF_INET;
     connect_addr.sin_port = ipport;
-    inet_aton(ipString, &connect_addr.sin_addr);
+    inet_aton(ipString.data(), &connect_addr.sin_addr);
 
-    if(connect(udp_socket, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) < 0)
-    {
+    if(connect(udp_socket, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) < 0) {
         close(udp_socket);
         udp_socket = -1;
     }
@@ -44,8 +43,7 @@ void udp_init(const char * ipString, uint16_t ipport)
  */
 void udp_deinit(void)
 {
-    if(udp_socket >= 0)
-    {
+    if(udp_socket >= 0) {
         close(udp_socket);
         udp_socket = -1;
     }
@@ -56,7 +54,7 @@ void udp_deinit(void)
  * @param str The string to send.
  * @return Returns true on success, false otherwise.
  */
-bool udp_print(const char *str)
+bool udp_print(std::string_view str)
 {
     // socket is always 0 initially as it is in the BSS
     if(udp_socket < 0) {
@@ -70,17 +68,15 @@ bool udp_print(const char *str)
 
     bool result = true;
 
-    int len = strlen(str);
-    while (len > 0) {
-        const int block = len < 1400 ? len : 1400; // take max 1400 bytes per UDP packet
-        const int ret = send(udp_socket, str, block, 0);
+    while (str.empty() == false) {
+        const size_t block = std::min(str.size(), static_cast<size_t>(1400)); // take max 1400 bytes per UDP packet
+        const ssize_t ret = send(udp_socket, str.data(), block, 0);
         if(ret < 0) {
             result = false;
             break;
         }
 
-        len -= ret;
-        str += ret;
+        str.remove_prefix(ret);
     }
 
     udp_lock = false;
