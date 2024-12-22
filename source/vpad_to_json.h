@@ -5,6 +5,7 @@
 #include <padscore/kpad.h>
 #include <vpad/input.h>
 #include <nn/hpad/hpad.h>
+#include <string_view>
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,7 +20,7 @@ typedef struct {
     HPADStatus* hpad[4];  /**< USB Gamecube Controller Adapter. */
 } PADData;
 
-void pad_to_json(PADData pad_data, char* out, uint32_t out_size);
+std::string_view pad_to_json(PADData pad_data);
 
 #ifdef __cplusplus
 }

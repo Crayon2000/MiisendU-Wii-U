@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 - Hold direction buttons to change IP.
+- Fix a hang that occurs after 30 minutes.
 
 ## [1.3.0] - 2024-03-18
 
