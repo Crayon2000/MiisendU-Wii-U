@@ -5,7 +5,6 @@
 #include <coreinit/screen.h>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
 #include <nn/ac.h>
 #include <whb/sdcard.h>
@@ -14,11 +13,8 @@
 #include <sysapp/launch.h>
 #include <wut_types.h>
 #include <ini.h>
-#include <stdio.h>
-#include <malloc.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <cstring>
+#include <sys/unistd.h>
 #include <thread>
 
 /**
@@ -26,7 +22,7 @@
  */
 typedef struct {
     std::string ipaddress;
-    int port{4242};
+    uint16_t port{4242};
 } configuration;
 
 /**
@@ -45,11 +41,11 @@ static std::atomic<bool> thread_running{true};
 static int handler(void* user, const char* section, const char* name, const char* value)
 {
     configuration* pconfig = static_cast<configuration*>(user);
-    if(strcmp(section, "server") == 0) {
-        if(strcmp(name, "ipaddress") == 0) {
+    if(std::strcmp(section, "server") == 0) {
+        if(std::strcmp(name, "ipaddress") == 0) {
             pconfig->ipaddress = value;
         }
-        else if(strcmp(name, "port") == 0) {
+        else if(std::strcmp(name, "port") == 0) {
             pconfig->port = std::atoi(value);
         }
         else {
@@ -128,7 +124,7 @@ static int sendPadData() {
 
         // Transform to JSON
         PADData pad_data;
-        memset(&pad_data, 0, sizeof(PADData));
+        std::memset(&pad_data, 0, sizeof(PADData));
         pad_data.vpad = &vpad_data;
         if(kpad_error1 == KPADError::KPAD_ERROR_OK) {
             pad_data.kpad[0] = &kpad_data1;
@@ -204,7 +200,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     WHBMountSdCard();
     char path[256];
     char *sdRootPath = WHBGetSdCardMountPath();
-    snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
+    std::snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
 
     // Init screen and screen buffers
     ConsoleInit();
@@ -277,7 +273,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
             OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
             OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
             OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
-            snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
+            std::snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
             OSScreenPutFontEx(SCREEN_DRC, 0, 9, IP_str);
             OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
             OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
@@ -317,21 +313,21 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
     // Get IP Address (without spaces)
     char IP_ADDRESS[32];
-    snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
+    std::snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
 
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
     // Save settings to file
-    FILE * IP_file = fopen(path, "w");
+    FILE * IP_file = std::fopen(path, "w");
     if (IP_file != nullptr) {
-        fprintf(IP_file,
+        std::fprintf(IP_file,
             "[server]\n"
             "ipaddress=%s\n"
             "port=%d\n"
             "\n",
             IP_ADDRESS, Port);
-        fclose(IP_file);
+        std::fclose(IP_file);
     }
 
     uint16_t holdTime = 0;
@@ -343,7 +339,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         if(ConsoleDrawStart() == true) {
             // Output the IP address
             char msg_connected[255];
-            snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
+            std::snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
 
             // Print to TV
             PrintHeader(SCREEN_TV);

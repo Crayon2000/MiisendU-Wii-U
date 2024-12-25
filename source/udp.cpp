@@ -1,15 +1,10 @@
 #include "udp.h"
-#include <coreinit/memdefaultheap.h>
 #include <coreinit/thread.h>
 #include <sys/socket.h>
+#include <sys/unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
+#include <cstring>
 
 static int udp_socket = -1;
 static volatile bool udp_lock = false;
@@ -27,12 +22,12 @@ void udp_init(std::string_view ipString, uint16_t ipport)
     }
 
     struct sockaddr_in connect_addr;
-    memset(&connect_addr, 0, sizeof(connect_addr));
+    std::memset(&connect_addr, 0, sizeof(connect_addr));
     connect_addr.sin_family = AF_INET;
     connect_addr.sin_port = ipport;
     inet_aton(ipString.data(), &connect_addr.sin_addr);
 
-    if(connect(udp_socket, (struct sockaddr*)&connect_addr, sizeof(connect_addr)) < 0) {
+    if(connect(udp_socket, reinterpret_cast<struct sockaddr*>(&connect_addr), sizeof(connect_addr)) < 0) {
         close(udp_socket);
         udp_socket = -1;
     }

@@ -1,4 +1,3 @@
-#include <string.h>
 #include "rapidjson/writer.h"
 #include <map>
 #include <unordered_map>
