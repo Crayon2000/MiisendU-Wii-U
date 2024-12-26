@@ -16,6 +16,7 @@
 #include <cstring>
 #include <sys/unistd.h>
 #include <thread>
+#include <format>
 
 /**
  * Application configuration.
@@ -67,7 +68,7 @@ static void PrintHeader(OSScreenID bufferNum)
     OSScreenPutFontEx(bufferNum, -4, 0, R"( __  __ _ _                 _ _   _  __      ___ _   _   _ )");
     OSScreenPutFontEx(bufferNum, -4, 1, R"(|  \/  (_|_)___ ___ _ _  __| | | | | \ \    / (_|_) | | | |)");
     OSScreenPutFontEx(bufferNum, -4, 2, R"(| |\/| | | (_-</ -_) ' \/ _` | |_| |  \ \/\/ /| | | | |_| |)");
-    OSScreenPutFontEx(bufferNum, -4, 3, R"(|_|  |_|_|_/__/\___|_||_\__,_|\___/    \_/\_/ |_|_|  \___/  v1.3.0)");
+    OSScreenPutFontEx(bufferNum, -4, 3, R"(|_|  |_|_|_/__/\___|_||_\__,_|\___/    \_/\_/ |_|_|  \___/  v1.4.0)");
 }
 
 /**
@@ -198,9 +199,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     WPADEnableURCC(true);
 
     WHBMountSdCard();
-    char path[256];
     char *sdRootPath = WHBGetSdCardMountPath();
-    std::snprintf(path, sizeof(path), "%s/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
+    const std::string path = std::format("{}/wiiu/apps/MiisendU-Wii-U/settings.ini", sdRootPath);
 
     // Init screen and screen buffers
     ConsoleInit();
@@ -217,7 +217,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     // Read default settings from file
     bool ip_loaded = false;
     configuration config;
-    ini_parse(path, handler, &config);
+    ini_parse(path.c_str(), handler, &config);
     const uint16_t Port = config.port;
     if(config.ipaddress.empty() == false && inet_pton(AF_INET, config.ipaddress.c_str(), &IP) > 0) {
         ip_loaded = true;
@@ -268,13 +268,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
         if(ConsoleDrawStart() == true) {
             // Print to DRC
-            char IP_str[32];
             PrintHeader(SCREEN_DRC);
             OSScreenPutFontEx(SCREEN_DRC, 0, 5, "Please insert your computer's IP address below");
             OSScreenPutFontEx(SCREEN_DRC, 0, 6, "(use the DPAD to edit the IP address)");
             OSScreenPutFontEx(SCREEN_DRC, 4 * selected_digit, 8, "vvv");
-            std::snprintf(IP_str, 32, "%3d.%3d.%3d.%3d", IP[0], IP[1], IP[2], IP[3]);
-            OSScreenPutFontEx(SCREEN_DRC, 0, 9, IP_str);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 9, std::format("{:3}.{:3}.{:3}.{:3}", IP[0], IP[1], IP[2], IP[3]).c_str());
             OSScreenPutFontEx(SCREEN_DRC, 0, 15, "Press 'A' to confirm");
             OSScreenPutFontEx(SCREEN_DRC, 0, 16, "Press the HOME button to exit");
 
@@ -312,21 +310,20 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     ResetOrientation();
 
     // Get IP Address (without spaces)
-    char IP_ADDRESS[32];
-    std::snprintf(IP_ADDRESS, 32, "%d.%d.%d.%d", IP[0], IP[1], IP[2], IP[3]);
+    const std::string IP_ADDRESS = std::format("{}.{}.{}.{}", IP[0], IP[1], IP[2], IP[3]);
 
     // Initialize the UDP connection
     udp_init(IP_ADDRESS, Port);
 
     // Save settings to file
-    FILE * IP_file = std::fopen(path, "w");
+    FILE * IP_file = std::fopen(path.c_str(), "w");
     if (IP_file != nullptr) {
         std::fprintf(IP_file,
             "[server]\n"
             "ipaddress=%s\n"
             "port=%d\n"
             "\n",
-            IP_ADDRESS, Port);
+            IP_ADDRESS.c_str(), Port);
         std::fclose(IP_file);
     }
 
@@ -338,12 +335,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     while(running == true) {
         if(ConsoleDrawStart() == true) {
             // Output the IP address
-            char msg_connected[255];
-            std::snprintf(msg_connected, 255, "Connected to %s:%d", IP_ADDRESS, Port);
+            const std::string msg_connected = std::format("Connected to {}:{}", IP_ADDRESS, Port);
 
             // Print to TV
             PrintHeader(SCREEN_TV);
-            OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected);
+            OSScreenPutFontEx(SCREEN_TV, 0, 5, msg_connected.c_str());
             OSScreenPutFontEx(SCREEN_TV, 0, 7, "Remember the program will not work without");
             OSScreenPutFontEx(SCREEN_TV, 0, 8, "UsendMii running on your computer.");
             OSScreenPutFontEx(SCREEN_TV, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
@@ -351,7 +347,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 
             // Print to DRC
             PrintHeader(SCREEN_DRC);
-            OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected);
+            OSScreenPutFontEx(SCREEN_DRC, 0, 5, msg_connected.c_str());
             OSScreenPutFontEx(SCREEN_DRC, 0, 7, "Remember the program will not work without");
             OSScreenPutFontEx(SCREEN_DRC, 0, 8, "UsendMii running on your computer.");
             OSScreenPutFontEx(SCREEN_DRC, 0, 9, "You can get UsendMii from http://wiiubrew.org/wiki/UsendMii");
