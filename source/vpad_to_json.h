@@ -1,7 +1,5 @@
-#ifndef _VPADTOJSON_H_
-#define _VPADTOJSON_H_
+#pragma once
 
-#include <wut_types.h>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
 #include <nn/hpad/hpad.h>
@@ -12,7 +10,7 @@ extern "C" {
 #endif
 
 /**
- * Struct to hold all controllers data.
+ * Structure to hold all controllers data.
  */
 typedef struct {
     VPADStatus* vpad;     /**< Wii U Gamepad. */
@@ -25,5 +23,3 @@ std::string_view pad_to_json(PADData pad_data);
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* _VPADTOJSON_H_ */

@@ -36,7 +36,7 @@ void udp_init(std::string_view ipString, uint16_t ipport)
 /**
  * Deinitialize the UDP socket.
  */
-void udp_deinit(void)
+void udp_deinit()
 {
     if(udp_socket >= 0) {
         close(udp_socket);
