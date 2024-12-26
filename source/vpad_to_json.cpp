@@ -1,6 +1,6 @@
-#include <string.h>
-#include <jansson.h>
+#include "rapidjson/writer.h"
 #include <map>
+#include <unordered_map>
 #include "vpad_to_json.h"
 
 /**
@@ -38,131 +38,183 @@ static const std::map gcmask = {
 /**
  * Convert GamePad data to JSON string used by UsendMii.
  * @param[in] pad_data Controllers data.
- * @param[out] out Buffer where to copy the formatted data.
- * @param[in] out_size Size of the out buffer.
+ * @return Returns the JSON string.
  */
-void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
+std::string_view pad_to_json(PADData pad_data)
 {
     VPADTouchData TPCalibrated;
     VPADGetTPCalibratedPointEx(VPAD_CHAN_0, VPAD_TP_854X480, &TPCalibrated, &pad_data.vpad->tpNormal);
 
-    json_t *root = json_object();
+    rapidjson::StringBuffer sb;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
+    writer.SetMaxDecimalPlaces(10);
+
+    writer.StartObject(); // Start root object
 
     // Wii U GamePad
-    json_t *wiiugamepad = json_object();
-    json_object_set_new_nocheck(root, "wiiUGamePad", wiiugamepad);
-    json_object_set_new_nocheck(wiiugamepad, "hold", json_integer(pad_data.vpad->hold));
-    json_object_set_new_nocheck(wiiugamepad, "tpTouch", json_integer(TPCalibrated.touched));
-    json_object_set_new_nocheck(wiiugamepad, "tpValidity", json_integer(TPCalibrated.validity));
-    json_object_set_new_nocheck(wiiugamepad, "tpX", json_integer(TPCalibrated.x));
-    json_object_set_new_nocheck(wiiugamepad, "tpY", json_integer(TPCalibrated.y));
-    json_object_set_new_nocheck(wiiugamepad, "volume", json_integer(pad_data.vpad->slideVolume));
-    json_object_set_new_nocheck(wiiugamepad, "lStickX", json_real(pad_data.vpad->leftStick.x));
-    json_object_set_new_nocheck(wiiugamepad, "lStickY", json_real(pad_data.vpad->leftStick.y));
-    json_object_set_new_nocheck(wiiugamepad, "rStickX", json_real(pad_data.vpad->rightStick.x));
-    json_object_set_new_nocheck(wiiugamepad, "rStickY", json_real(pad_data.vpad->rightStick.y));
-    json_object_set_new_nocheck(wiiugamepad, "gyroX", json_real(pad_data.vpad->gyro.x));
-    json_object_set_new_nocheck(wiiugamepad, "gyroY", json_real(pad_data.vpad->gyro.y));
-    json_object_set_new_nocheck(wiiugamepad, "gyroZ", json_real(pad_data.vpad->gyro.z));
-    json_object_set_new_nocheck(wiiugamepad, "angleX", json_real(pad_data.vpad->angle.x));
-    json_object_set_new_nocheck(wiiugamepad, "angleY", json_real(pad_data.vpad->angle.y));
-    json_object_set_new_nocheck(wiiugamepad, "angleZ", json_real(pad_data.vpad->angle.z));
-    json_object_set_new_nocheck(wiiugamepad, "accX", json_real(pad_data.vpad->accelorometer.acc.x));
-    json_object_set_new_nocheck(wiiugamepad, "accY", json_real(pad_data.vpad->accelorometer.acc.y));
-    json_object_set_new_nocheck(wiiugamepad, "accZ", json_real(pad_data.vpad->accelorometer.acc.z));
-    json_object_set_new_nocheck(wiiugamepad, "dirXx", json_real(pad_data.vpad->direction.x.x));
-    json_object_set_new_nocheck(wiiugamepad, "dirXy", json_real(pad_data.vpad->direction.x.y));
-    json_object_set_new_nocheck(wiiugamepad, "dirXz", json_real(pad_data.vpad->direction.x.z));
-    json_object_set_new_nocheck(wiiugamepad, "dirYx", json_real(pad_data.vpad->direction.y.x));
-    json_object_set_new_nocheck(wiiugamepad, "dirYy", json_real(pad_data.vpad->direction.y.y));
-    json_object_set_new_nocheck(wiiugamepad, "dirYz", json_real(pad_data.vpad->direction.y.z));
-    json_object_set_new_nocheck(wiiugamepad, "dirZx", json_real(pad_data.vpad->direction.z.x));
-    json_object_set_new_nocheck(wiiugamepad, "dirZy", json_real(pad_data.vpad->direction.z.y));
-    json_object_set_new_nocheck(wiiugamepad, "dirZz", json_real(pad_data.vpad->direction.z.z));
+    writer.Key("wiiUGamePad");
+    writer.StartObject();
+    writer.Key("hold");
+    writer.Uint(pad_data.vpad->hold);
+    writer.Key("tpTouch");
+    writer.Uint(TPCalibrated.touched);
+    writer.Key("tpValidity");
+    writer.Uint(TPCalibrated.validity);
+    writer.Key("tpX");
+    writer.Uint(TPCalibrated.x);
+    writer.Key("tpY");
+    writer.Uint(TPCalibrated.y);
+    writer.Key("volume");
+    writer.Uint(pad_data.vpad->slideVolume);
+    writer.Key("lStickX");
+    writer.Double(pad_data.vpad->leftStick.x);
+    writer.Key("lStickY");
+    writer.Double(pad_data.vpad->leftStick.y);
+    writer.Key("rStickX");
+    writer.Double(pad_data.vpad->rightStick.x);
+    writer.Key("rStickY");
+    writer.Double(pad_data.vpad->rightStick.y);
+    writer.Key("gyroX");
+    writer.Double(pad_data.vpad->gyro.x);
+    writer.Key("gyroY");
+    writer.Double(pad_data.vpad->gyro.y);
+    writer.Key("gyroZ");
+    writer.Double(pad_data.vpad->gyro.z);
+    writer.Key("angleX");
+    writer.Double(pad_data.vpad->angle.x);
+    writer.Key("angleY");
+    writer.Double(pad_data.vpad->angle.y);
+    writer.Key("angleZ");
+    writer.Double(pad_data.vpad->angle.z);
+    writer.Key("accX");
+    writer.Double(pad_data.vpad->accelorometer.acc.x);
+    writer.Key("accY");
+    writer.Double(pad_data.vpad->accelorometer.acc.y);
+    writer.Key("accZ");
+    writer.Double(pad_data.vpad->accelorometer.acc.z);
+    writer.Key("dirXx");
+    writer.Double(pad_data.vpad->direction.x.x);
+    writer.Key("dirXy");
+    writer.Double(pad_data.vpad->direction.x.y);
+    writer.Key("dirXz");
+    writer.Double(pad_data.vpad->direction.x.z);
+    writer.Key("dirYx");
+    writer.Double(pad_data.vpad->direction.y.x);
+    writer.Key("dirYy");
+    writer.Double(pad_data.vpad->direction.y.y);
+    writer.Key("dirYz");
+    writer.Double(pad_data.vpad->direction.y.z);
+    writer.Key("dirZx");
+    writer.Double(pad_data.vpad->direction.z.x);
+    writer.Key("dirZy");
+    writer.Double(pad_data.vpad->direction.z.y);
+    writer.Key("dirZz");
+    writer.Double(pad_data.vpad->direction.z.z);
+    writer.EndObject(); // End wiiUGamePad object
 
     // Wii Remotes / Wii U Pro Controllers
-    if(pad_data.kpad[0] != nullptr ||
-       pad_data.kpad[1] != nullptr ||
-       pad_data.kpad[2] != nullptr ||
-       pad_data.kpad[3] != nullptr)
+    std::unordered_map<uint8_t, KPADStatus*> wii_remotes_status;
+    std::unordered_map<uint8_t, KPADStatus*> wii_u_pro_status;
+    for(uint8_t i = 0; i < 4; ++i)
     {
-        json_t *wiiremotes = json_array();
-        json_t *wiiuprocontrollers = json_array();
-        for(int i = 0; i < 4; ++i)
+        if(pad_data.kpad[i] != nullptr)
         {
-            if(pad_data.kpad[i] != nullptr)
-            {
-                if(pad_data.kpad[i]->extensionType != WPAD_EXT_PRO_CONTROLLER)
-                {   // Wii Remote with or without an extension
-                    json_t *wiiremote = json_object();
-                    json_object_set_new_nocheck(wiiremote, "order", json_integer(i + 1));
-                    json_object_set_new_nocheck(wiiremote, "hold", json_integer(pad_data.kpad[i]->hold));
-                    json_object_set_new_nocheck(wiiremote, "posX", json_integer(pad_data.kpad[i]->pos.x));
-                    json_object_set_new_nocheck(wiiremote, "posY", json_integer(pad_data.kpad[i]->pos.y));
-                    json_object_set_new_nocheck(wiiremote, "angleX", json_real(pad_data.kpad[i]->angle.x));
-                    json_object_set_new_nocheck(wiiremote, "angleY", json_real(pad_data.kpad[i]->angle.y));
-                    switch(pad_data.kpad[i]->extensionType)
-                    {
-                        case WPAD_EXT_NUNCHUK:
-                        case WPAD_EXT_MPLUS_NUNCHUK:
-                            { // Nunchuk
-                                json_t *extension = json_object();
-                                json_object_set_new_nocheck(wiiremote, "extension", extension);
-                                json_object_set_new_nocheck(extension, "type", json_string("nunchuk"));
-                                json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->nunchuk.hold));
-                                json_object_set_new_nocheck(extension, "stickX", json_real(pad_data.kpad[i]->nunchuk.stick.x));
-                                json_object_set_new_nocheck(extension, "stickY", json_real(pad_data.kpad[i]->nunchuk.stick.y));
-                            }
-                            break;
-                        case WPAD_EXT_CLASSIC:
-                        case WPAD_EXT_MPLUS_CLASSIC:
-                            { // Classic Controller
-                                json_t *extension = json_object();
-                                json_object_set_new_nocheck(wiiremote, "extension", extension);
-                                json_object_set_new_nocheck(extension, "type", json_string("classic"));
-                                json_object_set_new_nocheck(extension, "hold", json_integer(pad_data.kpad[i]->classic.hold));
-                                json_object_set_new_nocheck(extension, "lStickX", json_real(pad_data.kpad[i]->classic.leftStick.x));
-                                json_object_set_new_nocheck(extension, "lStickY", json_real(pad_data.kpad[i]->classic.leftStick.y));
-                                json_object_set_new_nocheck(extension, "rStickX", json_real(pad_data.kpad[i]->classic.rightStick.x));
-                                json_object_set_new_nocheck(extension, "rStickY", json_real(pad_data.kpad[i]->classic.rightStick.y));
-                                json_object_set_new_nocheck(extension, "lTrigger", json_real(pad_data.kpad[i]->classic.leftTrigger));
-                                json_object_set_new_nocheck(extension, "rTrigger", json_real(pad_data.kpad[i]->classic.rightTrigger));
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    json_array_append(wiiremotes, wiiremote);
-                }
-                else
-                {   // Wii U Pro Controller
-                    json_t *wiiuprocontroller = json_object();
-                    json_object_set_new_nocheck(wiiuprocontroller, "order", json_integer(i + 1));
-                    json_object_set_new_nocheck(wiiuprocontroller, "hold", json_integer(pad_data.kpad[i]->pro.hold));
-                    json_object_set_new_nocheck(wiiuprocontroller, "lStickX", json_real(pad_data.kpad[i]->pro.leftStick.x));
-                    json_object_set_new_nocheck(wiiuprocontroller, "lStickY", json_real(pad_data.kpad[i]->pro.leftStick.y));
-                    json_object_set_new_nocheck(wiiuprocontroller, "rStickX", json_real(pad_data.kpad[i]->pro.rightStick.x));
-                    json_object_set_new_nocheck(wiiuprocontroller, "rStickY", json_real(pad_data.kpad[i]->pro.rightStick.y));
-                    json_array_append(wiiuprocontrollers, wiiuprocontroller);
-                }
+            if(pad_data.kpad[i]->extensionType != WPAD_EXT_PRO_CONTROLLER)
+            {   // Wii Remote with or without an extension
+                wii_remotes_status.emplace(i + 1, pad_data.kpad[i]);
+            }
+            else
+            {   // Wii U Pro Controller
+                wii_u_pro_status.emplace(i + 1, pad_data.kpad[i]);
             }
         }
-        if(json_array_size(wiiremotes) > 0)
-        {
-            json_object_set_new_nocheck(root, "wiiRemotes", wiiremotes);
+    }
+    if (wii_remotes_status.empty() == false) {
+        writer.Key("wiiRemotes");
+        writer.StartArray();
+        for (const auto& [order, kpad] : wii_remotes_status) {
+            writer.StartObject(); // Start wiiremote object
+            writer.Key("order");
+            writer.Uint(order);
+            writer.Key("hold");
+            writer.Uint(kpad->hold);
+            writer.Key("posX");
+            writer.Int(kpad->pos.x);
+            writer.Key("posY");
+            writer.Int(kpad->pos.y);
+            writer.Key("angleX");
+            writer.Double(kpad->angle.x);
+            writer.Key("angleY");
+            writer.Double(kpad->angle.y);
+            switch(kpad->extensionType)
+            {
+                case WPAD_EXT_NUNCHUK:
+                case WPAD_EXT_MPLUS_NUNCHUK:
+                    { // Nunchuk
+                        writer.Key("extension");
+                        writer.StartObject();
+                        writer.Key("type");
+                        writer.String("nunchuk");
+                        writer.Key("hold");
+                        writer.Uint(kpad->nunchuk.hold);
+                        writer.Key("stickX");
+                        writer.Double(kpad->nunchuk.stick.x);
+                        writer.Key("stickY");
+                        writer.Double(kpad->nunchuk.stick.y);
+                        writer.EndObject();
+                    }
+                    break;
+                case WPAD_EXT_CLASSIC:
+                case WPAD_EXT_MPLUS_CLASSIC:
+                    { // Classic Controller
+                        writer.Key("extension");
+                        writer.StartObject();
+                        writer.Key("type");
+                        writer.String("classic");
+                        writer.Key("hold");
+                        writer.Uint(kpad->classic.hold);
+                        writer.Key("lStickX");
+                        writer.Double(kpad->classic.leftStick.x);
+                        writer.Key("lStickY");
+                        writer.Double(kpad->classic.leftStick.y);
+                        writer.Key("rStickX");
+                        writer.Double(kpad->classic.rightStick.x);
+                        writer.Key("rStickY");
+                        writer.Double(kpad->classic.rightStick.y);
+                        writer.Key("lTrigger");
+                        writer.Double(kpad->classic.leftTrigger);
+                        writer.Key("rTrigger");
+                        writer.Double(kpad->classic.rightTrigger);
+                        writer.EndObject();
+                    }
+                    break;
+                default:
+                    break;
+            }
+            writer.EndObject(); // End wiiremote object
         }
-        else
-        {
-            json_delete(wiiremotes);
+        writer.EndArray();
+    }
+    if (wii_u_pro_status.empty() == false) {
+        writer.Key("wiiUProControllers");
+        writer.StartArray();
+        for (const auto& [order, kpad] : wii_remotes_status) {
+            writer.StartObject(); // Start wiiuprocontrollers object
+            writer.Key("order");
+            writer.Uint(order);
+            writer.Key("hold");
+            writer.Int(kpad->pro.hold);
+            writer.Key("lStickX");
+            writer.Double(kpad->pro.leftStick.x);
+            writer.Key("lStickY");
+            writer.Double(kpad->pro.leftStick.y);
+            writer.Key("rStickX");
+            writer.Double(kpad->pro.rightStick.x);
+            writer.Key("rStickY");
+            writer.Double(kpad->pro.rightStick.y);
+            writer.EndObject(); // End wiiuprocontrollers object
         }
-        if(json_array_size(wiiuprocontrollers) > 0)
-        {
-            json_object_set_new_nocheck(root, "wiiUProControllers", wiiuprocontrollers);
-        }
-        else
-        {
-            json_delete(wiiuprocontrollers);
-        }
+        writer.EndArray();
     }
 
     // USB Gamecube Controller Adapter
@@ -171,7 +223,8 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
        pad_data.hpad[2] != nullptr ||
        pad_data.hpad[3] != nullptr)
     {
-        json_t *gccontrollers = json_array();
+        writer.Key("gameCubeControllers");
+        writer.StartArray();
         for(int i = 0; i < 4; ++i)
         {
             if(pad_data.hpad[i] == nullptr)
@@ -187,43 +240,30 @@ void pad_to_json(PADData pad_data, char* out, uint32_t out_size)
                 }
             }
 
-            json_t *gccontroller = json_object();
-            json_object_set_new_nocheck(gccontroller, "order", json_integer(i + 1));
-            json_object_set_new_nocheck(gccontroller, "hold", json_integer(holdgc));
-            json_object_set_new_nocheck(gccontroller, "ctrlStickX", json_integer(
-                change_range(pad_data.hpad[i]->stickX, HPAD_STICK_AXIS_MIN, HPAD_STICK_AXIS_MAX, -128, 127)));
-            json_object_set_new_nocheck(gccontroller, "ctrlStickY", json_integer(
-                change_range(pad_data.hpad[i]->stickY, HPAD_STICK_AXIS_MIN, HPAD_STICK_AXIS_MAX, -128, 127)));
-            json_object_set_new_nocheck(gccontroller, "cStickX", json_integer(
-                change_range(pad_data.hpad[i]->substickX, HPAD_SUBSTICK_AXIS_MIN, HPAD_SUBSTICK_AXIS_MAX, -128, 127)));
-            json_object_set_new_nocheck(gccontroller, "cStickY", json_integer(
-                change_range(pad_data.hpad[i]->substickY, HPAD_SUBSTICK_AXIS_MIN, HPAD_SUBSTICK_AXIS_MAX, -128, 127)));
-            json_object_set_new_nocheck(gccontroller, "lTrigger", json_integer(
-                change_range(pad_data.hpad[i]->triggerL, HPAD_TRIGGER_MIN, HPAD_TRIGGER_MAX, 0, 255)));
-            json_object_set_new_nocheck(gccontroller, "rTrigger", json_integer(
-               change_range(pad_data.hpad[i]->triggerR, HPAD_TRIGGER_MIN, HPAD_TRIGGER_MAX, 0, 255)));
-            json_array_append(gccontrollers, gccontroller);
+            writer.StartObject(); // Start gccontroller object
+            writer.Key("order");
+            writer.Uint(i + 1);
+            writer.Key("hold");
+            writer.Int(holdgc);
+            writer.Key("ctrlStickX");
+            writer.Int(change_range(pad_data.hpad[i]->stickX, HPAD_STICK_AXIS_MIN, HPAD_STICK_AXIS_MAX, -128, 127));
+            writer.Key("ctrlStickY");
+            writer.Int(change_range(pad_data.hpad[i]->stickY, HPAD_STICK_AXIS_MIN, HPAD_STICK_AXIS_MAX, -128, 127));
+            writer.Key("cStickX");
+            writer.Int(change_range(pad_data.hpad[i]->substickX, HPAD_SUBSTICK_AXIS_MIN, HPAD_SUBSTICK_AXIS_MAX, -128, 127));
+            writer.Key("cStickY");
+            writer.Int(change_range(pad_data.hpad[i]->substickY, HPAD_SUBSTICK_AXIS_MIN, HPAD_SUBSTICK_AXIS_MAX, -128, 127));
+            writer.Key("lTrigger");
+            writer.Uint(change_range(pad_data.hpad[i]->triggerL, HPAD_TRIGGER_MIN, HPAD_TRIGGER_MAX, 0, 255));
+            writer.Key("rTrigger");
+            writer.Uint(change_range(pad_data.hpad[i]->triggerR, HPAD_TRIGGER_MIN, HPAD_TRIGGER_MAX, 0, 255));
+            writer.EndObject(); // Start gccontroller object
         }
-        if(json_array_size(gccontrollers) > 0)
-        {
-            json_object_set_new_nocheck(root, "gameCubeControllers", gccontrollers);
-        }
-        else
-        {
-            json_delete(gccontrollers);
-        }
+        writer.EndArray();
     }
 
-    // Convert to string
-    const size_t real_size = json_dumpb(root, out, out_size, JSON_COMPACT | JSON_REAL_PRECISION(10));
-    if(real_size < out_size)
-    {
-        out[real_size] = '\0';
-    }
-    else
-    {
-        out[0] = '\0';
-    }
+    writer.EndObject(); // End root object
 
-    json_decref(root);
+    // Convert to string_view
+    return std::string_view(sb.GetString(), sb.GetSize());
 }
