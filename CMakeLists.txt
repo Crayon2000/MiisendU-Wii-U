@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.31)
 project(MiisendU-Wii-U)
 
 find_package(PkgConfig REQUIRED)
@@ -6,18 +6,23 @@ find_package(PkgConfig REQUIRED)
 include(FetchContent)
 FetchContent_Declare(
   inih
-  URL https://github.com/benhoyt/inih/archive/refs/tags/r60.tar.gz
+  URL https://github.com/benhoyt/inih/archive/refs/tags/r62.tar.gz
 )
 FetchContent_Declare(
   rapidjson
   URL https://github.com/Tencent/rapidjson/archive/refs/heads/master.tar.gz
 )
-FetchContent_Populate(rapidjson)
-FetchContent_MakeAvailable(inih)
+set(RAPIDJSON_BUILD_DOC OFF CACHE BOOL "Disable rapidjson documentation build" FORCE)
+set(RAPIDJSON_BUILD_EXAMPLES OFF CACHE BOOL "Disable rapidjson examples build" FORCE)
+set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "Disable rapidjson tests build" FORCE)
+set(RAPIDJSON_BUILD_CXX11 OFF CACHE BOOL "Disable C++11" FORCE)
+set(RAPIDJSON_BUILD_CXX17 OFF CACHE BOOL "Disable C++17" FORCE)
+set(RAPIDJSON_BUILD_CXX20 ON CACHE BOOL "Enable C++20" FORCE)
+FetchContent_MakeAvailable(inih rapidjson)
 
 add_executable(MiisendU-Wii-U)
 
-target_compile_features(MiisendU-Wii-U PRIVATE cxx_std_20)
+target_compile_features(MiisendU-Wii-U PRIVATE cxx_std_23)
 
 target_compile_options(MiisendU-Wii-U PRIVATE
   -Werror

@@ -21,10 +21,10 @@
 /**
  * Application configuration.
  */
-typedef struct {
+struct configuration {
     std::string ipaddress;
     uint16_t port{4242};
-} configuration;
+};
 
 /**
  * Whether pad data are being sent.
