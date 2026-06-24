@@ -87,11 +87,11 @@ std::string_view pad_to_json(PADData pad_data)
     writer.Key("angleZ");
     writer.Double(pad_data.vpad->angle.z);
     writer.Key("accX");
-    writer.Double(pad_data.vpad->accelorometer.acc.x);
+    writer.Double(pad_data.vpad->accelerometer.acc.x);
     writer.Key("accY");
-    writer.Double(pad_data.vpad->accelorometer.acc.y);
+    writer.Double(pad_data.vpad->accelerometer.acc.y);
     writer.Key("accZ");
-    writer.Double(pad_data.vpad->accelorometer.acc.z);
+    writer.Double(pad_data.vpad->accelerometer.acc.z);
     writer.Key("dirXx");
     writer.Double(pad_data.vpad->direction.x.x);
     writer.Key("dirXy");

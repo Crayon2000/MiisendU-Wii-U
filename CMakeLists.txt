@@ -33,6 +33,7 @@ target_compile_options(MiisendU-Wii-U PRIVATE
   -Wmisleading-indentation
   -Wduplicated-cond
   -Wduplicated-branches
+  -Wno-deprecated-declarations
 )
 
 target_sources(MiisendU-Wii-U PRIVATE
