@@ -198,7 +198,7 @@ std::string_view pad_to_json(PADData pad_data)
     if (wii_u_pro_status.empty() == false) {
         writer.Key("wiiUProControllers");
         writer.StartArray();
-        for (const auto& [order, kpad] : wii_remotes_status) {
+        for (const auto& [order, kpad] : wii_u_pro_status) {
             writer.StartObject(); // Start wiiuprocontrollers object
             writer.Key("order");
             writer.Uint(order);
