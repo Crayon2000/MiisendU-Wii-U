@@ -1,25 +1,27 @@
 #pragma once
 
+#include <array>
 #include <padscore/kpad.h>
 #include <vpad/input.h>
 #include <nn/hpad/hpad.h>
 #include <string_view>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * Structure to hold all controllers data.
  */
-typedef struct {
-    VPADStatus* vpad;     /**< Wii U Gamepad. */
-    KPADStatus* kpad[4];  /**< Wii Remotes. */
-    HPADStatus* hpad[4];  /**< USB Gamecube Controller Adapter. */
-} PADData;
+struct PADData {
+    /**
+     * Wii U Gamepad.
+     */
+    VPADStatus* vpad{};
+    /**
+     * Wii Remotes.
+     */
+    std::array<KPADStatus*, 4> kpad{};
+    /**
+     * USB Gamecube Controller Adapter.
+     */
+    std::array<HPADStatus*, 4> hpad{};
+};
 
 std::string_view pad_to_json(PADData pad_data);
-
-#ifdef __cplusplus
-}
-#endif

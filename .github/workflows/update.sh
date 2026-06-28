@@ -2,7 +2,7 @@
 
 # Install / update required packages
 if [ -z ${GITHUB_WORKSPACE} ]; then
-    dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev ppc-jansson
+    dkp-pacman --sync --sysupgrade --refresh --needed --noconfirm wiiu-dev
 fi
 
 # Download and install master version of wut

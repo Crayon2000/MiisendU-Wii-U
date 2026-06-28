@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- TBD
+- Fix Wii U Pro Controller button states not being sent to UsendMii in v1.4.0.
 
 ## [1.4.0] - 2024-12-26
 

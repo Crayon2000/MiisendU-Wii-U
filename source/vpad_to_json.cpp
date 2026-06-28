@@ -1,24 +1,24 @@
 #include "rapidjson/writer.h"
-#include <map>
+#include <array>
 #include <unordered_map>
 #include "vpad_to_json.h"
 
 /**
  * Mask for the Gamecube Controller.
  */
-static const std::map gcmask = {
+static constexpr std::array gcmask{
     std::pair{HPAD_BUTTON_LEFT, 0x0001},
-    {HPAD_BUTTON_RIGHT, 0x0002},
-    {HPAD_BUTTON_DOWN, 0x0004},
-    {HPAD_BUTTON_UP, 0x0008},
-    {HPAD_TRIGGER_Z, 0x0010},
-    {HPAD_TRIGGER_R, 0x0020},
-    {HPAD_TRIGGER_L, 0x0040},
-    {HPAD_BUTTON_A, 0x0100},
-    {HPAD_BUTTON_B, 0x0200},
-    {HPAD_BUTTON_X, 0x0400},
-    {HPAD_BUTTON_Y, 0x0800},
-    {HPAD_BUTTON_START, 0x1000},
+    std::pair{HPAD_BUTTON_RIGHT, 0x0002},
+    std::pair{HPAD_BUTTON_DOWN, 0x0004},
+    std::pair{HPAD_BUTTON_UP, 0x0008},
+    std::pair{HPAD_TRIGGER_Z, 0x0010},
+    std::pair{HPAD_TRIGGER_R, 0x0020},
+    std::pair{HPAD_TRIGGER_L, 0x0040},
+    std::pair{HPAD_BUTTON_A, 0x0100},
+    std::pair{HPAD_BUTTON_B, 0x0200},
+    std::pair{HPAD_BUTTON_X, 0x0400},
+    std::pair{HPAD_BUTTON_Y, 0x0800},
+    std::pair{HPAD_BUTTON_START, 0x1000},
 };
 
 /**
@@ -115,7 +115,7 @@ std::string_view pad_to_json(PADData pad_data)
     // Wii Remotes / Wii U Pro Controllers
     std::unordered_map<uint8_t, KPADStatus*> wii_remotes_status;
     std::unordered_map<uint8_t, KPADStatus*> wii_u_pro_status;
-    for(uint8_t i = 0; i < 4; ++i)
+    for(std::size_t i = 0; i < pad_data.kpad.size(); ++i)
     {
         if(pad_data.kpad[i] != nullptr)
         {
@@ -225,7 +225,7 @@ std::string_view pad_to_json(PADData pad_data)
     {
         writer.Key("gameCubeControllers");
         writer.StartArray();
-        for(int i = 0; i < 4; ++i)
+        for(std::size_t i = 0; i < pad_data.hpad.size(); ++i)
         {
             if(pad_data.hpad[i] == nullptr)
             {

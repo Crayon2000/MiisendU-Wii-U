@@ -10,7 +10,7 @@ The button states from the Wii U GamePad, the Wii U Pro Controllers and the Wii 
 
 Prerequisites:
 
-* Packages in the wiiu-dev group and ppc-jansson from devkitpro
+* Packages in the wiiu-dev group from devkitpro
 
 To compile:
 

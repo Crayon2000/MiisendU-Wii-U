@@ -1,3 +1,5 @@
+#include <array>
+#include <charconv>
 #include "console.h"
 #include "vpad_to_json.h"
 #include "udp.h"
@@ -47,7 +49,11 @@ static int handler(void* user, const char* section, const char* name, const char
             pconfig->ipaddress = value;
         }
         else if(std::strcmp(name, "port") == 0) {
-            pconfig->port = std::atoi(value);
+            uint16_t parsed_port;
+            auto res = std::from_chars(value, value + std::strlen(value), parsed_port);
+            if(res.ec == std::errc()) {
+                pconfig->port = parsed_port;
+            }
         }
         else {
             return 0; // Unknown name
@@ -124,8 +130,7 @@ static int sendPadData() {
         DCFlushRange(&vpad_data, sizeof(VPADStatus));
 
         // Transform to JSON
-        PADData pad_data;
-        std::memset(&pad_data, 0, sizeof(PADData));
+        PADData pad_data{};
         pad_data.vpad = &vpad_data;
         if(kpad_error1 == KPADError::KPAD_ERROR_OK) {
             pad_data.kpad[0] = &kpad_data1;
@@ -190,7 +195,7 @@ static int sendPadData() {
  */
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
-    uint8_t IP[4] = {192, 168, 1, 100};
+    std::array<uint8_t, 4> IP = {192, 168, 1, 100};
 
     WHBProcInit();
     VPADInit();
@@ -219,7 +224,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     configuration config;
     ini_parse(path.c_str(), handler, &config);
     const uint16_t Port = config.port;
-    if(config.ipaddress.empty() == false && inet_pton(AF_INET, config.ipaddress.c_str(), &IP) > 0) {
+    if(config.ipaddress.empty() == false && inet_pton(AF_INET, config.ipaddress.c_str(), IP.data()) > 0) {
         ip_loaded = true;
     }
     if (ip_loaded == false && nn::ac::Initialize() == true) {
