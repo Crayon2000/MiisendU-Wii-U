@@ -74,7 +74,7 @@ static void PrintHeader(OSScreenID bufferNum)
     OSScreenPutFontEx(bufferNum, -4, 0, R"( __  __ _ _                 _ _   _  __      ___ _   _   _ )");
     OSScreenPutFontEx(bufferNum, -4, 1, R"(|  \/  (_|_)___ ___ _ _  __| | | | | \ \    / (_|_) | | | |)");
     OSScreenPutFontEx(bufferNum, -4, 2, R"(| |\/| | | (_-</ -_) ' \/ _` | |_| |  \ \/\/ /| | | | |_| |)");
-    OSScreenPutFontEx(bufferNum, -4, 3, R"(|_|  |_|_|_/__/\___|_||_\__,_|\___/    \_/\_/ |_|_|  \___/  v1.4.0)");
+    OSScreenPutFontEx(bufferNum, -4, 3, R"(|_|  |_|_|_/__/\___|_||_\__,_|\___/    \_/\_/ |_|_|  \___/  v1.4.1)");
 }
 
 /**

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.4.1] - 2026-06-29
 
 - Fix Wii U Pro Controller button states not being sent to UsendMii in v1.4.0.
 
@@ -56,7 +56,7 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[unreleased]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.4.0...HEAD
+[1.4.1]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Crayon2000/MiisendU-Wii-U/compare/v1.1.0...v1.2.0
